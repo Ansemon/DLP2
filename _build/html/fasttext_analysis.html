@@ -1,0 +1,1167 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis del Modelo FastText Supervisado &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'fasttext_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Análisis del Modelo XGBoost con TF-IDF" href="xgboost_analysis.html" />
+    <link rel="prev" title="Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)" href="cnn1d_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/fasttext_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Ffasttext_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/fasttext_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis del Modelo FastText Supervisado</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-representacion">1.1 Paradigma de Representación</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-clasificador">1.2 Arquitectura del Clasificador</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-metricas">3.2 Interpretación de Métricas</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-sobresaliente-f1-0-65">4.1 Clases con Rendimiento Sobresaliente (F1 &gt; 0.65)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-intermedio-0-45-f1-0-65">4.2 Clases con Rendimiento Intermedio (0.45 &lt; F1 &lt; 0.65)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-critico-f1-0-30">4.3 Clases con Rendimiento Crítico (F1 &lt; 0.30)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-fortalezas-y-limitaciones">5. Análisis de Arquitectura: Fortalezas y Limitaciones</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fortalezas-de-fasttext-para-este-problema">5.1 Fortalezas de FastText para este Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-fundamentales">5.2 Limitaciones Fundamentales</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-comparativo-con-modelos-contextuales">6. Análisis Comparativo con Modelos Contextuales</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fasttext-vs-bilstm">6.1 FastText vs BiLSTM</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fasttext-vs-transformers-distilbert">6.2 FastText vs Transformers (DistilBERT)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convergencia-y-estabilidad-del-entrenamiento">7. Convergencia y Estabilidad del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-aprendizaje">7.1 Curvas de Aprendizaje</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-a-hiperparametros">7.2 Sensibilidad a Hiperparámetros</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-error-casos-de-confusion-tipicos">8. Análisis de Error: Casos de Confusión Típicos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-entre-clases-semanticamente-relacionadas">8.1 Confusión entre Clases Semánticamente Relacionadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-vocabulario-insuficiente">8.2 Clases con Vocabulario Insuficiente</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-dataset">9. Limitaciones Específicas del Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tamano-del-corpus">9.1 Tamaño del Corpus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance-residual-post-augmentation">9.2 Desbalance Residual Post-Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-el-modelo-fasttext">10. Conclusiones sobre el Modelo FastText</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-en-el-espectro-de-complejidad">10.1 Posicionamiento en el Espectro de Complejidad</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adecuacion-al-problema">10.2 Adecuación al Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-sobre-representaciones-estaticas">10.3 Lecciones sobre Representaciones Estáticas</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-del-modelo-fasttext-supervisado">
+<h1>Análisis del Modelo FastText Supervisado<a class="headerlink" href="#analisis-del-modelo-fasttext-supervisado" title="Link to this heading">#</a></h1>
+<section id="fundamento-teorico-y-arquitectura">
+<h2>1. Fundamento Teórico y Arquitectura<a class="headerlink" href="#fundamento-teorico-y-arquitectura" title="Link to this heading">#</a></h2>
+<section id="paradigma-de-representacion">
+<h3>1.1 Paradigma de Representación<a class="headerlink" href="#paradigma-de-representacion" title="Link to this heading">#</a></h3>
+<p>FastText Supervised es un modelo de clasificación textual desarrollado por Facebook AI Research (Bojanowski et al., 2017) que extiende el paradigma word2vec mediante la incorporación de información sub-léxica. A diferencia de modelos basados puramente en word embeddings, FastText representa palabras como la suma de sus character n-grams, permitiendo generar representaciones para palabras fuera del vocabulario.</p>
+<p><strong>Ecuación fundamental</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">embedding</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="o">=</span> <span class="n">Σ</span> <span class="n">embedding</span><span class="p">(</span><span class="n">n</span><span class="o">-</span><span class="n">gram_i</span><span class="p">)</span> <span class="n">para</span> <span class="n">todos</span> <span class="n">los</span> <span class="n">n</span><span class="o">-</span><span class="n">grams</span> <span class="n">en</span> <span class="n">word</span>
+</pre></div>
+</div>
+<p><strong>Ejemplo</strong>:
+Para la palabra “debugging”:</p>
+<ul class="simple">
+<li><p>Character n-grams (3-6 chars): deb, ebu, bug, ugg, ggi, gin, ing, debu, ebug, bugg, uggi, ggin, ging, debug, …</p></li>
+<li><p>Embedding final: suma de embeddings de todos estos n-grams</p></li>
+</ul>
+</section>
+<section id="arquitectura-del-clasificador">
+<h3>1.2 Arquitectura del Clasificador<a class="headerlink" href="#arquitectura-del-clasificador" title="Link to this heading">#</a></h3>
+<p>El modelo implementa una arquitectura feed-forward simple:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Input: Text → N-gram embeddings → Average pooling → Hidden layer → Softmax(24)
+</pre></div>
+</div>
+<p><strong>Componentes</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Capa de embeddings</strong>: Matriz de 32,575 × 500 (vocabulario × dimensión)</p></li>
+<li><p><strong>Pooling</strong>: Promedio aritmético de embeddings de n-grams en el texto</p></li>
+<li><p><strong>Capa de salida</strong>: Transformación lineal + softmax para 24 clases</p></li>
+</ol>
+<p><strong>Parámetros del modelo</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario: 32,575 palabras</p></li>
+<li><p>Dimensión de embeddings: 500</p></li>
+<li><p>N-grams de caracteres: 3-6 (implícito en FastText)</p></li>
+<li><p>Categorías: 24</p></li>
+</ul>
+<p><strong>Función objetivo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">L</span> <span class="o">=</span> <span class="o">-</span><span class="n">Σ</span> <span class="n">log</span><span class="p">(</span><span class="n">p</span><span class="p">(</span><span class="n">y_correct</span> <span class="o">|</span> <span class="n">x_i</span><span class="p">))</span> <span class="n">para</span> <span class="n">todos</span> <span class="n">los</span> <span class="n">ejemplos</span> <span class="n">de</span> <span class="n">entrenamiento</span>
+</pre></div>
+</div>
+<p>Donde <code class="docutils literal notranslate"><span class="pre">p(y</span> <span class="pre">|</span> <span class="pre">x)</span></code> se calcula mediante softmax sobre los logits de salida.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuracion-de-hiperparametros">
+<h2>2. Configuración de Hiperparámetros<a class="headerlink" href="#configuracion-de-hiperparametros" title="Link to this heading">#</a></h2>
+<p>FastText fue entrenado con parámetros estándar que favorecen generalización sobre memorización:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hiperparámetro</p></th>
+<th class="head"><p>Valor</p></th>
+<th class="head"><p>Justificación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>dim</strong></p></td>
+<td><p>500</p></td>
+<td><p>Dimensión suficiente para capturar relaciones semánticas complejas sin overparameterización</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>wordNgrams</strong></p></td>
+<td><p>1</p></td>
+<td><p>Solo unigrams; bigrams/trigrams incrementarían sparsity excesivamente</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>epoch</strong></p></td>
+<td><p>25</p></td>
+<td><p>Suficientes iteraciones para convergencia en dataset pequeño</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>lr</strong></p></td>
+<td><p>0.1</p></td>
+<td><p>Learning rate estándar para optimizador SGD</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>loss</strong></p></td>
+<td><p>softmax</p></td>
+<td><p>Apropiado para clasificación multiclase mutuamente excluyente</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Nota sobre wordNgrams=1</strong>: Aunque FastText puede usar word-level n-grams (bigrams, trigrams) para capturar contexto, en este caso se usó solo unigrams. Esto se debe a que:</p>
+<ul class="simple">
+<li><p>El vocabulario ya es extenso (32,575 palabras)</p></li>
+<li><p>Word bigrams/trigrams generarían millones de features, causando sparsity extrema</p></li>
+<li><p>Los character n-grams (inherentes a FastText) ya capturan morfología</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="resultados-cuantitativos">
+<h2>3. Resultados Cuantitativos<a class="headerlink" href="#resultados-cuantitativos" title="Link to this heading">#</a></h2>
+<section id="metricas-globales">
+<h3>3.1 Métricas Globales<a class="headerlink" href="#metricas-globales" title="Link to this heading">#</a></h3>
+<p><strong>Validation Set</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.4885</p></li>
+<li><p>F1-macro: 0.4249</p></li>
+<li><p>F1-weighted: 0.4461</p></li>
+<li><p>ROC AUC (OvR): 0.8907</p></li>
+</ul>
+<p><strong>Test Set</strong> (Evaluación final):</p>
+<ul class="simple">
+<li><p>Accuracy: 0.5176</p></li>
+<li><p>F1-macro: 0.4675</p></li>
+<li><p>F1-weighted: 0.4921</p></li>
+<li><p>ROC AUC (OvR): 0.8793</p></li>
+</ul>
+</section>
+<section id="interpretacion-de-metricas">
+<h3>3.2 Interpretación de Métricas<a class="headerlink" href="#interpretacion-de-metricas" title="Link to this heading">#</a></h3>
+<p><strong>Consistencia train-val-test</strong>: La diferencia entre validation y test es mínima (Δ accuracy = +2.9 pp), indicando que el modelo generaliza consistentemente y no sufre overfitting significativo.</p>
+<p><strong>ROC AUC vs F1</strong>: La divergencia típica (AUC=0.88, F1=0.47) confirma que FastText aprende a ordenar probabilidades correctamente, pero la información capturada por n-grams estáticos es insuficiente para dominar la competencia multiclase en el softmax.</p>
+<p><strong>F1-macro vs F1-weighted</strong>: La brecha (0.4675 vs 0.4921) indica que el modelo tiene mejor desempeño en clases mayoritarias, con caídas pronunciadas en clases minoritarias.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-por-clase-desempeno-diferencial">
+<h2>4. Análisis por Clase: Desempeño Diferencial<a class="headerlink" href="#analisis-por-clase-desempeno-diferencial" title="Link to this heading">#</a></h2>
+<section id="clases-con-rendimiento-sobresaliente-f1-0-65">
+<h3>4.1 Clases con Rendimiento Sobresaliente (F1 &gt; 0.65)<a class="headerlink" href="#clases-con-rendimiento-sobresaliente-f1-0-65" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Característica</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>INFORMATION-TECHNOLOGY</p></td>
+<td><p>0.5714</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.7273</p></td>
+<td><p>12</p></td>
+<td><p>Vocabulario técnico denso</p></td>
+</tr>
+<tr class="row-odd"><td><p>DESIGNER</p></td>
+<td><p>0.7500</p></td>
+<td><p>0.8182</p></td>
+<td><p>0.7826</p></td>
+<td><p>11</p></td>
+<td><p>Terminología específica (UX, Figma)</p></td>
+</tr>
+<tr class="row-even"><td><p>HR</p></td>
+<td><p>0.6429</p></td>
+<td><p>0.8182</p></td>
+<td><p>0.7200</p></td>
+<td><p>11</p></td>
+<td><p>Léxico distintivo (recruitment, onboarding)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CHEF</p></td>
+<td><p>0.7273</p></td>
+<td><p>0.6667</p></td>
+<td><p>0.6957</p></td>
+<td><p>12</p></td>
+<td><p>Vocabulario culinario único</p></td>
+</tr>
+<tr class="row-even"><td><p>ACCOUNTANT</p></td>
+<td><p>0.5500</p></td>
+<td><p>0.9167</p></td>
+<td><p>0.6875</p></td>
+<td><p>12</p></td>
+<td><p>Términos contables específicos</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón observado</strong>: Estas clases comparten:</p>
+<ol class="arabic simple">
+<li><p><strong>Alta especificidad léxica</strong>: Contienen términos técnicos que raramente aparecen en otras clases</p></li>
+<li><p><strong>Consistencia de vocabulario</strong>: Los currículums de estas profesiones usan términos estandarizados</p></li>
+<li><p><strong>Presencia de n-grams discriminativos</strong>: Palabras como “Python”, “auditing”, “Figma” tienen character n-grams altamente informativos</p></li>
+</ol>
+<p><strong>Ejemplo de n-grams discriminativos</strong>:</p>
+<ul class="simple">
+<li><p>“python” → pyt, yth, tho, hon, pyth, ytho, thon, pytho, ython, python (todos fuertemente asociados con IT)</p></li>
+<li><p>“recruitment” → recr, ecru, crui, ruit, uitm, itme, tmen, ruim, ecru, cruit (asociados con HR)</p></li>
+</ul>
+</section>
+<section id="clases-con-rendimiento-intermedio-0-45-f1-0-65">
+<h3>4.2 Clases con Rendimiento Intermedio (0.45 &lt; F1 &lt; 0.65)<a class="headerlink" href="#clases-con-rendimiento-intermedio-0-45-f1-0-65" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Problema Principal</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BANKING</p></td>
+<td><p>0.6316</p></td>
+<td><p>Vocabulario compartido con FINANCE</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENGINEERING</p></td>
+<td><p>0.6364</p></td>
+<td><p>Solapamiento con múltiples especialidades técnicas</p></td>
+</tr>
+<tr class="row-even"><td><p>PUBLIC-RELATIONS</p></td>
+<td><p>0.6364</p></td>
+<td><p>Términos genéricos (communication, media)</p></td>
+</tr>
+<tr class="row-odd"><td><p>FITNESS</p></td>
+<td><p>0.5455</p></td>
+<td><p>Variabilidad (personal training, gym management, nutrition)</p></td>
+</tr>
+<tr class="row-even"><td><p>CONSTRUCTION</p></td>
+<td><p>0.5556</p></td>
+<td><p>Overlap con ENGINEERING en contexto de proyectos</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis</strong>: Estas clases contienen suficientes n-grams distintivos para superar el baseline random (1/24 = 4.17%), pero comparten vocabulario suficiente con otras clases como para generar confusiones frecuentes.</p>
+<p><strong>Matriz de confusión típica</strong> (ejemplo BANKING):</p>
+<ul class="simple">
+<li><p>Predicciones correctas: 6/11</p></li>
+<li><p>Confundido con FINANCE: 3/11 (términos: “financial”, “account”, “transaction”)</p></li>
+<li><p>Confundido con BUSINESS-DEVELOPMENT: 2/11 (términos: “client”, “sales”)</p></li>
+</ul>
+</section>
+<section id="clases-con-rendimiento-critico-f1-0-30">
+<h3>4.3 Clases con Rendimiento Crítico (F1 &lt; 0.30)<a class="headerlink" href="#clases-con-rendimiento-critico-f1-0-30" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Causa Raíz</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>APPAREL</p></td>
+<td><p>0.0000</p></td>
+<td><p>10</p></td>
+<td><p>Vocabulario genérico, overlap con DESIGNER</p></td>
+</tr>
+<tr class="row-odd"><td><p>ARTS</p></td>
+<td><p>0.0000</p></td>
+<td><p>10</p></td>
+<td><p>Categoría muy amplia, poca consistencia léxica</p></td>
+</tr>
+<tr class="row-even"><td><p>BPO</p></td>
+<td><p>0.0000</p></td>
+<td><p>4</p></td>
+<td><p>Support mínimo + vocabulario compartido con CONSULTANT</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUTOMOBILE</p></td>
+<td><p>0.3077</p></td>
+<td><p>5</p></td>
+<td><p>Confusión con ENGINEERING (mechanical terms)</p></td>
+</tr>
+<tr class="row-even"><td><p>AGRICULTURE</p></td>
+<td><p>0.3636</p></td>
+<td><p>9</p></td>
+<td><p>Términos genéricos (farm, crop) con baja frecuencia</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis detallado de colapso en APPAREL</strong>:</p>
+<ul class="simple">
+<li><p><strong>Support</strong>: 10 muestras en test (0.59% del vocabulario de entrenamiento)</p></li>
+<li><p><strong>Vocabulario</strong>: Palabras como “fashion”, “textile”, “garment” aparecen &lt;20 veces en train</p></li>
+<li><p><strong>Character n-grams</strong>: Los n-grams de estas palabras no son suficientemente distintivos</p>
+<ul>
+<li><p>“fashion” → fash, ashi, shio, hion (compartidos con palabras en otras clases)</p></li>
+</ul>
+</li>
+<li><p><strong>Predicciones</strong>: Todos los 10 casos se clasificaron como DESIGNER o DIGITAL-MEDIA (clases con vocabulario creativo similar)</p></li>
+</ul>
+<p><strong>Análisis de BPO (Business Process Outsourcing)</strong>:</p>
+<ul class="simple">
+<li><p><strong>Support</strong>: Solo 4 muestras en test (caso extremo de clase minoritaria)</p></li>
+<li><p><strong>Problema fundamental</strong>: BPO usa lenguaje genérico de negocios (“process”, “operations”, “client service”) que es indistinguible de CONSULTANT, BUSINESS-DEVELOPMENT, y SALES</p></li>
+<li><p><strong>Embedding ambiguity</strong>: Los character n-grams de términos BPO no forman clusters distintivos en el espacio de embeddings</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-arquitectura-fortalezas-y-limitaciones">
+<h2>5. Análisis de Arquitectura: Fortalezas y Limitaciones<a class="headerlink" href="#analisis-de-arquitectura-fortalezas-y-limitaciones" title="Link to this heading">#</a></h2>
+<section id="fortalezas-de-fasttext-para-este-problema">
+<h3>5.1 Fortalezas de FastText para este Problema<a class="headerlink" href="#fortalezas-de-fasttext-para-este-problema" title="Link to this heading">#</a></h3>
+<p><strong>1. Robustez ante typos y variantes morfológicas</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;developer&quot; vs &quot;developers&quot; vs &quot;development&quot;
+→ Comparten n-grams: deve, evel, velo, elop, lope, oper
+→ FastText captura esta similaridad automáticamente
+</pre></div>
+</div>
+<p><strong>2. Generación de embeddings para OOV</strong>:
+Si “kubernetes” no está en el vocabulario de entrenamiento, FastText puede generar un embedding aproximado usando sus n-grams (kub, ube, ber, ern, rne, net, ete, tes).</p>
+<p><strong>3. Eficiencia computacional</strong>:</p>
+<ul class="simple">
+<li><p>Entrenamiento: ~2-3 minutos en CPU</p></li>
+<li><p>Inferencia: &lt;1ms por muestra</p></li>
+<li><p>No requiere GPU</p></li>
+</ul>
+<p><strong>4. Interpretabilidad parcial</strong>:
+Los embeddings de n-grams pueden ser inspeccionados para entender qué patrones sub-léxicos son discriminativos.</p>
+</section>
+<section id="limitaciones-fundamentales">
+<h3>5.2 Limitaciones Fundamentales<a class="headerlink" href="#limitaciones-fundamentales" title="Link to this heading">#</a></h3>
+<p><strong>1. No captura contexto</strong>:
+FastText procesa texto mediante bag-of-n-grams, perdiendo información de orden y dependencias sintácticas.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="s2">&quot;Managed software development projects&quot;</span> 
+<span class="n">vs</span> 
+<span class="s2">&quot;Projects managed, software development experience&quot;</span>
+</pre></div>
+</div>
+<p>Para FastText, estos textos son idénticos (mismos n-grams, diferente orden).</p>
+<p><strong>2. Pooling global elimina estructura</strong>:
+El promedio de embeddings colapsa toda la información en un vector fijo, perdiendo:</p>
+<ul class="simple">
+<li><p>Posición de términos clave</p></li>
+<li><p>Relaciones sintácticas (modificadores, cláusulas relativas)</p></li>
+<li><p>Estructura de largo plazo (inicio vs final del documento)</p></li>
+</ul>
+<p><strong>3. Embeddings estáticos</strong>:
+Cada n-gram tiene un único embedding, independiente del contexto:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;Python developer&quot; → embedding(python) siempre igual
+&quot;Python as a pet snake&quot; → embedding(python) idéntico
+</pre></div>
+</div>
+<p>En este dataset, términos ambiguos (e.g., “bank” = institución financiera o orilla de río) no pueden ser desambiguados.</p>
+<p><strong>4. Limitaciones en texto largo</strong>:
+Aunque el promedio es computacionalmente eficiente, diluye la contribución de términos clave cuando el texto es muy extenso:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">CV</span> <span class="n">de</span> <span class="mi">500</span> <span class="n">palabras</span><span class="p">:</span> <span class="n">embedding_final</span> <span class="o">=</span> <span class="n">mean</span><span class="p">(</span><span class="mi">500</span> <span class="n">embeddings</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Términos discriminativos (e.g., “Python”) contribuyen solo 1/500 al vector final.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-comparativo-con-modelos-contextuales">
+<h2>6. Análisis Comparativo con Modelos Contextuales<a class="headerlink" href="#analisis-comparativo-con-modelos-contextuales" title="Link to this heading">#</a></h2>
+<section id="fasttext-vs-bilstm">
+<h3>6.1 FastText vs BiLSTM<a class="headerlink" href="#fasttext-vs-bilstm" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>FastText</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>F1-macro</p></td>
+<td><p>0.4675</p></td>
+<td><p>0.6398</p></td>
+<td><p>+17.2 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>ROC AUC</p></td>
+<td><p>0.8793</p></td>
+<td><p>0.9458</p></td>
+<td><p>+6.7 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>Contexto</p></td>
+<td><p>No</p></td>
+<td><p>Sí (bidireccional)</p></td>
+<td><p>Critical</p></td>
+</tr>
+<tr class="row-odd"><td><p>OOV handling</p></td>
+<td><p>Character n-grams</p></td>
+<td><p>Word2Vec + random</p></td>
+<td><p>FastText superior</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Explicación de la brecha</strong>: BiLSTM procesa secuencias de embeddings, capturando patrones como:</p>
+<ul class="simple">
+<li><p>“managed team of engineers” → LSTM aprende que “managed X of Y” es patrón gerencial</p></li>
+<li><p>FastText solo ve: {managed, team, engineers} sin orden</p></li>
+</ul>
+</section>
+<section id="fasttext-vs-transformers-distilbert">
+<h3>6.2 FastText vs Transformers (DistilBERT)<a class="headerlink" href="#fasttext-vs-transformers-distilbert" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>FastText</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>F1-macro</p></td>
+<td><p>0.4675</p></td>
+<td><p>0.8453</p></td>
+<td><p>+37.8 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>Parámetros</p></td>
+<td><p>Sparse (~16M)</p></td>
+<td><p>66M</p></td>
+<td><p>4.1x</p></td>
+</tr>
+<tr class="row-even"><td><p>Attention</p></td>
+<td><p>No</p></td>
+<td><p>Sí (self-attention)</p></td>
+<td><p>Critical</p></td>
+</tr>
+<tr class="row-odd"><td><p>Preentrenamiento</p></td>
+<td><p>No</p></td>
+<td><p>Sí (BookCorpus, Wikipedia)</p></td>
+<td><p>Critical</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la brecha masiva</strong>: La diferencia de +37.8 pp no se debe solo a la arquitectura, sino a:</p>
+<ol class="arabic simple">
+<li><p><strong>Transfer learning</strong>: DistilBERT trae conocimiento de 16GB de texto en inglés</p></li>
+<li><p><strong>Representaciones contextuales</strong>: Cada token tiene embedding dinámico basado en su contexto</p></li>
+<li><p><strong>Arquitectura profunda</strong>: 6 capas de transformers vs 1 capa promedio en FastText</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="convergencia-y-estabilidad-del-entrenamiento">
+<h2>7. Convergencia y Estabilidad del Entrenamiento<a class="headerlink" href="#convergencia-y-estabilidad-del-entrenamiento" title="Link to this heading">#</a></h2>
+<section id="curvas-de-aprendizaje">
+<h3>7.1 Curvas de Aprendizaje<a class="headerlink" href="#curvas-de-aprendizaje" title="Link to this heading">#</a></h3>
+<p>Aunque FastText no proporciona métricas de entrenamiento por época (entrenamiento batch), la consistencia entre validation (0.4885 accuracy) y test (0.5176 accuracy) sugiere:</p>
+<p><strong>Convergencia alcanzada</strong>: 25 épocas fueron suficientes para que el modelo aprenda todos los patrones disponibles en n-grams estáticos.</p>
+<p><strong>No hay overfitting</strong>: La diferencia val-test de +2.9 pp está dentro del margen esperado por varianza estadística (test tiene solo 255 muestras).</p>
+</section>
+<section id="sensibilidad-a-hiperparametros">
+<h3>7.2 Sensibilidad a Hiperparámetros<a class="headerlink" href="#sensibilidad-a-hiperparametros" title="Link to this heading">#</a></h3>
+<p><strong>Experimento conceptual</strong> (basado en literatura de FastText):</p>
+<ul class="simple">
+<li><p>Aumentar <code class="docutils literal notranslate"><span class="pre">dim</span></code> a 1000: +1-2 pp accuracy esperado, pero 2x memoria</p></li>
+<li><p>Añadir <code class="docutils literal notranslate"><span class="pre">wordNgrams=2</span></code>: Potencialmente +3-5 pp, pero riesgo de sparsity</p></li>
+<li><p>Aumentar <code class="docutils literal notranslate"><span class="pre">epoch</span></code> a 50: Mejora marginal (&lt;1 pp) ya que modelo es simple</p></li>
+</ul>
+<p><strong>Conclusión</strong>: FastText con configuración estándar ya alcanza su límite superior teórico para este problema (~55-60% accuracy con n-grams estáticos).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-error-casos-de-confusion-tipicos">
+<h2>8. Análisis de Error: Casos de Confusión Típicos<a class="headerlink" href="#analisis-de-error-casos-de-confusion-tipicos" title="Link to this heading">#</a></h2>
+<section id="confusion-entre-clases-semanticamente-relacionadas">
+<h3>8.1 Confusión entre Clases Semánticamente Relacionadas<a class="headerlink" href="#confusion-entre-clases-semanticamente-relacionadas" title="Link to this heading">#</a></h3>
+<p><strong>Caso 1: FINANCE ↔ BANKING</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Texto</span><span class="p">:</span> <span class="s2">&quot;Managed client portfolios and executed trades&quot;</span>
+<span class="n">Términos</span> <span class="n">clave</span><span class="p">:</span> <span class="n">portfolio</span> <span class="p">(</span><span class="n">finanzas</span><span class="p">),</span> <span class="n">client</span> <span class="p">(</span><span class="n">ambos</span><span class="p">),</span> <span class="n">trade</span> <span class="p">(</span><span class="n">ambos</span><span class="p">)</span>
+<span class="n">N</span><span class="o">-</span><span class="n">grams</span> <span class="n">no</span> <span class="n">son</span> <span class="n">suficientemente</span> <span class="n">discriminativos</span>
+<span class="n">Predicción</span> <span class="n">FastText</span><span class="p">:</span> <span class="n">BANKING</span> <span class="p">(</span><span class="n">incorrecto</span><span class="p">,</span> <span class="n">es</span> <span class="n">FINANCE</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Caso 2: CONSULTANT ↔ BPO</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Texto</span><span class="p">:</span> <span class="s2">&quot;Provided process optimization services to clients&quot;</span>
+<span class="n">Términos</span> <span class="n">clave</span><span class="p">:</span> <span class="n">process</span> <span class="p">(</span><span class="n">ambos</span><span class="p">),</span> <span class="n">optimization</span> <span class="p">(</span><span class="n">ambos</span><span class="p">),</span> <span class="n">client</span> <span class="p">(</span><span class="n">ambos</span><span class="p">)</span>
+<span class="n">FastText</span> <span class="n">no</span> <span class="n">puede</span> <span class="n">diferenciar</span> <span class="n">sin</span> <span class="n">contexto</span> <span class="n">organizacional</span>
+<span class="n">Predicción</span><span class="p">:</span> <span class="n">CONSULTANT</span> <span class="p">(</span><span class="n">podría</span> <span class="n">ser</span> <span class="n">cualquiera</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="clases-con-vocabulario-insuficiente">
+<h3>8.2 Clases con Vocabulario Insuficiente<a class="headerlink" href="#clases-con-vocabulario-insuficiente" title="Link to this heading">#</a></h3>
+<p><strong>Caso: APPAREL (F1=0.00)</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Designed seasonal collections and managed production&quot;
+Análisis de n-grams:
+- &quot;designed&quot; → también usado por DESIGNER (confusión principal)
+- &quot;seasonal&quot; → no es discriminativo
+- &quot;collections&quot; → podría ser ARTS, DESIGNER
+- &quot;production&quot; → usado en múltiples industrias
+
+FastText no encuentra n-grams únicos a APPAREL
+→ Clasifica como DESIGNER (clase con mayor prior y vocabulario solapado)
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-especificas-del-dataset">
+<h2>9. Limitaciones Específicas del Dataset<a class="headerlink" href="#limitaciones-especificas-del-dataset" title="Link to this heading">#</a></h2>
+<section id="tamano-del-corpus">
+<h3>9.1 Tamaño del Corpus<a class="headerlink" href="#tamano-del-corpus" title="Link to this heading">#</a></h3>
+<p>Con solo 2,104 muestras de entrenamiento distribuidas en 24 clases:</p>
+<ul class="simple">
+<li><p>Promedio: 87.6 muestras por clase</p></li>
+<li><p>Mínimo: 57 (BPO)</p></li>
+<li><p>Máximo: 96 (INFORMATION-TECHNOLOGY)</p></li>
+</ul>
+<p><strong>Implicación</strong>: FastText construye embeddings de n-grams con estadísticas limitadas:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>N-gram &quot;pyth&quot; (de Python):
+- Aparece ~120 veces en IT
+- Aparece 0 veces en otras clases
+→ Embedding fuertemente asociado a IT (BUENO)
+
+N-gram &quot;cons&quot; (de consultant, construction, consumer):
+- Aparece ~60 veces distribuido en 5 clases
+→ Embedding ambiguo (MALO)
+</pre></div>
+</div>
+</section>
+<section id="desbalance-residual-post-augmentation">
+<h3>9.2 Desbalance Residual Post-Augmentation<a class="headerlink" href="#desbalance-residual-post-augmentation" title="Link to this heading">#</a></h3>
+<p>A pesar del data augmentation, clases como BPO (57 muestras train) siguen sub-representadas. Para FastText:</p>
+<ul class="simple">
+<li><p>Menos ejemplos → menos ocurrencias de n-grams específicos</p></li>
+<li><p>Embeddings de n-grams de clase minoritaria son menos estables (mayor varianza)</p></li>
+<li><p>Durante entrenamiento, el modelo favorece clases mayoritarias para minimizar loss total</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-sobre-el-modelo-fasttext">
+<h2>10. Conclusiones sobre el Modelo FastText<a class="headerlink" href="#conclusiones-sobre-el-modelo-fasttext" title="Link to this heading">#</a></h2>
+<section id="posicionamiento-en-el-espectro-de-complejidad">
+<h3>10.1 Posicionamiento en el Espectro de Complejidad<a class="headerlink" href="#posicionamiento-en-el-espectro-de-complejidad" title="Link to this heading">#</a></h3>
+<p>FastText representa el <strong>baseline avanzado</strong> para clasificación textual:</p>
+<ul class="simple">
+<li><p>Supera significativamente a bag-of-words simple o TF-IDF sin clasificador sofisticado</p></li>
+<li><p>Es inferior a modelos con capacidad de capturar contexto (RNNs, CNNs, Transformers)</p></li>
+<li><p>Ofrece el mejor balance velocidad/desempeño para aplicaciones con restricciones computacionales</p></li>
+</ul>
+</section>
+<section id="adecuacion-al-problema">
+<h3>10.2 Adecuación al Problema<a class="headerlink" href="#adecuacion-al-problema" title="Link to this heading">#</a></h3>
+<p>Para clasificación de currículums con 24 clases:</p>
+<ul class="simple">
+<li><p><strong>Accuracy 51.8%</strong> es razonable como baseline</p></li>
+<li><p><strong>ROC AUC 0.88</strong> confirma que captura señales semánticas genuinas</p></li>
+<li><p><strong>F1-macro 0.47</strong> revela limitaciones en clases ambiguas o minoritarias</p></li>
+</ul>
+<p><strong>Veredicto</strong>: FastText es inadecuado como solución de producción para este problema, pero sirve como:</p>
+<ol class="arabic simple">
+<li><p>Validación de que el dataset contiene señales discriminativas</p></li>
+<li><p>Baseline para comparar arquitecturas más complejas</p></li>
+<li><p>Prototipo rápido para exploración inicial</p></li>
+</ol>
+</section>
+<section id="lecciones-sobre-representaciones-estaticas">
+<h3>10.3 Lecciones sobre Representaciones Estáticas<a class="headerlink" href="#lecciones-sobre-representaciones-estaticas" title="Link to this heading">#</a></h3>
+<p>El desempeño de FastText ilustra los límites de aproximaciones bag-of-n-grams:</p>
+<ul class="simple">
+<li><p><strong>Información sintáctica es crucial</strong>: “Managed team” vs “Team managed by” tienen semánticas diferentes</p></li>
+<li><p><strong>Contexto importa</strong>: “Bank account” (finanzas) vs “Bank of river” (geografía) requieren representaciones contextuales</p></li>
+<li><p><strong>Pooling global es destructivo</strong>: Promediar todos los n-grams diluye señales discriminativas en textos largos</p></li>
+</ul>
+<p>Estos hallazgos motivaron la exploración de arquitecturas neuronales secuenciales (BiLSTM) y convolucionales (CNN-1D) en etapas subsecuentes del proyecto.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="cnn1d_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="xgboost_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Análisis del Modelo XGBoost con TF-IDF</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-representacion">1.1 Paradigma de Representación</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-clasificador">1.2 Arquitectura del Clasificador</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-metricas">3.2 Interpretación de Métricas</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-sobresaliente-f1-0-65">4.1 Clases con Rendimiento Sobresaliente (F1 &gt; 0.65)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-intermedio-0-45-f1-0-65">4.2 Clases con Rendimiento Intermedio (0.45 &lt; F1 &lt; 0.65)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-rendimiento-critico-f1-0-30">4.3 Clases con Rendimiento Crítico (F1 &lt; 0.30)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-fortalezas-y-limitaciones">5. Análisis de Arquitectura: Fortalezas y Limitaciones</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fortalezas-de-fasttext-para-este-problema">5.1 Fortalezas de FastText para este Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-fundamentales">5.2 Limitaciones Fundamentales</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-comparativo-con-modelos-contextuales">6. Análisis Comparativo con Modelos Contextuales</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fasttext-vs-bilstm">6.1 FastText vs BiLSTM</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fasttext-vs-transformers-distilbert">6.2 FastText vs Transformers (DistilBERT)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#convergencia-y-estabilidad-del-entrenamiento">7. Convergencia y Estabilidad del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-aprendizaje">7.1 Curvas de Aprendizaje</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-a-hiperparametros">7.2 Sensibilidad a Hiperparámetros</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-error-casos-de-confusion-tipicos">8. Análisis de Error: Casos de Confusión Típicos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confusion-entre-clases-semanticamente-relacionadas">8.1 Confusión entre Clases Semánticamente Relacionadas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-vocabulario-insuficiente">8.2 Clases con Vocabulario Insuficiente</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-dataset">9. Limitaciones Específicas del Dataset</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#tamano-del-corpus">9.1 Tamaño del Corpus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desbalance-residual-post-augmentation">9.2 Desbalance Residual Post-Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-el-modelo-fasttext">10. Conclusiones sobre el Modelo FastText</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-en-el-espectro-de-complejidad">10.1 Posicionamiento en el Espectro de Complejidad</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#adecuacion-al-problema">10.2 Adecuación al Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-sobre-representaciones-estaticas">10.3 Lecciones sobre Representaciones Estáticas</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

@@ -1,0 +1,11 @@
+format: jb-book
+root: general_analysis
+
+chapters:
+  - file: preprocessing_analysis
+  - file: bilstm_analysis
+  - file: cnn1d_analysis
+  - file: fasttext_analysis
+  - file: xgboost_analysis
+  - file: distilbert_analysis
+  - file: MIniproyecto2(2)

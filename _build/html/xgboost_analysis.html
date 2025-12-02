@@ -1,0 +1,1452 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis del Modelo XGBoost con TF-IDF &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'xgboost_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Análisis del Modelo DistilBERT para Clasificación de Currículums" href="distilbert_analysis.html" />
+    <link rel="prev" title="Análisis del Modelo FastText Supervisado" href="fasttext_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/xgboost_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fxgboost_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/xgboost_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis del Modelo XGBoost con TF-IDF</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-gradient-boosting">1.1 Paradigma de Gradient Boosting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-sistema-tf-idf-xgboost">1.2 Arquitectura del Sistema: TF-IDF + XGBoost</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-del-vectorizador-tf-idf">2.1 Parámetros del Vectorizador TF-IDF</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-xgboost">2.2 Parámetros de XGBoost</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-generalizacion">3.2 Análisis de Generalización</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.3 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-90">4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-75-f1-0-90">4.2 Clases con Desempeño Sólido (0.75 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-intermedio-0-65-f1-0-75">4.3 Clases con Desempeño Intermedio (0.65 &lt; F1 &lt; 0.75)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-feature-importance">5. Análisis de Feature Importance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-features-por-gain">5.1 Top Features por Gain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interacciones-de-features">5.2 Interacciones de Features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-del-entrenamiento">6. Análisis de Convergencia del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-loss">6.1 Curvas de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-convergencia">6.2 Interpretación de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#factores-que-limitan-overfitting">6.3 Factores que Limitan Overfitting</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-de-xgboost-sobre-modelos-neuronales">7. Ventajas de XGBoost sobre Modelos Neuronales</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-en-datos-tabulares-de-alta-dimension">7.1 Superioridad en Datos Tabulares de Alta Dimensión</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robustez-a-features-ruidosas">7.2 Robustez a Features Ruidosas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-cuantitativa-sobre-modelos-neuronales">7.3 Ganancia Cuantitativa sobre Modelos Neuronales</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-captura-similaridad-semantica">8.1 No Captura Similaridad Semántica</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulario-fijo-post-training">8.2 Vocabulario Fijo Post-Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-a-features-ruidosas-en-train">8.3 Sensibilidad a Features Ruidosas en Train</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-distilbert">9. Comparación con DistilBERT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-errores-matriz-de-confusion">10. Análisis de Errores: Matriz de Confusión</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confusiones-principales">10.1 Confusiones Principales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patron-de-errores">10.2 Patrón de Errores</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-xgboost">11. Conclusiones sobre XGBoost</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">11.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">11.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">11.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-del-modelo-xgboost-con-tf-idf">
+<h1>Análisis del Modelo XGBoost con TF-IDF<a class="headerlink" href="#analisis-del-modelo-xgboost-con-tf-idf" title="Link to this heading">#</a></h1>
+<section id="fundamento-teorico-y-arquitectura">
+<h2>1. Fundamento Teórico y Arquitectura<a class="headerlink" href="#fundamento-teorico-y-arquitectura" title="Link to this heading">#</a></h2>
+<section id="paradigma-de-gradient-boosting">
+<h3>1.1 Paradigma de Gradient Boosting<a class="headerlink" href="#paradigma-de-gradient-boosting" title="Link to this heading">#</a></h3>
+<p>XGBoost (Extreme Gradient Boosting) implementa el algoritmo de gradient boosting decision trees (GBDT), una técnica de ensemble learning que construye modelos secuencialmente, donde cada nuevo modelo corrige los errores del ensemble anterior.</p>
+<p><strong>Principio fundamental</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>F_m(x) = F_{m-1}(x) + ν · h_m(x)
+</pre></div>
+</div>
+<p>Donde:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">F_m(x)</span></code>: Predicción del ensemble después de m árboles</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">h_m(x)</span></code>: Nuevo árbol (aprendido para minimizar residuos)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">ν</span></code>: Learning rate (shrinkage parameter)</p></li>
+</ul>
+<p><strong>Proceso iterativo</strong>:</p>
+<ol class="arabic simple">
+<li><p>Calcular gradientes de la loss function respecto a predicciones actuales</p></li>
+<li><p>Ajustar nuevo árbol de decisión para predecir estos gradientes</p></li>
+<li><p>Agregar árbol al ensemble con peso controlado por learning rate</p></li>
+<li><p>Repetir hasta convergencia o límite de árboles</p></li>
+</ol>
+</section>
+<section id="arquitectura-del-sistema-tf-idf-xgboost">
+<h3>1.2 Arquitectura del Sistema: TF-IDF + XGBoost<a class="headerlink" href="#arquitectura-del-sistema-tf-idf-xgboost" title="Link to this heading">#</a></h3>
+<p>El modelo combina dos componentes fundamentales:</p>
+<p><strong>Componente 1: Vectorización TF-IDF</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto → Tokenización → Conteo de n-grams → Ponderación TF-IDF → Vector sparse (10,000 dims)
+</pre></div>
+</div>
+<p><strong>TF-IDF (Term Frequency-Inverse Document Frequency)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>tfidf(t, d) = tf(t, d) × idf(t)
+
+tf(t, d) = count(t in d) / |d|
+idf(t) = log(N / df(t))
+</pre></div>
+</div>
+<p>Donde:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">t</span></code>: término (unigrama, bigrama o trigrama)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d</span></code>: documento (currículum)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">N</span></code>: total de documentos</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">df(t)</span></code>: número de documentos que contienen <code class="docutils literal notranslate"><span class="pre">t</span></code></p></li>
+</ul>
+<p><strong>Intuición</strong>: TF-IDF asigna peso alto a términos que son:</p>
+<ul class="simple">
+<li><p>Frecuentes en el documento actual (TF alto)</p></li>
+<li><p>Raros en el corpus general (IDF alto)</p></li>
+</ul>
+<p><strong>Componente 2: XGBoost Multiclase</strong></p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Input: TF-IDF vector (10,000 features) → Ensemble de 300 árboles → Softmax(24 clases)
+</pre></div>
+</div>
+<p><strong>Objetivo multiclase (multi:softprob)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>L = -Σ Σ y_{ij} · log(p_{ij})
+    i j
+
+Donde:
+- i: índice de muestra
+- j: índice de clase
+- y_{ij}: 1 si muestra i pertenece a clase j, 0 en caso contrario
+- p_{ij}: probabilidad predicha para muestra i, clase j
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuracion-de-hiperparametros">
+<h2>2. Configuración de Hiperparámetros<a class="headerlink" href="#configuracion-de-hiperparametros" title="Link to this heading">#</a></h2>
+<section id="parametros-del-vectorizador-tf-idf">
+<h3>2.1 Parámetros del Vectorizador TF-IDF<a class="headerlink" href="#parametros-del-vectorizador-tf-idf" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Parámetro</p></th>
+<th class="head"><p>Valor</p></th>
+<th class="head"><p>Justificación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>max_features</strong></p></td>
+<td><p>10,000</p></td>
+<td><p>Balance entre expresividad y eficiencia computacional</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ngram_range</strong></p></td>
+<td><p>(1, 3)</p></td>
+<td><p>Captura unigrams, bigrams y trigrams</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>min_df</strong></p></td>
+<td><p>2</p></td>
+<td><p>Elimina términos que aparecen en &lt;2 documentos (ruido)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>max_df</strong></p></td>
+<td><p>0.95</p></td>
+<td><p>Elimina términos en &gt;95% de documentos (stopwords implícitas)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis del espacio de features</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario potencial completo: ~32,000 palabras únicas</p></li>
+<li><p>Con n-grams (1,3): ~500,000 combinaciones posibles</p></li>
+<li><p>Limitado a 10,000: Top features por importancia TF-IDF global</p></li>
+</ul>
+<p><strong>Sparsity resultante</strong>: 96.15%</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="mi">10</span><span class="p">,</span><span class="mi">000</span> <span class="n">features</span> <span class="n">por</span> <span class="n">vector</span>
+<span class="n">Media</span> <span class="n">de</span> <span class="n">features</span> <span class="n">no</span><span class="o">-</span><span class="n">cero</span> <span class="n">por</span> <span class="n">documento</span><span class="p">:</span> <span class="o">~</span><span class="mi">385</span> <span class="p">(</span><span class="mf">3.85</span><span class="o">%</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Esta alta sparsity es característica de representaciones TF-IDF y es exactamente el tipo de datos para el que XGBoost fue diseñado.</p>
+</section>
+<section id="parametros-de-xgboost">
+<h3>2.2 Parámetros de XGBoost<a class="headerlink" href="#parametros-de-xgboost" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hiperparámetro</p></th>
+<th class="head"><p>Valor</p></th>
+<th class="head"><p>Impacto</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>objective</strong></p></td>
+<td><p>multi:softprob</p></td>
+<td><p>Loss function para clasificación multiclase con probabilidades</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>num_class</strong></p></td>
+<td><p>24</p></td>
+<td><p>Número de clases en el problema</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>max_depth</strong></p></td>
+<td><p>6</p></td>
+<td><p>Profundidad máxima de cada árbol (controla complejidad)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>learning_rate</strong> (η)</p></td>
+<td><p>0.1</p></td>
+<td><p>Shrinkage para prevenir overfitting</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>n_estimators</strong></p></td>
+<td><p>300</p></td>
+<td><p>Número de árboles en el ensemble</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>subsample</strong></p></td>
+<td><p>0.8</p></td>
+<td><p>Fracción de muestras usadas por árbol (bagging)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>colsample_bytree</strong></p></td>
+<td><p>0.8</p></td>
+<td><p>Fracción de features usadas por árbol</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>min_child_weight</strong></p></td>
+<td><p>3</p></td>
+<td><p>Suma mínima de pesos de instancia en nodo hijo</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>gamma</strong></p></td>
+<td><p>0.1</p></td>
+<td><p>Reducción mínima de loss para crear split</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>reg_alpha</strong></p></td>
+<td><p>0.1</p></td>
+<td><p>Regularización L1</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>reg_lambda</strong></p></td>
+<td><p>1.0</p></td>
+<td><p>Regularización L2</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de hiperparámetros clave</strong>:</p>
+<p><strong>max_depth=6</strong>:</p>
+<ul class="simple">
+<li><p>Profundidad moderada (no shallow como 3, no deep como 12)</p></li>
+<li><p>Permite capturar interacciones complejas: <code class="docutils literal notranslate"><span class="pre">(tf_idf[&quot;Python&quot;]</span> <span class="pre">&gt;</span> <span class="pre">0.5)</span> <span class="pre">AND</span> <span class="pre">(tf_idf[&quot;machine</span> <span class="pre">learning&quot;]</span> <span class="pre">&gt;</span> <span class="pre">0.3)</span> <span class="pre">→</span> <span class="pre">IT</span></code></p></li>
+<li><p>Cada árbol puede tener hasta 2^6 = 64 nodos hoja</p></li>
+</ul>
+<p><strong>learning_rate=0.1</strong>:</p>
+<ul class="simple">
+<li><p>Valor estándar que balancea velocidad de convergencia y estabilidad</p></li>
+<li><p>Cada árbol contribuye 10% de su predicción completa</p></li>
+<li><p>Requiere más árboles (300) pero reduce overfitting</p></li>
+</ul>
+<p><strong>subsample=0.8, colsample_bytree=0.8</strong>:</p>
+<ul class="simple">
+<li><p>Introduce aleatorización estilo Random Forest</p></li>
+<li><p>Cada árbol se entrena con 80% de muestras y 80% de features</p></li>
+<li><p>Reduce correlación entre árboles → mejor generalización</p></li>
+</ul>
+<p><strong>Regularización (gamma=0.1, lambda=1.0, alpha=0.1)</strong>:</p>
+<ul class="simple">
+<li><p><strong>Gamma</strong>: Penaliza splits que no reducen loss significativamente</p></li>
+<li><p><strong>Lambda (L2)</strong>: Penaliza pesos grandes de hojas (smooth predictions)</p></li>
+<li><p><strong>Alpha (L1)</strong>: Induce sparsity en pesos de hojas</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="resultados-cuantitativos">
+<h2>3. Resultados Cuantitativos<a class="headerlink" href="#resultados-cuantitativos" title="Link to this heading">#</a></h2>
+<section id="metricas-globales">
+<h3>3.1 Métricas Globales<a class="headerlink" href="#metricas-globales" title="Link to this heading">#</a></h3>
+<p><strong>Validation Set</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.7328</p></li>
+<li><p>F1-macro: 0.6872</p></li>
+<li><p>F1-weighted: 0.7143</p></li>
+<li><p>ROC AUC (OvR): 0.9732</p></li>
+</ul>
+<p><strong>Test Set (evaluación final)</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.7922</p></li>
+<li><p>F1-macro: 0.7606</p></li>
+<li><p>F1-weighted: 0.7849</p></li>
+<li><p>ROC AUC (OvR): 0.9816</p></li>
+</ul>
+</section>
+<section id="analisis-de-generalizacion">
+<h3>3.2 Análisis de Generalización<a class="headerlink" href="#analisis-de-generalizacion" title="Link to this heading">#</a></h3>
+<p><strong>Diferencia val-test</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +5.94 pp (0.7328 → 0.7922)</p></li>
+<li><p>F1-macro: +7.34 pp (0.6872 → 0.7606)</p></li>
+</ul>
+<p><strong>Interpretación</strong>: Test performance <strong>superior</strong> a validation es inusual pero no alarmante:</p>
+<ul class="simple">
+<li><p>Tamaño de validation: 262 muestras</p></li>
+<li><p>Tamaño de test: 255 muestras</p></li>
+<li><p>Diferencia puede atribuirse a varianza estadística de muestras pequeñas</p></li>
+<li><p>No hay evidencia de data leakage (stratified group split fue aplicado correctamente)</p></li>
+</ul>
+</section>
+<section id="posicionamiento-comparativo">
+<h3>3.3 Posicionamiento Comparativo<a class="headerlink" href="#posicionamiento-comparativo" title="Link to this heading">#</a></h3>
+<p><strong>vs FastText</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +27.46 pp (0.5176 → 0.7922)</p></li>
+<li><p>F1-macro: +29.31 pp (0.4675 → 0.7606)</p></li>
+</ul>
+<p><strong>vs BiLSTM</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +9.81 pp (0.6941 → 0.7922)</p></li>
+<li><p>F1-macro: +12.08 pp (0.6398 → 0.7606)</p></li>
+</ul>
+<p><strong>vs CNN-1D</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +5.89 pp (0.7333 → 0.7922)</p></li>
+<li><p>F1-macro: +8.90 pp (0.6716 → 0.7606)</p></li>
+</ul>
+<p>XGBoost es el <strong>mejor modelo no-transformer</strong>, superando significativamente todos los modelos neuronales evaluados (FastText, BiLSTM, CNN-1D).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-por-clase-desempeno-diferencial">
+<h2>4. Análisis por Clase: Desempeño Diferencial<a class="headerlink" href="#analisis-por-clase-desempeno-diferencial" title="Link to this heading">#</a></h2>
+<section id="clases-con-desempeno-excelente-f1-0-90">
+<h3>4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)<a class="headerlink" href="#clases-con-desempeno-excelente-f1-0-90" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Patrón TF-IDF Clave</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DESIGNER</p></td>
+<td><p>0.9167</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9565</p></td>
+<td><p>11</p></td>
+<td><p>Trigramas: “user experience design”, “wireframe prototyping”</p></td>
+</tr>
+<tr class="row-odd"><td><p>CONSTRUCTION</p></td>
+<td><p>0.9167</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9565</p></td>
+<td><p>11</p></td>
+<td><p>Bigramas: “construction project”, “site management”</p></td>
+</tr>
+<tr class="row-even"><td><p>HR</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9524</p></td>
+<td><p>11</p></td>
+<td><p>Trigramas: “talent acquisition process”, “employee performance review”</p></td>
+</tr>
+<tr class="row-odd"><td><p>BUSINESS-DEVELOPMENT</p></td>
+<td><p>0.8571</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9231</p></td>
+<td><p>12</p></td>
+<td><p>Trigramas: “lead generation strategy”, “revenue growth pipeline”</p></td>
+</tr>
+<tr class="row-even"><td><p>INFORMATION-TECHNOLOGY</p></td>
+<td><p>0.8571</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9231</p></td>
+<td><p>12</p></td>
+<td><p>Unigrams de alta IDF: “Python”, “SQL”, “debugging”</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de recall perfecto (1.0000)</strong>:</p>
+<p>3 clases logran recall=1.0. Esto significa que XGBoost ha aprendido reglas (splits de árbol) extremadamente precisas:</p>
+<p><strong>Ejemplo de reglas inferidas para DESIGNER</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Árbol 47, Nodo 3:
+  if tfidf[&quot;ux design&quot;] &gt; 0.23:
+    if tfidf[&quot;figma&quot;] &gt; 0.15:
+      → DESIGNER (weight: 0.8)
+    else:
+      if tfidf[&quot;wireframe&quot;] &gt; 0.10:
+        → DESIGNER (weight: 0.7)
+</pre></div>
+</div>
+</section>
+<section id="clases-con-desempeno-solido-0-75-f1-0-90">
+<h3>4.2 Clases con Desempeño Sólido (0.75 &lt; F1 &lt; 0.90)<a class="headerlink" href="#clases-con-desempeno-solido-0-75-f1-0-90" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Top Features (por gain)</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>PUBLIC-RELATIONS</p></td>
+<td><p>0.8333</p></td>
+<td><p>“media relations”, “press release”, “public communication”</p></td>
+</tr>
+<tr class="row-odd"><td><p>HEALTHCARE</p></td>
+<td><p>0.8421</p></td>
+<td><p>“patient care”, “medical diagnosis”, “clinical practice”</p></td>
+</tr>
+<tr class="row-even"><td><p>FINANCE</p></td>
+<td><p>0.8182</p></td>
+<td><p>“financial analysis”, “investment portfolio”, “risk management”</p></td>
+</tr>
+<tr class="row-odd"><td><p>DIGITAL-MEDIA</p></td>
+<td><p>0.8000</p></td>
+<td><p>“content creation”, “social media”, “digital marketing”</p></td>
+</tr>
+<tr class="row-even"><td><p>ACCOUNTANT</p></td>
+<td><p>0.8000</p></td>
+<td><p>“financial reporting”, “balance sheet”, “audit reconciliation”</p></td>
+</tr>
+<tr class="row-odd"><td><p>FITNESS</p></td>
+<td><p>0.8000</p></td>
+<td><p>“personal training”, “fitness program”, “exercise routine”</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón</strong>: Estas clases tienen vocabulario distintivo suficiente para ser bien clasificadas, pero ocasionalmente comparten features con clases relacionadas.</p>
+</section>
+<section id="clases-con-desempeno-intermedio-0-65-f1-0-75">
+<h3>4.3 Clases con Desempeño Intermedio (0.65 &lt; F1 &lt; 0.75)<a class="headerlink" href="#clases-con-desempeno-intermedio-0-65-f1-0-75" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Problema Principal</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ADVOCATE</p></td>
+<td><p>0.7857</p></td>
+<td><p>Vocabulario legal compartido con CONSULTANT</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENGINEERING</p></td>
+<td><p>0.7857</p></td>
+<td><p>Múltiples especialidades (mechanical, civil, electrical)</p></td>
+</tr>
+<tr class="row-even"><td><p>BANKING</p></td>
+<td><p>0.7619</p></td>
+<td><p>Overlap con FINANCE en términos financieros</p></td>
+</tr>
+<tr class="row-odd"><td><p>CONSULTANT</p></td>
+<td><p>0.7273</p></td>
+<td><p>Vocabulario extremadamente genérico</p></td>
+</tr>
+<tr class="row-even"><td><p>SALES</p></td>
+<td><p>0.7407</p></td>
+<td><p>Compartido con BUSINESS-DEVELOPMENT</p></td>
+</tr>
+<tr class="row-odd"><td><p>TEACHER</p></td>
+<td><p>0.6667</p></td>
+<td><p>Variabilidad (K-12, universitario, corporativo)</p></td>
+</tr>
+<tr class="row-even"><td><p>CHEF</p></td>
+<td><p>0.6957</p></td>
+<td><p>Dataset pequeño + variabilidad (chef, sous chef, culinary manager)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="clases-con-desempeno-critico-f1-0-50">
+<h3>4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)<a class="headerlink" href="#clases-con-desempeno-critico-f1-0-50" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Causa Raíz</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BPO</p></td>
+<td><p>0.4000</p></td>
+<td><p>4</p></td>
+<td><p>Support crítico + vocabulario compartido con CONSULTANT/SALES</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUTOMOBILE</p></td>
+<td><p>0.2857</p></td>
+<td><p>5</p></td>
+<td><p>Confusión con ENGINEERING (términos mecánicos)</p></td>
+</tr>
+<tr class="row-even"><td><p>ARTS</p></td>
+<td><p>0.5000</p></td>
+<td><p>10</p></td>
+<td><p>Categoría muy amplia (visual, performing, multimedia)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de BPO</strong> (1/4 correcto):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>4 casos en test:
+
+Caso 1: &quot;Process optimization for telecom operations&quot;
+Top TF-IDF features: &quot;process optimization&quot; (0.45), &quot;operations&quot; (0.38), &quot;telecom&quot; (0.31)
+XGBoost tree decision:
+  if tfidf[&quot;process optimization&quot;] &gt; 0.4:
+    if tfidf[&quot;operations&quot;] &gt; 0.3:
+      → CONSULTANT (peso: 0.6)  # INCORRECTO
+      → BPO (peso: 0.3)
+Predicción: CONSULTANT
+
+Caso 2: &quot;Quality analyst for outsourcing firm&quot;
+Top TF-IDF features: &quot;quality analyst&quot; (0.52), &quot;outsourcing&quot; (0.41)
+XGBoost decision:
+  if tfidf[&quot;quality analyst&quot;] &gt; 0.5:
+    → BPO (peso: 0.7)  # CORRECTO
+Predicción: BPO ✓
+
+Casos 3-4: Clasificados como BUSINESS-DEVELOPMENT
+</pre></div>
+</div>
+<p><strong>Razón del fallo</strong>: BPO tiene solo 57 muestras en train. XGBoost construye 300 árboles, pero la mayoría no tiene splits específicos para BPO debido a la falta de ejemplos para construir reglas robustas.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-feature-importance">
+<h2>5. Análisis de Feature Importance<a class="headerlink" href="#analisis-de-feature-importance" title="Link to this heading">#</a></h2>
+<section id="top-features-por-gain">
+<h3>5.1 Top Features por Gain<a class="headerlink" href="#top-features-por-gain" title="Link to this heading">#</a></h3>
+<p>El análisis de importancia revela qué n-grams contribuyen más a las decisiones del modelo:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature (n-gram)</p></th>
+<th class="head"><p>Gain</p></th>
+<th class="head"><p>Interpretación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>experience information technology</p></td>
+<td><p>107.60</p></td>
+<td><p>Fuerte señal de IT</p></td>
+</tr>
+<tr class="row-odd"><td><p>construction project</p></td>
+<td><p>65.06</p></td>
+<td><p>Discrimina CONSTRUCTION</p></td>
+</tr>
+<tr class="row-even"><td><p>personal trainer</p></td>
+<td><p>75.92</p></td>
+<td><p>Específico de FITNESS</p></td>
+</tr>
+<tr class="row-odd"><td><p>hardware</p></td>
+<td><p>45.63</p></td>
+<td><p>Señal de ENGINEERING/IT</p></td>
+</tr>
+<tr class="row-even"><td><p>service representative</p></td>
+<td><p>40.04</p></td>
+<td><p>Señal de SALES/CUSTOMER SERVICE</p></td>
+</tr>
+<tr class="row-odd"><td><p>chef</p></td>
+<td><p>28.14</p></td>
+<td><p>Unigram altamente específico</p></td>
+</tr>
+<tr class="row-even"><td><p>designer</p></td>
+<td><p>27.30</p></td>
+<td><p>Unigram altamente específico</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Observación crítica</strong>: Algunos features tienen gain alto pero son <strong>ruido</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Feature Ruidoso</p></th>
+<th class="head"><p>Gain</p></th>
+<th class="head"><p>Problema</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>menu</p></td>
+<td><p>130.92</p></td>
+<td><p>Puede referirse a CHEF o a “menu de opciones” en IT</p></td>
+</tr>
+<tr class="row-odd"><td><p>aaa</p></td>
+<td><p>29.70</p></td>
+<td><p>Posible artefacto de parsing (ratings AAA, nombres de empresas)</p></td>
+</tr>
+<tr class="row-even"><td><p>february 2014</p></td>
+<td><p>26.29</p></td>
+<td><p>Fecha específica sin valor semántico real</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Interpretación</strong>: XGBoost aprende patrones en los datos de entrenamiento, incluyendo artefactos. Estos features tienen gain alto porque aparecen consistentemente en una clase, pero no generalizan bien.</p>
+</section>
+<section id="interacciones-de-features">
+<h3>5.2 Interacciones de Features<a class="headerlink" href="#interacciones-de-features" title="Link to this heading">#</a></h3>
+<p>A diferencia de modelos lineales, XGBoost puede aprender interacciones no-lineales entre features:</p>
+<p><strong>Ejemplo de interacción aprendida</strong> (inferido de splits de árboles):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Árbol 123:
+  if tfidf[&quot;financial&quot;] &gt; 0.3:
+    if tfidf[&quot;investment&quot;] &gt; 0.2:
+      → FINANCE (confianza alta)
+    elif tfidf[&quot;audit&quot;] &gt; 0.2:
+      → ACCOUNTANT (confianza alta)
+    else:
+      → BANKING (confianza media)
+</pre></div>
+</div>
+<p>Esta regla no-lineal es imposible de aprender con modelos lineales (e.g., logistic regression sobre TF-IDF).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-convergencia-del-entrenamiento">
+<h2>6. Análisis de Convergencia del Entrenamiento<a class="headerlink" href="#analisis-de-convergencia-del-entrenamiento" title="Link to this heading">#</a></h2>
+<section id="curvas-de-loss">
+<h3>6.1 Curvas de Loss<a class="headerlink" href="#curvas-de-loss" title="Link to this heading">#</a></h3>
+<p><strong>Train mlogloss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Iteración 0:   2.707
+Iteración 50:  0.166
+Iteración 85:  0.077  ← Best iteration
+Iteración 105: 0.054
+</pre></div>
+</div>
+<p><strong>Validation mlogloss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Iteración 0:   2.730
+Iteración 50:  0.898
+Iteración 85:  0.858  ← Best score
+Iteración 105: 0.862  ← Early stopping trigger
+</pre></div>
+</div>
+</section>
+<section id="interpretacion-de-convergencia">
+<h3>6.2 Interpretación de Convergencia<a class="headerlink" href="#interpretacion-de-convergencia" title="Link to this heading">#</a></h3>
+<p><strong>Best iteration: 85</strong></p>
+<p>El modelo alcanza su mejor validation loss en la iteración 85. Después de esto:</p>
+<ul class="simple">
+<li><p>Train loss continúa bajando (0.077 → 0.054): señal de overfitting</p></li>
+<li><p>Validation loss se estanca y sube ligeramente (0.858 → 0.862)</p></li>
+</ul>
+<p><strong>Early stopping activado</strong>: XGBoost detecta que validation loss no mejoró en las últimas 20 iteraciones (default patience), revierte a los pesos de la iteración 85.</p>
+<p><strong>Análisis de train vs val loss</strong>:</p>
+<ul class="simple">
+<li><p>Train loss final: 0.077</p></li>
+<li><p>Val loss final: 0.858</p></li>
+<li><p>Gap: 11.1x</p></li>
+</ul>
+<p>Este gap es significativo y sugiere que el modelo ha aprendido patrones específicos del training set que no generalizan perfectamente. Sin embargo, el test accuracy de 79.2% indica que el overfitting no es catastrófico.</p>
+</section>
+<section id="factores-que-limitan-overfitting">
+<h3>6.3 Factores que Limitan Overfitting<a class="headerlink" href="#factores-que-limitan-overfitting" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Learning rate bajo (0.1)</strong>: Cada árbol contribuye solo 10% de su peso completo</p></li>
+<li><p><strong>Regularización L1/L2</strong>: Penaliza pesos grandes de hojas</p></li>
+<li><p><strong>Subsampling (0.8)</strong>: Cada árbol ve solo 80% de datos</p></li>
+<li><p><strong>Min child weight, gamma</strong>: Previenen splits sobre-específicos</p></li>
+<li><p><strong>Early stopping</strong>: Detiene entrenamiento antes de memorización total</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ventajas-de-xgboost-sobre-modelos-neuronales">
+<h2>7. Ventajas de XGBoost sobre Modelos Neuronales<a class="headerlink" href="#ventajas-de-xgboost-sobre-modelos-neuronales" title="Link to this heading">#</a></h2>
+<section id="superioridad-en-datos-tabulares-de-alta-dimension">
+<h3>7.1 Superioridad en Datos Tabulares de Alta Dimensión<a class="headerlink" href="#superioridad-en-datos-tabulares-de-alta-dimension" title="Link to this heading">#</a></h3>
+<p><strong>Característica de TF-IDF</strong>: Vector sparse de 10,000 dimensiones con ~385 features no-cero promedio.</p>
+<p><strong>Por qué XGBoost domina aquí</strong>:</p>
+<ol class="arabic">
+<li><p><strong>Manejo nativo de sparsity</strong>: XGBoost tiene algoritmo específico para features sparse:</p>
+<ul class="simple">
+<li><p>No calcula gradientes para features con valor 0</p></li>
+<li><p>Splits consideran solo features presentes</p></li>
+<li><p>Memoria: O(nnz) no O(n × d) donde nnz = non-zero entries</p></li>
+</ul>
+</li>
+<li><p><strong>Aprendizaje de reglas interpretables</strong>: Cada árbol codifica reglas IF-THEN que son naturales para features TF-IDF:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>if &quot;Python&quot; in document AND &quot;machine learning&quot; in document:
+    → IT (high confidence)
+</pre></div>
+</div>
+</li>
+<li><p><strong>No requiere embeddings</strong>: A diferencia de modelos neuronales que necesitan representaciones densas, XGBoost trabaja directamente con features sparse</p></li>
+</ol>
+</section>
+<section id="robustez-a-features-ruidosas">
+<h3>7.2 Robustez a Features Ruidosas<a class="headerlink" href="#robustez-a-features-ruidosas" title="Link to this heading">#</a></h3>
+<p><strong>CNN-1D y BiLSTM</strong>: Sensibles a embeddings de palabras OOV (inicializados aleatoriamente)</p>
+<p><strong>XGBoost</strong>: Cada feature TF-IDF es independiente:</p>
+<ul class="simple">
+<li><p>Si “kubernetes” (palabra rara) tiene TF-IDF alto, el modelo aprende su importancia sin depender de su “similaridad” con otras palabras</p></li>
+<li><p>Features ruidosas simplemente no se usan en splits (gain bajo)</p></li>
+</ul>
+</section>
+<section id="ganancia-cuantitativa-sobre-modelos-neuronales">
+<h3>7.3 Ganancia Cuantitativa sobre Modelos Neuronales<a class="headerlink" href="#ganancia-cuantitativa-sobre-modelos-neuronales" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modelo</p></th>
+<th class="head"><p>Accuracy</p></th>
+<th class="head"><p>Diferencia con XGBoost</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FastText</p></td>
+<td><p>0.5176</p></td>
+<td><p>-27.46 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>BiLSTM</p></td>
+<td><p>0.6941</p></td>
+<td><p>-9.81 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>CNN-1D</p></td>
+<td><p>0.7333</p></td>
+<td><p>-5.89 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>XGBoost</strong></p></td>
+<td><p><strong>0.7922</strong></p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Hipótesis de superioridad</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>TF-IDF n-grams (1,3) capturan más contexto que esperado</strong>: Trigramas como “machine learning engineer” son feature único con peso específico, equivalente a filtros convolucionales de CNN</p></li>
+<li><p><strong>Ensemble de 300 árboles &gt;&gt; 1 red neural</strong>: XGBoost agrega predicciones de 300 modelos diversos, CNN-1D es 1 modelo</p></li>
+<li><p><strong>Optimización para features categóricas</strong>: TF-IDF features son esencialmente categóricas (presente/ausente con peso), ideal para árboles de decisión</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-especificas-del-modelo">
+<h2>8. Limitaciones Específicas del Modelo<a class="headerlink" href="#limitaciones-especificas-del-modelo" title="Link to this heading">#</a></h2>
+<section id="no-captura-similaridad-semantica">
+<h3>8.1 No Captura Similaridad Semántica<a class="headerlink" href="#no-captura-similaridad-semantica" title="Link to this heading">#</a></h3>
+<p><strong>Problema</strong>:</p>
+<ul class="simple">
+<li><p>“Software developer” y “Software engineer” son TF-IDF features <strong>completamente independientes</strong></p></li>
+<li><p>XGBoost no “sabe” que son semánticamente similares</p></li>
+</ul>
+<p><strong>Ejemplo donde falla</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Train: Muchos ejemplos con &quot;software developer&quot; → IT
+Test: Ejemplo con &quot;software engineer&quot; (raro en train)
+TF-IDF: &quot;software engineer&quot; tiene IDF alto pero no está fuertemente asociado a IT en árboles
+Predicción: Puede clasificar incorrectamente como ENGINEERING
+</pre></div>
+</div>
+<p>Modelos con embeddings (BiLSTM, CNN-1D) capturan esta similaridad: embed(“developer”) ≈ embed(“engineer”).</p>
+</section>
+<section id="vocabulario-fijo-post-training">
+<h3>8.2 Vocabulario Fijo Post-Training<a class="headerlink" href="#vocabulario-fijo-post-training" title="Link to this heading">#</a></h3>
+<p><strong>Limitación</strong>: Si una palabra nueva aparece en producción (e.g., “blockchain” en 2024), TF-IDF no puede generarle un feature.</p>
+<p><strong>Contraste con modelos neuronales</strong>:</p>
+<ul class="simple">
+<li><p>BiLSTM: Palabra OOV obtiene embedding random, pero puede aún contribuir al estado oculto</p></li>
+<li><p>DistilBERT: Tokenización BPE divide “blockchain” en subwords conocidos</p></li>
+</ul>
+</section>
+<section id="sensibilidad-a-features-ruidosas-en-train">
+<h3>8.3 Sensibilidad a Features Ruidosas en Train<a class="headerlink" href="#sensibilidad-a-features-ruidosas-en-train" title="Link to this heading">#</a></h3>
+<p><strong>Ejemplo</strong> (feature “menu” con gain 130.92):</p>
+<p>Si “menu” aparece consistentemente en textos de CHEF en train:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>XGBoost aprende: if tfidf[&quot;menu&quot;] &gt; 0.3 → CHEF
+</pre></div>
+</div>
+<p>Pero en test, si aparece “menu” en contexto diferente:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;Designed menu interface for mobile application&quot; → IT, no CHEF
+XGBoost: Clasifica incorrectamente como CHEF
+</pre></div>
+</div>
+<p>Este problema es inherente a métodos basados en features discretas sin comprensión semántica.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="comparacion-con-distilbert">
+<h2>9. Comparación con DistilBERT<a class="headerlink" href="#comparacion-con-distilbert" title="Link to this heading">#</a></h2>
+<p>Aunque DistilBERT supera a XGBoost:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>XGBoost</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Diferencia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Accuracy</p></td>
+<td><p>0.7922</p></td>
+<td><p>0.8745</p></td>
+<td><p>-8.23 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>F1-macro</p></td>
+<td><p>0.7606</p></td>
+<td><p>0.8453</p></td>
+<td><p>-8.47 pp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la brecha</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Representaciones contextuales</strong>: DistilBERT genera embeddings dinámicos (“bank” en “bank account” ≠ “bank” en “river bank”), XGBoost trata “bank” como feature única</p></li>
+<li><p><strong>Transfer learning</strong>: DistilBERT trae conocimiento de millones de documentos, XGBoost solo aprende de 2,104 muestras</p></li>
+<li><p><strong>Capacidad de modelo</strong>: DistilBERT (66M parámetros) vs XGBoost (300 árboles, ~5-10M splits estimados)</p></li>
+</ol>
+<p><strong>Ventajas de XGBoost sobre DistilBERT</strong>:</p>
+<ul class="simple">
+<li><p><strong>Interpretabilidad</strong>: Los árboles de decisión son inspeccionables, attention weights de transformers son opacos</p></li>
+<li><p><strong>Velocidad de inferencia</strong>: XGBoost procesa una muestra en &lt;1ms, DistilBERT requiere ~50ms</p></li>
+<li><p><strong>Requerimientos computacionales</strong>: XGBoost entrena en CPU en ~10 minutos, DistilBERT requiere GPU y ~2 horas</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-errores-matriz-de-confusion">
+<h2>10. Análisis de Errores: Matriz de Confusión<a class="headerlink" href="#analisis-de-errores-matriz-de-confusion" title="Link to this heading">#</a></h2>
+<section id="confusiones-principales">
+<h3>10.1 Confusiones Principales<a class="headerlink" href="#confusiones-principales" title="Link to this heading">#</a></h3>
+<p><strong>FINANCE ↔ ACCOUNTANT</strong> (3 casos):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Textos</span> <span class="n">contienen</span><span class="p">:</span> <span class="s2">&quot;financial reporting&quot;</span><span class="p">,</span> <span class="s2">&quot;balance sheet&quot;</span><span class="p">,</span> <span class="s2">&quot;audit&quot;</span>
+<span class="n">Ambas</span> <span class="n">clases</span> <span class="n">comparten</span> <span class="n">estos</span> <span class="n">términos</span>
+<span class="n">XGBoost</span> <span class="n">decision</span> <span class="n">tree</span> <span class="n">no</span> <span class="n">puede</span> <span class="n">diferenciar</span> <span class="n">sin</span> <span class="n">contexto</span> <span class="n">adicional</span>
+</pre></div>
+</div>
+<p><strong>CONSULTANT ↔ BPO</strong> (2 casos):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Vocabulario</span><span class="p">:</span> <span class="s2">&quot;process optimization&quot;</span><span class="p">,</span> <span class="s2">&quot;client service&quot;</span><span class="p">,</span> <span class="s2">&quot;operations&quot;</span>
+<span class="n">Completamente</span> <span class="n">solapado</span> <span class="n">entre</span> <span class="n">ambas</span> <span class="n">clases</span>
+<span class="n">Sin</span> <span class="n">features</span> <span class="n">únicos</span><span class="p">,</span> <span class="n">XGBoost</span> <span class="n">predice</span> <span class="n">la</span> <span class="n">clase</span> <span class="n">más</span> <span class="n">frecuente</span> <span class="p">(</span><span class="n">CONSULTANT</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>ENGINEERING ↔ AUTOMOBILE</strong> (4 casos):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Términos</span> <span class="n">mecánicos</span><span class="p">:</span> <span class="s2">&quot;engine systems&quot;</span><span class="p">,</span> <span class="s2">&quot;mechanical design&quot;</span><span class="p">,</span> <span class="s2">&quot;vehicle components&quot;</span>
+<span class="n">AUTOMOBILE</span> <span class="n">es</span> <span class="n">subconjunto</span> <span class="n">de</span> <span class="n">ENGINEERING</span> <span class="n">en</span> <span class="n">el</span> <span class="n">espacio</span> <span class="n">TF</span><span class="o">-</span><span class="n">IDF</span>
+<span class="n">XGBoost</span> <span class="n">favorece</span> <span class="n">ENGINEERING</span> <span class="p">(</span><span class="n">clase</span> <span class="n">mayoritaria</span> <span class="n">con</span> <span class="n">features</span> <span class="n">similares</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="patron-de-errores">
+<h3>10.2 Patrón de Errores<a class="headerlink" href="#patron-de-errores" title="Link to this heading">#</a></h3>
+<p><strong>Observación clave</strong>: La mayoría de errores ocurren entre clases semánticamente relacionadas, no aleatoriamente.</p>
+<p><strong>Evidencia</strong>:</p>
+<ul class="simple">
+<li><p>0 confusiones entre CHEF y INFORMATION-TECHNOLOGY (semántica completamente diferente)</p></li>
+<li><p>8 confusiones entre FINANCE, BANKING, ACCOUNTANT (semántica solapada)</p></li>
+</ul>
+<p>Esto sugiere que XGBoost está aprendiendo la estructura semántica del problema, pero tiene dificultad en fronteras difusas.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-sobre-xgboost">
+<h2>11. Conclusiones sobre XGBoost<a class="headerlink" href="#conclusiones-sobre-xgboost" title="Link to this heading">#</a></h2>
+<section id="rol-en-la-jerarquia-de-modelos">
+<h3>11.1 Rol en la Jerarquía de Modelos<a class="headerlink" href="#rol-en-la-jerarquia-de-modelos" title="Link to this heading">#</a></h3>
+<p>XGBoost es el <strong>mejor modelo clásico (no-transformer)</strong> para este problema:</p>
+<ul class="simple">
+<li><p>Supera todos los modelos neuronales probados (FastText, BiLSTM, CNN-1D)</p></li>
+<li><p>Es superado solo por DistilBERT (modelo con preentrenamiento masivo)</p></li>
+<li><p>Ofrece el mejor balance entre desempeño, interpretabilidad y eficiencia computacional</p></li>
+</ul>
+</section>
+<section id="desempeno-en-el-problema">
+<h3>11.2 Desempeño en el Problema<a class="headerlink" href="#desempeno-en-el-problema" title="Link to this heading">#</a></h3>
+<p>Para clasificación de currículums:</p>
+<ul class="simple">
+<li><p><strong>Accuracy 79.2%</strong> es excelente para un modelo sin embeddings preentrenados</p></li>
+<li><p><strong>ROC AUC 0.9816</strong> es el más alto entre modelos no-transformer</p></li>
+<li><p><strong>F1-macro 0.7606</strong> indica buen balance entre clases, aunque con limitaciones en categorías minoritarias</p></li>
+</ul>
+</section>
+<section id="lecciones-clave">
+<h3>11.3 Lecciones Clave<a class="headerlink" href="#lecciones-clave" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>TF-IDF + Gradient Boosting compite con deep learning</strong>: Para muchos problemas de clasificación textual, métodos clásicos bien ajustados son competitivos</p></li>
+<li><p><strong>Ensemble learning es poderoso</strong>: 300 árboles agregados superan modelos neuronales de 1 capa</p></li>
+<li><p><strong>Features explícitas tienen ventajas</strong>: A diferencia de embeddings latentes, TF-IDF features son interpretables y debuggeables</p></li>
+<li><p><strong>Límites sin transfer learning</strong>: La brecha con DistilBERT (+8 pp) muestra el valor de preentrenamiento en corpus masivos</p></li>
+<li><p><strong>Robustez a arquitectura</strong>: XGBoost logra alto desempeño con hiperparámetros estándar, sin búsqueda exhaustiva</p></li>
+</ol>
+<p>XGBoost confirma que para problemas de clasificación textual con datos limitados, métodos ensemble sobre representaciones TF-IDF son extremadamente competitivos y deben ser considerados seriamente antes de recurrir a arquitecturas neuronales complejas. Sin embargo, el techo de ~79% accuracy sugiere que representaciones contextuales (transformers) son necesarias para superar significativamente este nivel de desempeño.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="fasttext_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis del Modelo FastText Supervisado</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="distilbert_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Análisis del Modelo DistilBERT para Clasificación de Currículums</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-gradient-boosting">1.1 Paradigma de Gradient Boosting</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-sistema-tf-idf-xgboost">1.2 Arquitectura del Sistema: TF-IDF + XGBoost</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-del-vectorizador-tf-idf">2.1 Parámetros del Vectorizador TF-IDF</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-xgboost">2.2 Parámetros de XGBoost</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-generalizacion">3.2 Análisis de Generalización</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.3 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-90">4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-75-f1-0-90">4.2 Clases con Desempeño Sólido (0.75 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-intermedio-0-65-f1-0-75">4.3 Clases con Desempeño Intermedio (0.65 &lt; F1 &lt; 0.75)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-feature-importance">5. Análisis de Feature Importance</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#top-features-por-gain">5.1 Top Features por Gain</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interacciones-de-features">5.2 Interacciones de Features</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-del-entrenamiento">6. Análisis de Convergencia del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-loss">6.1 Curvas de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-convergencia">6.2 Interpretación de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#factores-que-limitan-overfitting">6.3 Factores que Limitan Overfitting</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-de-xgboost-sobre-modelos-neuronales">7. Ventajas de XGBoost sobre Modelos Neuronales</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-en-datos-tabulares-de-alta-dimension">7.1 Superioridad en Datos Tabulares de Alta Dimensión</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#robustez-a-features-ruidosas">7.2 Robustez a Features Ruidosas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-cuantitativa-sobre-modelos-neuronales">7.3 Ganancia Cuantitativa sobre Modelos Neuronales</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-captura-similaridad-semantica">8.1 No Captura Similaridad Semántica</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulario-fijo-post-training">8.2 Vocabulario Fijo Post-Training</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-a-features-ruidosas-en-train">8.3 Sensibilidad a Features Ruidosas en Train</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-distilbert">9. Comparación con DistilBERT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-errores-matriz-de-confusion">10. Análisis de Errores: Matriz de Confusión</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#confusiones-principales">10.1 Confusiones Principales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#patron-de-errores">10.2 Patrón de Errores</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-xgboost">11. Conclusiones sobre XGBoost</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">11.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">11.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">11.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

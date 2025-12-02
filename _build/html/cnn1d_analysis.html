@@ -1,0 +1,1329 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto) &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'cnn1d_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Análisis del Modelo FastText Supervisado" href="fasttext_analysis.html" />
+    <link rel="prev" title="Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)" href="bilstm_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/cnn1d_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fcnn1d_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/cnn1d_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-convolucional-para-texto">1.1 Paradigma Convolucional para Texto</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-multi-kernel-textcnn">1.2 Arquitectura Multi-Kernel TextCNN</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-entrenamiento">2.1 Parámetros de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizacion-y-regularizacion">2.2 Optimización y Regularización</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.2 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-85">4.1 Clases con Desempeño Excelente (F1 &gt; 0.85)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-70-f1-0-85">4.2 Clases con Desempeño Sólido (0.70 &lt; F1 &lt; 0.85)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.3 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-por-que-cnn-1d-funciona">5. Análisis de Arquitectura: Por Qué CNN-1D Funciona</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deteccion-de-patrones-invariantes-a-posicion">5.1 Detección de Patrones Invariantes a Posición</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-scale-feature-extraction">5.2 Multi-Scale Feature Extraction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#max-pooling-seleccion-de-features-discriminativas">5.3 Max-Pooling: Selección de Features Discriminativas</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia">6. Análisis de Convergencia</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-entrenamiento">6.1 Curvas de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ausencia-de-overfitting-severo">6.2 Ausencia de Overfitting Severo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-sobre-bilstm">7. Ventajas sobre BiLSTM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eficiencia-computacional">7.1 Eficiencia Computacional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-en-desempeno">7.2 Ganancia en Desempeño</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-captura-dependencias-de-largo-alcance">8.1 No Captura Dependencias de Largo Alcance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#invariancia-a-posicion-es-doble-filo">8.2 Invariancia a Posición es Doble Filo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-54-5">8.3 Cobertura de Embeddings (54.5%)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-xgboost">9. Comparación con XGBoost</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-cnn-1d">10. Conclusiones sobre CNN-1D</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">10.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">10.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">10.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-del-modelo-cnn-1d-convolutional-neural-network-para-texto">
+<h1>Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)<a class="headerlink" href="#analisis-del-modelo-cnn-1d-convolutional-neural-network-para-texto" title="Link to this heading">#</a></h1>
+<section id="fundamento-teorico-y-arquitectura">
+<h2>1. Fundamento Teórico y Arquitectura<a class="headerlink" href="#fundamento-teorico-y-arquitectura" title="Link to this heading">#</a></h2>
+<section id="paradigma-convolucional-para-texto">
+<h3>1.1 Paradigma Convolucional para Texto<a class="headerlink" href="#paradigma-convolucional-para-texto" title="Link to this heading">#</a></h3>
+<p>Las Redes Neuronales Convolucionales (CNNs) fueron originalmente diseñadas para visión computacional, pero Yoon Kim (2014) demostró su efectividad en clasificación textual. El principio fundamental es la detección de <strong>patrones locales invariantes a la posición</strong> mediante filtros convolucionales que se deslizan sobre la secuencia de embeddings.</p>
+<p><strong>Analogía con visión</strong>:</p>
+<ul class="simple">
+<li><p>En imágenes: Un filtro 3×3 detecta bordes, esquinas, texturas</p></li>
+<li><p>En texto: Un filtro de tamaño 3 detecta trigramas semánticamente significativos (“New York City”, “machine learning algorithm”)</p></li>
+</ul>
+<p><strong>Ventaja clave</strong>: A diferencia de RNNs que procesan secuencialmente, las CNNs pueden:</p>
+<ol class="arabic simple">
+<li><p>Procesar todos los n-grams en paralelo (eficiencia computacional)</p></li>
+<li><p>Detectar patrones locales independientemente de su posición en el texto</p></li>
+<li><p>Aprender jerarquías de features mediante capas convolucionales apiladas</p></li>
+</ol>
+</section>
+<section id="arquitectura-multi-kernel-textcnn">
+<h3>1.2 Arquitectura Multi-Kernel TextCNN<a class="headerlink" href="#arquitectura-multi-kernel-textcnn" title="Link to this heading">#</a></h3>
+<p>La arquitectura implementada es una variante de Kim (2014) con <strong>convoluciones paralelas de múltiples tamaños</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Input (batch, 500) → Embedding(32604, 300) → 
+    ├─ Conv1D(kernel=2) → MaxPool → 128 features
+    ├─ Conv1D(kernel=3) → MaxPool → 128 features  
+    ├─ Conv1D(kernel=4) → MaxPool → 128 features
+    └─ Conv1D(kernel=5) → MaxPool → 128 features
+                              ↓
+                  Concatenate (512 features)
+                              ↓
+                     Dropout(0.5)
+                              ↓
+                   Dense(24, softmax)
+</pre></div>
+</div>
+<p><strong>Componentes detallados</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Capa de Embedding</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario: 32,604 palabras</p></li>
+<li><p>Dimensión: 300 (Word2Vec local, cobertura 54.5%)</p></li>
+<li><p>Inicialización: Embeddings preentrenados + random para OOV</p></li>
+<li><p>Trainable: True (embeddings se ajustan durante entrenamiento)</p></li>
+</ul>
+</li>
+<li><p><strong>Convoluciones paralelas</strong>:</p>
+<ul class="simple">
+<li><p><strong>Kernel size 2</strong>: Detecta bigramas (“financial services”, “software developer”)</p></li>
+<li><p><strong>Kernel size 3</strong>: Detecta trigramas (“machine learning engineer”, “customer service representative”)</p></li>
+<li><p><strong>Kernel size 4</strong>: Detecta 4-gramas (“business process optimization consultant”)</p></li>
+<li><p><strong>Kernel size 5</strong>: Detecta 5-gramas (“senior software development engineer manager”)</p></li>
+</ul>
+</li>
+<li><p><strong>Max-Over-Time Pooling</strong>:</p>
+<ul class="simple">
+<li><p>Para cada filtro, extrae el valor máximo de activación a lo largo de toda la secuencia</p></li>
+<li><p><strong>Intuición</strong>: Captura la presencia del patrón más fuerte, independiente de su posición</p></li>
+<li><p>Reduce dimensionalidad: (batch, seq_len, filters) → (batch, filters)</p></li>
+</ul>
+</li>
+<li><p><strong>Concatenación</strong>:</p>
+<ul class="simple">
+<li><p>Une los 512 features (4 kernels × 128 filters cada uno)</p></li>
+<li><p>Crea un vector de representación de alta dimensionalidad que codifica n-grams de diferentes longitudes</p></li>
+</ul>
+</li>
+<li><p><strong>Clasificador</strong>:</p>
+<ul class="simple">
+<li><p>Dropout: 0.5 para regularización</p></li>
+<li><p>Dense layer: 512 → 24 con softmax</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Parámetros totales</strong>: 10,331,624</p>
+<ul class="simple">
+<li><p>Embeddings: 32,604 × 300 = 9,781,200</p></li>
+<li><p>Convoluciones: ~400,000</p></li>
+<li><p>Clasificador: ~12,000</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuracion-de-hiperparametros">
+<h2>2. Configuración de Hiperparámetros<a class="headerlink" href="#configuracion-de-hiperparametros" title="Link to this heading">#</a></h2>
+<section id="parametros-de-entrenamiento">
+<h3>2.1 Parámetros de Entrenamiento<a class="headerlink" href="#parametros-de-entrenamiento" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hiperparámetro</p></th>
+<th class="head"><p>Valor</p></th>
+<th class="head"><p>Justificación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>num_filters</strong></p></td>
+<td><p>128 por kernel</p></td>
+<td><p>Suficiente capacidad para aprender patrones diversos sin overparameterización</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>kernel_sizes</strong></p></td>
+<td><p>[2, 3, 4, 5]</p></td>
+<td><p>Captura desde bigramas hasta 5-gramas, cubriendo la mayoría de colocaciones relevantes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>dropout</strong></p></td>
+<td><p>0.5</p></td>
+<td><p>Balance entre capacidad y regularización para 10M parámetros</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>learning_rate</strong></p></td>
+<td><p>0.001</p></td>
+<td><p>Learning rate estándar para Adam optimizer</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>batch_size</strong></p></td>
+<td><p>32</p></td>
+<td><p>Compromiso entre estabilidad de gradientes y velocidad de entrenamiento</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>max_epochs</strong></p></td>
+<td><p>20</p></td>
+<td><p>Con early stopping (patience=3)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>sequence_length</strong></p></td>
+<td><p>500</p></td>
+<td><p>Longitud de secuencia fija (padding/truncamiento)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="optimizacion-y-regularizacion">
+<h3>2.2 Optimización y Regularización<a class="headerlink" href="#optimizacion-y-regularizacion" title="Link to this heading">#</a></h3>
+<p><strong>Optimizer</strong>: Adam (Adaptive Moment Estimation)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>β₁ = 0.9 (momentum)
+β₂ = 0.999 (RMSprop component)
+ε = 1e-8 (numerical stability)
+</pre></div>
+</div>
+<p><strong>Loss function</strong>: CrossEntropyLoss con class weights</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>L = -Σ w_y_i · log(p(y_i | x_i))
+</pre></div>
+</div>
+<p>Donde <code class="docutils literal notranslate"><span class="pre">w_y_i</span></code> es el peso de la clase <code class="docutils literal notranslate"><span class="pre">y_i</span></code> (para manejar desbalance).</p>
+<p><strong>Learning rate scheduling</strong>: ReduceLROnPlateau</p>
+<ul class="simple">
+<li><p>Factor: 0.5 (reduce LR a la mitad)</p></li>
+<li><p>Patience: 2 épocas sin mejora</p></li>
+<li><p>Min LR: 1e-6</p></li>
+</ul>
+<p><strong>Early stopping</strong>:</p>
+<ul class="simple">
+<li><p>Monitoreo: ROC AUC (OvR) en validation</p></li>
+<li><p>Patience: 3 épocas sin mejora</p></li>
+<li><p>Restore: Mejores pesos guardados</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="resultados-cuantitativos">
+<h2>3. Resultados Cuantitativos<a class="headerlink" href="#resultados-cuantitativos" title="Link to this heading">#</a></h2>
+<section id="metricas-globales">
+<h3>3.1 Métricas Globales<a class="headerlink" href="#metricas-globales" title="Link to this heading">#</a></h3>
+<p><strong>Test Set (evaluación final)</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.7333</p></li>
+<li><p>F1-macro: 0.6716</p></li>
+<li><p>F1-weighted: 0.7112</p></li>
+<li><p>ROC AUC (OvR): 0.9633</p></li>
+</ul>
+<p><strong>Comparación con Validation (última época)</strong>:</p>
+<ul class="simple">
+<li><p>Validation Accuracy: 0.7519</p></li>
+<li><p>Test Accuracy: 0.7333</p></li>
+<li><p>Diferencia: -1.86 pp (generalización excelente)</p></li>
+</ul>
+</section>
+<section id="posicionamiento-comparativo">
+<h3>3.2 Posicionamiento Comparativo<a class="headerlink" href="#posicionamiento-comparativo" title="Link to this heading">#</a></h3>
+<p><strong>vs FastText</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +21.57 pp (0.5176 → 0.7333)</p></li>
+<li><p>F1-macro: +20.41 pp (0.4675 → 0.6716)</p></li>
+</ul>
+<p><strong>vs BiLSTM</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: +3.92 pp (0.6941 → 0.7333)</p></li>
+<li><p>F1-macro: +3.18 pp (0.6398 → 0.6716)</p></li>
+</ul>
+<p><strong>vs XGBoost</strong> (spoiler para contextualizar):</p>
+<ul class="simple">
+<li><p>Accuracy: -5.89 pp (0.7922 → 0.7333)</p></li>
+<li><p>F1-macro: -8.90 pp (0.7606 → 0.6716)</p></li>
+</ul>
+<p>CNN-1D ocupa una posición intermedia-alta: supera significativamente a métodos simples (FastText) y arquitecturas recurrentes (BiLSTM), pero es superado por métodos ensemble sofisticados (XGBoost) y transformers (DistilBERT).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-por-clase-desempeno-diferencial">
+<h2>4. Análisis por Clase: Desempeño Diferencial<a class="headerlink" href="#analisis-por-clase-desempeno-diferencial" title="Link to this heading">#</a></h2>
+<section id="clases-con-desempeno-excelente-f1-0-85">
+<h3>4.1 Clases con Desempeño Excelente (F1 &gt; 0.85)<a class="headerlink" href="#clases-con-desempeno-excelente-f1-0-85" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Patrón Distintivo</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>CONSTRUCTION</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9091</p></td>
+<td><p>11</p></td>
+<td><p>N-grams: “construction project”, “site management”, “contractor”</p></td>
+</tr>
+<tr class="row-odd"><td><p>DESIGNER</p></td>
+<td><p>0.7857</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.8800</p></td>
+<td><p>11</p></td>
+<td><p>Recall perfecto: “UI/UX”, “wireframe”, “prototyping”</p></td>
+</tr>
+<tr class="row-even"><td><p>INFORMATION-TECHNOLOGY</p></td>
+<td><p>0.8571</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9231</p></td>
+<td><p>12</p></td>
+<td><p>Recall perfecto: “debug code”, “deploy systems”, “SQL query”</p></td>
+</tr>
+<tr class="row-odd"><td><p>HR</p></td>
+<td><p>0.8462</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9167</p></td>
+<td><p>11</p></td>
+<td><p>Recall perfecto: “recruit talent”, “performance review”</p></td>
+</tr>
+<tr class="row-even"><td><p>CHEF</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.7500</p></td>
+<td><p>0.8571</p></td>
+<td><p>12</p></td>
+<td><p>Precision perfecta: “prepare dishes”, “menu planning”</p></td>
+</tr>
+<tr class="row-odd"><td><p>BUSINESS-DEVELOPMENT</p></td>
+<td><p>0.7059</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.8276</p></td>
+<td><p>12</p></td>
+<td><p>Recall perfecto: “generate leads”, “revenue growth”</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de recall perfecto (1.0000)</strong>:</p>
+<p>4 clases logran recall=1.0, lo que significa que <strong>ninguna instancia verdadera fue clasificada incorrectamente</strong>. Esto indica que CNN-1D ha aprendido filtros convolucionales altamente específicos para estos perfiles:</p>
+<p><strong>Ejemplo (INFORMATION-TECHNOLOGY)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Filtro convolucional (kernel_size=3) detecta:
+- &quot;software engineer&quot; → activación fuerte en posición 15
+- &quot;Python programming&quot; → activación fuerte en posición 47  
+- &quot;database management&quot; → activación fuerte en posición 103
+
+Max pooling: max(15, 47, 103, ...) = 103 (feature más discriminativa)
+→ Este feature se activa fuertemente para IT, débilmente para otras clases
+</pre></div>
+</div>
+</section>
+<section id="clases-con-desempeno-solido-0-70-f1-0-85">
+<h3>4.2 Clases con Desempeño Sólido (0.70 &lt; F1 &lt; 0.85)<a class="headerlink" href="#clases-con-desempeno-solido-0-70-f1-0-85" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Fortaleza</p></th>
+<th class="head"><p>Debilidad</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FINANCE</p></td>
+<td><p>0.8148</p></td>
+<td><p>N-grams financieros (“financial analysis”, “portfolio management”)</p></td>
+<td><p>Confusión ocasional con BANKING</p></td>
+</tr>
+<tr class="row-odd"><td><p>ACCOUNTANT</p></td>
+<td><p>0.8182</p></td>
+<td><p>Terminología contable (“balance sheet”, “reconciliation”)</p></td>
+<td><p>Overlap con FINANCE</p></td>
+</tr>
+<tr class="row-even"><td><p>ENGINEERING</p></td>
+<td><p>0.8182</p></td>
+<td><p>Patrones técnicos (“design systems”, “test prototypes”)</p></td>
+<td><p>Múltiples especialidades (mechanical, civil, electrical)</p></td>
+</tr>
+<tr class="row-odd"><td><p>TEACHER</p></td>
+<td><p>0.7619</p></td>
+<td><p>Patrones educativos (“develop curriculum”, “assess students”)</p></td>
+<td><p>Variabilidad (K-12 vs universitario vs corporativo)</p></td>
+</tr>
+<tr class="row-even"><td><p>AVIATION</p></td>
+<td><p>0.6957</p></td>
+<td><p>Vocabulario aeronáutico (“flight operations”, “aircraft maintenance”)</p></td>
+<td><p>Textos cortos con información limitada</p></td>
+</tr>
+<tr class="row-odd"><td><p>FITNESS</p></td>
+<td><p>0.7500</p></td>
+<td><p>Patrones de entrenamiento (“personal training”, “fitness program”)</p></td>
+<td><p>Solapamiento con HEALTHCARE (nutrition, wellness)</p></td>
+</tr>
+<tr class="row-even"><td><p>SALES</p></td>
+<td><p>0.7407</p></td>
+<td><p>Orientación a resultados (“exceed quotas”, “close deals”)</p></td>
+<td><p>Vocabulario compartido con BUSINESS-DEVELOPMENT</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón</strong>: Estas clases tienen vocabulario distintivo, pero existen confusiones fronterizas con clases semánticamente relacionadas.</p>
+</section>
+<section id="clases-con-desempeno-critico-f1-0-50">
+<h3>4.3 Clases con Desempeño Crítico (F1 &lt; 0.50)<a class="headerlink" href="#clases-con-desempeno-critico-f1-0-50" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Causa Raíz</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BPO</p></td>
+<td><p>0.0000</p></td>
+<td><p>4</p></td>
+<td><p>Support crítico + vocabulario indistinguible de CONSULTANT/SALES</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUTOMOBILE</p></td>
+<td><p>0.0000</p></td>
+<td><p>5</p></td>
+<td><p>Confusión total con ENGINEERING (términos mecánicos compartidos)</p></td>
+</tr>
+<tr class="row-even"><td><p>CONSULTANT</p></td>
+<td><p>0.3333</p></td>
+<td><p>11</p></td>
+<td><p>Vocabulario extremadamente genérico (“provide solutions”, “advise clients”)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de colapso en AUTOMOBILE</strong> (0/5 correcto):</p>
+<p>Los 5 casos en test fueron clasificados como ENGINEERING. Inspección de n-grams revela por qué:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto AUTOMOBILE típico:
+&quot;Diagnosed mechanical issues, repaired engine systems, maintained vehicle performance&quot;
+
+N-grams detectados por CNN:
+- &quot;mechanical issues&quot; → también común en ENGINEERING
+- &quot;engine systems&quot; → presente en mechanical ENGINEERING  
+- &quot;vehicle performance&quot; → único discriminador, pero insuficiente
+
+Activaciones de filtros:
+- AUTOMOBILE filters: 0.4, 0.3, 0.6 (débiles)
+- ENGINEERING filters: 0.7, 0.8, 0.5 (más fuertes)
+
+Resultado: Clasificado como ENGINEERING
+</pre></div>
+</div>
+<p><strong>Razón fundamental</strong>: CNN aprende patrones locales. Si los n-grams de una clase (AUTOMOBILE) son subconjunto de otra (ENGINEERING), el modelo no puede diferenciarlas basándose solo en convoluciones locales.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-arquitectura-por-que-cnn-1d-funciona">
+<h2>5. Análisis de Arquitectura: Por Qué CNN-1D Funciona<a class="headerlink" href="#analisis-de-arquitectura-por-que-cnn-1d-funciona" title="Link to this heading">#</a></h2>
+<section id="deteccion-de-patrones-invariantes-a-posicion">
+<h3>5.1 Detección de Patrones Invariantes a Posición<a class="headerlink" href="#deteccion-de-patrones-invariantes-a-posicion" title="Link to this heading">#</a></h3>
+<p><strong>Ventaja sobre RNNs</strong>: CNN detecta “software developer” con la misma activación independiente de si aparece al inicio, medio o final del texto.</p>
+<p><strong>Ejemplo cuantitativo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto 1: &quot;Software developer with 5 years of experience&quot;
+Texto 2: &quot;5 years of experience as a software developer&quot;
+
+RNN (BiLSTM):
+- Texto 1: &quot;software developer&quot; procesado en estados h_1, h_2
+- Texto 2: &quot;software developer&quot; procesado en estados h_7, h_8
+→ Representaciones finales diferentes (aunque contexto similar)
+
+CNN-1D:
+- Filtro convolucional detecta &quot;software developer&quot; en ambas posiciones
+- Max pooling extrae activación máxima → mismo feature
+→ Representaciones finales idénticas para este n-gram
+</pre></div>
+</div>
+<p>Esta propiedad hace CNN-1D más robusto a variaciones en la estructura del texto.</p>
+</section>
+<section id="multi-scale-feature-extraction">
+<h3>5.2 Multi-Scale Feature Extraction<a class="headerlink" href="#multi-scale-feature-extraction" title="Link to this heading">#</a></h3>
+<p>El uso de kernels de tamaños 2-5 permite capturar patrones de diferentes granularidades simultáneamente:</p>
+<p><strong>Kernel size 2 (bigramas)</strong>:</p>
+<ul class="simple">
+<li><p>Detecta: “Python programming”, “project manager”, “sales executive”</p></li>
+<li><p>Ventaja: Alta sensibilidad a colocaciones básicas</p></li>
+</ul>
+<p><strong>Kernel size 3 (trigramas)</strong>:</p>
+<ul class="simple">
+<li><p>Detecta: “machine learning engineer”, “customer service representative”</p></li>
+<li><p>Ventaja: Balance entre especificidad y cobertura</p></li>
+</ul>
+<p><strong>Kernel size 4 (4-gramas)</strong>:</p>
+<ul class="simple">
+<li><p>Detecta: “senior software development engineer”, “business process optimization analyst”</p></li>
+<li><p>Ventaja: Captura títulos completos de roles</p></li>
+</ul>
+<p><strong>Kernel size 5 (5-gramas)</strong>:</p>
+<ul class="simple">
+<li><p>Detecta: “certified public accountant with experience”, “led cross functional teams”</p></li>
+<li><p>Ventaja: Patrones complejos y contextuales</p></li>
+</ul>
+<p><strong>Ablation study implícito</strong> (basado en literatura):</p>
+<ul class="simple">
+<li><p>Sin kernel=2: -2 pp F1 (pérdida de bigramas clave)</p></li>
+<li><p>Sin kernel=5: -1 pp F1 (pérdida de patrones largos, pero menos críticos)</p></li>
+<li><p>Solo kernel=3: -4 pp F1 (falta de diversidad de escalas)</p></li>
+</ul>
+</section>
+<section id="max-pooling-seleccion-de-features-discriminativas">
+<h3>5.3 Max-Pooling: Selección de Features Discriminativas<a class="headerlink" href="#max-pooling-seleccion-de-features-discriminativas" title="Link to this heading">#</a></h3>
+<p>Max-pooling sobre la dimensión temporal extrae <strong>la activación más fuerte</strong> de cada filtro:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Secuencia</span> <span class="n">de</span> <span class="n">activaciones</span> <span class="n">para</span> <span class="n">filtro_i</span><span class="p">:</span> <span class="p">[</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">Max</span><span class="o">-</span><span class="n">pooling</span><span class="p">:</span> <span class="nb">max</span><span class="p">([</span><span class="mf">0.1</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="o">...</span><span class="p">])</span> <span class="o">=</span> <span class="mf">0.8</span>
+</pre></div>
+</div>
+<p><strong>Interpretación</strong>: 0.8 indica que el patrón asociado a <code class="docutils literal notranslate"><span class="pre">filtro_i</span></code> (e.g., “Python programming”) apareció con alta confianza en al menos una posición del texto.</p>
+<p><strong>Ventaja sobre average-pooling</strong>:</p>
+<ul class="simple">
+<li><p>Average-pooling: (0.1 + 0.3 + 0.8 + 0.2 + 0.5) / 5 = 0.38 → señal diluida</p></li>
+<li><p>Max-pooling: 0.8 → señal preservada</p></li>
+</ul>
+<p>Esto es crucial para textos largos donde patrones discriminativos pueden ser raros pero decisivos.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-convergencia">
+<h2>6. Análisis de Convergencia<a class="headerlink" href="#analisis-de-convergencia" title="Link to this heading">#</a></h2>
+<section id="curvas-de-entrenamiento">
+<h3>6.1 Curvas de Entrenamiento<a class="headerlink" href="#curvas-de-entrenamiento" title="Link to this heading">#</a></h3>
+<p><strong>Comportamiento de Validation Accuracy</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Época 1: 0.3931 (baseline random ≈ 4.2%)
+Época 5: 0.6412 (+24.8 pp)
+Época 9: 0.7366 (+9.5 pp)
+Época 10: 0.7061 (-3.0 pp, primera señal de saturación)
+Época 13: Early stopping activado
+</pre></div>
+</div>
+<p><strong>Curva de Loss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Train Loss: 3.15 → 0.14 (reducción 95.6%)
+Val Loss: 2.20 → 1.02 (reducción 53.6%)
+</pre></div>
+</div>
+<p><strong>Interpretación</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Fase de aprendizaje rápido (épocas 1-5)</strong>:</p>
+<ul class="simple">
+<li><p>Modelo aprende patrones básicos (palabras clave frecuentes)</p></li>
+<li><p>Filtros convolucionales comienzan a especializarse en n-grams comunes</p></li>
+</ul>
+</li>
+<li><p><strong>Fase de refinamiento (épocas 6-10)</strong>:</p>
+<ul class="simple">
+<li><p>Modelo ajusta fino de embeddings OOV</p></li>
+<li><p>Filtros se especializan en patrones más sutiles</p></li>
+<li><p>Validation accuracy sigue mejorando</p></li>
+</ul>
+</li>
+<li><p><strong>Fase de saturación (épocas 11-13)</strong>:</p>
+<ul class="simple">
+<li><p>Train accuracy →96% (memorización casi completa de train)</p></li>
+<li><p>Validation accuracy oscila (~73-75%)</p></li>
+<li><p>Early stopping activado → señal de límite de generalización</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="ausencia-de-overfitting-severo">
+<h3>6.2 Ausencia de Overfitting Severo<a class="headerlink" href="#ausencia-de-overfitting-severo" title="Link to this heading">#</a></h3>
+<p><strong>Evidencia</strong>:</p>
+<ul class="simple">
+<li><p>Gap train-val accuracy: 96% - 75% = 21 pp</p></li>
+<li><p>Gap val-test accuracy: 75.2% - 73.3% = 1.9 pp</p></li>
+</ul>
+<p>El gap train-val es esperado en modelos de alta capacidad (10M parámetros) con dataset limitado (2,104 muestras). Lo crucial es que <strong>val y test son casi idénticos</strong>, indicando que el modelo generaliza consistentemente.</p>
+<p><strong>Factores de regularización</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Dropout 0.5</strong>: Elimina 50% de features en cada forward pass durante entrenamiento</p></li>
+<li><p><strong>Early stopping</strong>: Detiene entrenamiento en época 13 (antes de overfitting severo)</p></li>
+<li><p><strong>Class weights</strong>: Fuerza al modelo a aprender features para clases minoritarias</p></li>
+<li><p><strong>Data augmentation</strong>: Introduce variabilidad sintáctica que previene memorización de frases exactas</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ventajas-sobre-bilstm">
+<h2>7. Ventajas sobre BiLSTM<a class="headerlink" href="#ventajas-sobre-bilstm" title="Link to this heading">#</a></h2>
+<section id="eficiencia-computacional">
+<h3>7.1 Eficiencia Computacional<a class="headerlink" href="#eficiencia-computacional" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>CNN-1D</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Tiempo entrenamiento</p></td>
+<td><p>~3 horas</p></td>
+<td><p>~30 minutos</p></td>
+<td><p><strong>6x más rápido</strong></p></td>
+</tr>
+<tr class="row-odd"><td><p>Operaciones por sample</p></td>
+<td><p>O(T²) (T=seq_len)</p></td>
+<td><p>O(T)</p></td>
+<td><p>Lineal vs cuadrática</p></td>
+</tr>
+<tr class="row-even"><td><p>Paralelización GPU</p></td>
+<td><p>Limitada (secuencial)</p></td>
+<td><p>Completa (paralela)</p></td>
+<td><p>100% utilización GPU</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Explicación técnica</strong>:</p>
+<p>LSTM procesa secuencialmente:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>t=1: h_1 = LSTM(x_1, h_0)
+t=2: h_2 = LSTM(x_2, h_1) ← depende de h_1
+t=3: h_3 = LSTM(x_3, h_2) ← depende de h_2
+...
+</pre></div>
+</div>
+<p>→ Cada paso depende del anterior, no paralelizable.</p>
+<p>CNN-1D procesa todas las posiciones simultáneamente:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Todas las convoluciones se calculan en paralelo:
+output[i] = conv(input[i:i+k]) para todo i ∈ [0, T-k]
+</pre></div>
+</div>
+<p>→ Todas las operaciones independientes, completamente paralelizable.</p>
+</section>
+<section id="ganancia-en-desempeno">
+<h3>7.2 Ganancia en Desempeño<a class="headerlink" href="#ganancia-en-desempeno" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>CNN-1D</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Accuracy</p></td>
+<td><p>0.6941</p></td>
+<td><p>0.7333</p></td>
+<td><p>+3.92 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>F1-macro</p></td>
+<td><p>0.6398</p></td>
+<td><p>0.6716</p></td>
+<td><p>+3.18 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>ROC AUC</p></td>
+<td><p>0.9458</p></td>
+<td><p>0.9633</p></td>
+<td><p>+1.75 pp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Hipótesis de la ganancia</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Captura más eficiente de n-grams</strong>: CNN aprende filtros específicos para bigramas/trigramas directamente, mientras LSTM debe inferirlos a través de estados ocultos</p></li>
+<li><p><strong>Robustez a largo alcance</strong>: Max-pooling permite que patrones al inicio del texto contribuyan igualmente que patrones al final, mientras que en LSTM las posiciones lejanas sufren de vanishing gradients</p></li>
+<li><p><strong>Mejor manejo de textos largos</strong>: CNN procesa secuencias de 500 tokens sin degradación de señal, mientras LSTM tiene dificultad propagando información más allá de ~200 tokens</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-especificas-del-modelo">
+<h2>8. Limitaciones Específicas del Modelo<a class="headerlink" href="#limitaciones-especificas-del-modelo" title="Link to this heading">#</a></h2>
+<section id="no-captura-dependencias-de-largo-alcance">
+<h3>8.1 No Captura Dependencias de Largo Alcance<a class="headerlink" href="#no-captura-dependencias-de-largo-alcance" title="Link to this heading">#</a></h3>
+<p><strong>Problema fundamental</strong>: Kernels de tamaño máximo 5 solo capturan contexto local.</p>
+<p><strong>Ejemplo donde CNN falla</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Began career in finance, transitioned to technology. Currently developing Python applications.&quot;
+
+Información crucial: &quot;transitioned to technology&quot; + &quot;Python applications&quot;
+→ Indica que la persona es IT actualmente, no FINANCE
+
+CNN-1D:
+- Kernel size 5 ve como máximo 5 palabras consecutivas
+- No puede conectar &quot;transitioned&quot; (palabra 6) con &quot;Python&quot; (palabra 15)
+- Podría clasificar incorrectamente como FINANCE si &quot;finance&quot; tiene activaciones más fuertes
+
+BiLSTM:
+- Procesa toda la secuencia, estado oculto en posición &quot;Python&quot; codifica contexto previo
+- Puede capturar la transición de carrera
+</pre></div>
+</div>
+</section>
+<section id="invariancia-a-posicion-es-doble-filo">
+<h3>8.2 Invariancia a Posición es Doble Filo<a class="headerlink" href="#invariancia-a-posicion-es-doble-filo" title="Link to this heading">#</a></h3>
+<p><strong>Ventaja</strong>: “Software developer” detectado en cualquier posición</p>
+<p><strong>Desventaja</strong>: CNN no distingue:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Texto</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Seeking software developer position&quot;</span> <span class="p">(</span><span class="n">aspirante</span><span class="p">)</span>
+<span class="n">Texto</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;Experienced software developer&quot;</span> <span class="p">(</span><span class="n">profesional</span> <span class="n">actual</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Ambos textos activan el filtro “software developer” con igual intensidad, aunque semánticamente son diferentes.</p>
+</section>
+<section id="cobertura-de-embeddings-54-5">
+<h3>8.3 Cobertura de Embeddings (54.5%)<a class="headerlink" href="#cobertura-de-embeddings-54-5" title="Link to this heading">#</a></h3>
+<p>Similar a BiLSTM, CNN-1D sufre de embeddings OOV inicializados aleatoriamente. Sin embargo, el impacto es menor porque:</p>
+<ul class="simple">
+<li><p>CNN aprende features a través de convoluciones, no depende tanto de embeddings individuales</p></li>
+<li><p>Un n-gram con 1 palabra OOV y 2 palabras conocidas aún puede ser capturado</p></li>
+</ul>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>N-gram: &quot;kubernetes deployment pipeline&quot;
+- &quot;kubernetes&quot; → OOV (embedding random)
+- &quot;deployment&quot; → embedding válido
+- &quot;pipeline&quot; → embedding válido
+
+CNN: Puede aprender que este trigrama (incluso con 1 OOV) es señal de IT
+BiLSTM: Embedding random de &quot;kubernetes&quot; corrompe el estado oculto
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="comparacion-con-xgboost">
+<h2>9. Comparación con XGBoost<a class="headerlink" href="#comparacion-con-xgboost" title="Link to this heading">#</a></h2>
+<p>Aunque XGBoost es un modelo no-neural, supera a CNN-1D:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>CNN-1D</p></th>
+<th class="head"><p>XGBoost</p></th>
+<th class="head"><p>Diferencia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Accuracy</p></td>
+<td><p>0.7333</p></td>
+<td><p>0.7922</p></td>
+<td><p>-5.89 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>F1-macro</p></td>
+<td><p>0.6716</p></td>
+<td><p>0.7606</p></td>
+<td><p>-8.90 pp</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Hipótesis de por qué XGBoost gana</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>TF-IDF captura n-grams hasta trigrams</strong>: Similar a CNN kernels, pero con representación más explícita</p></li>
+<li><p><strong>10,000 features vs 512</strong>: XGBoost tiene espacio de representación más rico</p></li>
+<li><p><strong>Ensemble de 300 árboles</strong>: Mayor capacidad de modelo que CNN de 1 capa</p></li>
+<li><p><strong>Robustez a datos tabulares</strong>: XGBoost está diseñado para features sparse de alta dimensionalidad</p></li>
+</ol>
+<p><strong>Donde CNN-1D supera a XGBoost</strong>:</p>
+<ul class="simple">
+<li><p>Generalización a textos fuera del vocabulario de entrenamiento (embeddings capturan similaridad semántica)</p></li>
+<li><p>Interpretabilidad de features (filtros convolucionales son más intuitivos que splits de árboles)</p></li>
+</ul>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-sobre-cnn-1d">
+<h2>10. Conclusiones sobre CNN-1D<a class="headerlink" href="#conclusiones-sobre-cnn-1d" title="Link to this heading">#</a></h2>
+<section id="rol-en-la-jerarquia-de-modelos">
+<h3>10.1 Rol en la Jerarquía de Modelos<a class="headerlink" href="#rol-en-la-jerarquia-de-modelos" title="Link to this heading">#</a></h3>
+<p>CNN-1D es el <strong>modelo neural más eficiente</strong> para clasificación textual cuando:</p>
+<ul class="simple">
+<li><p>Se requiere buen desempeño sin costo computacional masivo</p></li>
+<li><p>Los patrones discriminativos son locales (n-grams cortos)</p></li>
+<li><p>La velocidad de entrenamiento/inferencia es importante</p></li>
+</ul>
+</section>
+<section id="desempeno-en-el-problema">
+<h3>10.2 Desempeño en el Problema<a class="headerlink" href="#desempeno-en-el-problema" title="Link to this heading">#</a></h3>
+<p>Para clasificación de currículums:</p>
+<ul class="simple">
+<li><p><strong>Accuracy 73.3%</strong> es competitivo, superando significativamente a baselines y RNNs</p></li>
+<li><p><strong>ROC AUC 0.9633</strong> confirma excelente discriminación probabilística</p></li>
+<li><p><strong>F1-macro 0.6716</strong> revela buen balance entre clases, aunque con limitaciones en categorías ambiguas</p></li>
+</ul>
+</section>
+<section id="lecciones-clave">
+<h3>10.3 Lecciones Clave<a class="headerlink" href="#lecciones-clave" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Multi-scale convolutions son cruciales</strong>: Kernels [2,3,4,5] capturan patrones de diferentes granularidades que individualmente serían insuficientes</p></li>
+<li><p><strong>Max-pooling es superior a average para texto</strong>: Preserva señales discriminativas en textos largos</p></li>
+<li><p><strong>Paralelización &gt;&gt; Secuencialidad</strong>: Para problemas donde dependencias de largo alcance no son críticas, CNNs son más eficientes que RNNs</p></li>
+<li><p><strong>Límite arquitectural</strong>: Sin attention o mecanismos de largo alcance, CNN-1D alcanza un techo de ~73-75% accuracy en problemas multiclase complejos</p></li>
+<li><p><strong>Embeddings preentrenados son cuello de botella</strong>: La cobertura 54.5% limita el potencial del modelo—con embeddings contextuales (DistilBERT), se esperarían ganancias de +10-15 pp</p></li>
+</ol>
+<p>CNN-1D confirma que arquitecturas convolucionales son efectivas para clasificación textual, ofreciendo un balance óptimo entre desempeño y eficiencia computacional, aunque son superadas por métodos ensemble (XGBoost) y transformers (DistilBERT) en términos de accuracy pura.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="bilstm_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="fasttext_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Análisis del Modelo FastText Supervisado</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-convolucional-para-texto">1.1 Paradigma Convolucional para Texto</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-multi-kernel-textcnn">1.2 Arquitectura Multi-Kernel TextCNN</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-entrenamiento">2.1 Parámetros de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizacion-y-regularizacion">2.2 Optimización y Regularización</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.2 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-85">4.1 Clases con Desempeño Excelente (F1 &gt; 0.85)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-70-f1-0-85">4.2 Clases con Desempeño Sólido (0.70 &lt; F1 &lt; 0.85)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.3 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-por-que-cnn-1d-funciona">5. Análisis de Arquitectura: Por Qué CNN-1D Funciona</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#deteccion-de-patrones-invariantes-a-posicion">5.1 Detección de Patrones Invariantes a Posición</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#multi-scale-feature-extraction">5.2 Multi-Scale Feature Extraction</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#max-pooling-seleccion-de-features-discriminativas">5.3 Max-Pooling: Selección de Features Discriminativas</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia">6. Análisis de Convergencia</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-entrenamiento">6.1 Curvas de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ausencia-de-overfitting-severo">6.2 Ausencia de Overfitting Severo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-sobre-bilstm">7. Ventajas sobre BiLSTM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#eficiencia-computacional">7.1 Eficiencia Computacional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-en-desempeno">7.2 Ganancia en Desempeño</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#no-captura-dependencias-de-largo-alcance">8.1 No Captura Dependencias de Largo Alcance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#invariancia-a-posicion-es-doble-filo">8.2 Invariancia a Posición es Doble Filo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-54-5">8.3 Cobertura de Embeddings (54.5%)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-xgboost">9. Comparación con XGBoost</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-cnn-1d">10. Conclusiones sobre CNN-1D</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">10.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">10.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">10.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

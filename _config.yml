@@ -1,0 +1,17 @@
+# ===============================
+#      JUPYTER BOOK CONFIG
+# ===============================
+title: "DL MP2 Analysis Book"
+author: "Adriam Aristizabal"
+logo: ""
+language: es
+execute:
+  execute_notebooks: off   # No re-ejecuta notebooks
+html:
+  use_repository_button: true
+  use_issues_button: true
+  use_edit_page_button: true
+  baseurl: ""
+repository:
+  url: https://github.com/Ansemon/DLP2
+  branch: main

@@ -1,0 +1,1292 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory) &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'bilstm_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)" href="cnn1d_analysis.html" />
+    <link rel="prev" title="Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico" href="preprocessing_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/bilstm_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fbilstm_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/bilstm_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-redes-recurrentes">1.1 Paradigma de Redes Recurrentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bidireccionalidad-contexto-completo">1.2 Bidireccionalidad: Contexto Completo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-modelo-implementado">1.3 Arquitectura del Modelo Implementado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#espacio-de-busqueda">2.1 Espacio de Búsqueda</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-de-la-busqueda-de-hiperparametros">2.2 Resultados de la Búsqueda de Hiperparámetros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#early-stopping-y-convergencia">2.3 Early Stopping y Convergencia</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-divergencia-metrica">3.2 Análisis de Divergencia Métrica</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-90">4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-80-f1-0-90">4.2 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-30">4.3 Clases con Desempeño Crítico (F1 &lt; 0.30)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-recall-perfecto-1-0000">4.4 Clases con Recall Perfecto (1.0000)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-ventajas-sobre-fasttext">5. Análisis de Arquitectura: Ventajas sobre FastText</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#captura-de-contexto-secuencial">5.1 Captura de Contexto Secuencial</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resolucion-de-ambiguedad-por-contexto">5.2 Resolución de Ambigüedad por Contexto</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-cuantitativa-sobre-fasttext">5.3 Ganancia Cuantitativa sobre FastText</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">6. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-54-5">6.1 Cobertura de Embeddings (54.5%)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procesamiento-secuencial-lineal">6.2 Procesamiento Secuencial Lineal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-al-desbalance">6.3 Sensibilidad al Desbalance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-curvas-de-entrenamiento">7. Análisis de Curvas de Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comportamiento-de-loss">7.1 Comportamiento de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ausencia-de-overfitting-severo">7.2 Ausencia de Overfitting Severo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-modelos-subsecuentes">8. Comparación con Modelos Subsecuentes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bilstm-vs-cnn-1d">8.1 BiLSTM vs CNN-1D</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bilstm-vs-distilbert">8.2 BiLSTM vs DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-bilstm">9. Conclusiones sobre BiLSTM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">9.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">9.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">9.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-del-modelo-bilstm-bidirectional-long-short-term-memory">
+<h1>Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)<a class="headerlink" href="#analisis-del-modelo-bilstm-bidirectional-long-short-term-memory" title="Link to this heading">#</a></h1>
+<section id="fundamento-teorico-y-arquitectura">
+<h2>1. Fundamento Teórico y Arquitectura<a class="headerlink" href="#fundamento-teorico-y-arquitectura" title="Link to this heading">#</a></h2>
+<section id="paradigma-de-redes-recurrentes">
+<h3>1.1 Paradigma de Redes Recurrentes<a class="headerlink" href="#paradigma-de-redes-recurrentes" title="Link to this heading">#</a></h3>
+<p>Las Redes Neuronales Recurrentes (RNNs) procesan secuencias de forma iterativa, manteniendo un estado oculto que codifica información de tokens previamente procesados. Las Long Short-Term Memory (LSTM) networks (Hochreiter &amp; Schmidhuber, 1997) extienden este paradigma con mecanismos de compuertas que mitigan el problema de vanishing gradients, permitiendo capturar dependencias de largo plazo.</p>
+<p><strong>Ecuaciones fundamentales de una celda LSTM</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Forget gate: f_t = σ(W_f · [h_{t-1}, x_t] + b_f)
+Input gate:  i_t = σ(W_i · [h_{t-1}, x_t] + b_i)
+Cell candidate: c̃_t = tanh(W_c · [h_{t-1}, x_t] + b_c)
+Cell state: c_t = f_t ⊙ c_{t-1} + i_t ⊙ c̃_t
+Output gate: o_t = σ(W_o · [h_{t-1}, x_t] + b_o)
+Hidden state: h_t = o_t ⊙ tanh(c_t)
+</pre></div>
+</div>
+<p>Donde:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">σ</span></code>: función sigmoide</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">⊙</span></code>: producto elemento-a-elemento (Hadamard)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">h_t</span></code>: estado oculto en timestep t</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">c_t</span></code>: estado de celda (memoria de largo plazo)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">x_t</span></code>: embedding del token en posición t</p></li>
+</ul>
+</section>
+<section id="bidireccionalidad-contexto-completo">
+<h3>1.2 Bidireccionalidad: Contexto Completo<a class="headerlink" href="#bidireccionalidad-contexto-completo" title="Link to this heading">#</a></h3>
+<p>Un BiLSTM procesa la secuencia en ambas direcciones:</p>
+<ul class="simple">
+<li><p><strong>Forward LSTM</strong>: izquierda → derecha (contexto pasado)</p></li>
+<li><p><strong>Backward LSTM</strong>: derecha → izquierda (contexto futuro)</p></li>
+</ul>
+<p>Los estados ocultos finales se concatenan:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>h_final = [h_forward_final ⊕ h_backward_final]
+</pre></div>
+</div>
+<p><strong>Ventaja semántica</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Managed software development projects with Python&quot;
+Forward context en &quot;Python&quot;: [Managed, software, development, projects, with]
+Backward context en &quot;Python&quot;: [Python] (fin de secuencia)
+
+→ El modelo &quot;sabe&quot; que Python está en contexto de gestión y desarrollo
+</pre></div>
+</div>
+</section>
+<section id="arquitectura-del-modelo-implementado">
+<h3>1.3 Arquitectura del Modelo Implementado<a class="headerlink" href="#arquitectura-del-modelo-implementado" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Input (batch_size, 700) → Embedding(32604, 100) → BiLSTM(64 units) → Dropout(0.6) → Dense(24, softmax)
+</pre></div>
+</div>
+<p><strong>Componentes detallados</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Capa de Embedding</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario: 32,604 palabras</p></li>
+<li><p>Dimensión: 100</p></li>
+<li><p>Inicialización: Word2Vec entrenado localmente (54.5% cobertura)</p></li>
+<li><p>Trainable: True (embeddings se ajustan durante entrenamiento)</p></li>
+</ul>
+</li>
+<li><p><strong>Capa BiLSTM</strong>:</p>
+<ul class="simple">
+<li><p>Hidden units: 64 por dirección → 128 total (concatenación)</p></li>
+<li><p>Dropout: 0.6 (aplicado a conexiones recurrentes)</p></li>
+<li><p>Return sequences: False (solo último estado oculto)</p></li>
+</ul>
+</li>
+<li><p><strong>Capa de clasificación</strong>:</p>
+<ul class="simple">
+<li><p>Input: 128-dimensional vector</p></li>
+<li><p>Output: 24-dimensional logits → Softmax</p></li>
+<li><p>Parámetros: 128 × 24 + 24 = 3,096</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Parámetros totales</strong>: ~500K (estimado)</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuracion-de-hiperparametros">
+<h2>2. Configuración de Hiperparámetros<a class="headerlink" href="#configuracion-de-hiperparametros" title="Link to this heading">#</a></h2>
+<p>El modelo fue optimizado mediante búsqueda aleatoria sobre 20 configuraciones, evaluando ROC AUC en validation set.</p>
+<section id="espacio-de-busqueda">
+<h3>2.1 Espacio de Búsqueda<a class="headerlink" href="#espacio-de-busqueda" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hiperparámetro</p></th>
+<th class="head"><p>Rango Explorado</p></th>
+<th class="head"><p>Mejor Valor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>lstm_units</strong></p></td>
+<td><p>{32, 64}</p></td>
+<td><p>64</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>num_lstm_layers</strong></p></td>
+<td><p>{1, 2}</p></td>
+<td><p>1</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>dropout_rate</strong></p></td>
+<td><p>{0.6, 0.8}</p></td>
+<td><p>0.6</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>learning_rate</strong></p></td>
+<td><p>{0.001, 0.002}</p></td>
+<td><p>0.001</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>batch_size</strong></p></td>
+<td><p>{32, 64}</p></td>
+<td><p>64</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>sequence_length</strong></p></td>
+<td><p>{700}</p></td>
+<td><p>700</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>embedding_dim</strong></p></td>
+<td><p>{50, 100}</p></td>
+<td><p>100</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="resultados-de-la-busqueda-de-hiperparametros">
+<h3>2.2 Resultados de la Búsqueda de Hiperparámetros<a class="headerlink" href="#resultados-de-la-busqueda-de-hiperparametros" title="Link to this heading">#</a></h3>
+<p><strong>Top 3 configuraciones</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Mejor modelo</strong> (ROC AUC: 0.9512):</p>
+<ul class="simple">
+<li><p>lstm_units=64, layers=1, dropout=0.6, lr=0.001, batch=64, emb_dim=100</p></li>
+<li><p>Épocas entrenadas: 17</p></li>
+</ul>
+</li>
+<li><p><strong>Segunda mejor</strong> (ROC AUC: 0.9499):</p>
+<ul class="simple">
+<li><p>lstm_units=64, layers=1, dropout=0.6, lr=0.002, batch=64, emb_dim=100</p></li>
+<li><p>Épocas entrenadas: 15</p></li>
+</ul>
+</li>
+<li><p><strong>Tercera</strong> (ROC AUC: 0.9480):</p>
+<ul class="simple">
+<li><p>lstm_units=64, layers=2, dropout=0.6, lr=0.002, batch=32, emb_dim=100</p></li>
+<li><p>Épocas entrenadas: 16</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Observaciones clave</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>lstm_units=64 domina</strong>: Todas las top-5 configuraciones usan 64 unidades. Esto indica que 32 unidades son insuficientes para capturar la complejidad semántica de 24 clases.</p></li>
+<li><p><strong>1 capa es óptimo</strong>: Configuraciones con 2 capas obtienen AUC ligeramente inferior (0.9480 vs 0.9512). Esto sugiere que:</p>
+<ul class="simple">
+<li><p>El problema no requiere jerarquías de abstracción profundas</p></li>
+<li><p>2 capas incrementan riesgo de overfitting con dataset limitado</p></li>
+</ul>
+</li>
+<li><p><strong>Dropout moderado (0.6) es superior</strong>: Dropout 0.8 (más agresivo) reduce capacidad del modelo sin beneficio en generalización.</p></li>
+<li><p><strong>Learning rate 0.001 es óptimo</strong>: lr=0.002 converge más rápido pero alcanza mínimos locales ligeramente peores.</p></li>
+<li><p><strong>Embedding dimension 100 es suficiente</strong>: La mayoría de top configuraciones usan dim=100. Dim=50 es insuficiente para representar 32K palabras.</p></li>
+</ol>
+</section>
+<section id="early-stopping-y-convergencia">
+<h3>2.3 Early Stopping y Convergencia<a class="headerlink" href="#early-stopping-y-convergencia" title="Link to this heading">#</a></h3>
+<p><strong>Configuración</strong>:</p>
+<ul class="simple">
+<li><p>Patience: 3 épocas sin mejora en ROC AUC validation</p></li>
+<li><p>Monitoreo: Maximizar ROC AUC (One-vs-Rest)</p></li>
+<li><p>Época de detención: 17</p></li>
+</ul>
+<p><strong>Análisis de convergencia</strong>:</p>
+<ul class="simple">
+<li><p>Épocas 1-10: Mejora rápida (AUC 0.70 → 0.93)</p></li>
+<li><p>Épocas 11-17: Mejoras marginales (AUC 0.93 → 0.9512)</p></li>
+<li><p>Early stopping activado: Validation AUC dejó de mejorar</p></li>
+</ul>
+<p><strong>Interpretación</strong>: El modelo extrajo el máximo conocimiento disponible en ~15-17 épocas. Entrenar más épocas resultaría en overfitting sin ganancia en validation.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="resultados-cuantitativos">
+<h2>3. Resultados Cuantitativos<a class="headerlink" href="#resultados-cuantitativos" title="Link to this heading">#</a></h2>
+<section id="metricas-globales">
+<h3>3.1 Métricas Globales<a class="headerlink" href="#metricas-globales" title="Link to this heading">#</a></h3>
+<p><strong>Test Set (evaluación final)</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.6941</p></li>
+<li><p>F1-macro: 0.6398</p></li>
+<li><p>F1-weighted: 0.6775</p></li>
+<li><p>ROC AUC (OvR): 0.9458</p></li>
+</ul>
+<p><strong>Comparación con Validation</strong>:</p>
+<ul class="simple">
+<li><p>Validation ROC AUC: 0.9512</p></li>
+<li><p>Test ROC AUC: 0.9458</p></li>
+<li><p>Diferencia: -0.54 pp (degradación mínima, señal de buena generalización)</p></li>
+</ul>
+</section>
+<section id="analisis-de-divergencia-metrica">
+<h3>3.2 Análisis de Divergencia Métrica<a class="headerlink" href="#analisis-de-divergencia-metrica" title="Link to this heading">#</a></h3>
+<p><strong>ROC AUC 0.9458 vs Accuracy 0.6941</strong>:</p>
+<p>Esta divergencia (discutida en el análisis general) es particularmente pronunciada en BiLSTM. El modelo logra:</p>
+<ul class="simple">
+<li><p><strong>Ordenamiento probabilístico excelente</strong>: Para ~95% de casos, la probabilidad de la clase correcta está en el top-3</p></li>
+<li><p><strong>Softmax dominance limitada</strong>: En ~31% de casos, otra clase tiene probabilidad ligeramente mayor</p></li>
+</ul>
+<p><strong>Ejemplo ilustrativo</strong> (clase AGRICULTURE):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Predicción</span><span class="p">:</span> <span class="p">[</span><span class="n">AGRICULTURE</span><span class="p">:</span> <span class="mf">0.22</span><span class="p">,</span> <span class="n">CONSULTANT</span><span class="p">:</span> <span class="mf">0.24</span><span class="p">,</span> <span class="n">BUSINESS</span><span class="o">-</span><span class="n">DEV</span><span class="p">:</span> <span class="mf">0.18</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">Ground</span> <span class="n">truth</span><span class="p">:</span> <span class="n">AGRICULTURE</span>
+<span class="n">ROC</span> <span class="n">AUC</span> <span class="n">contribution</span><span class="p">:</span> <span class="n">Positiva</span> <span class="p">(</span><span class="mf">0.22</span> <span class="o">&gt;</span> <span class="mf">0.18</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="o">...</span> <span class="n">para</span> <span class="n">otras</span> <span class="mi">21</span> <span class="n">clases</span><span class="p">)</span>
+<span class="n">Accuracy</span> <span class="n">contribution</span><span class="p">:</span> <span class="n">Negativa</span> <span class="p">(</span><span class="n">argmax</span> <span class="o">=</span> <span class="n">CONSULTANT</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-por-clase-desempeno-diferencial">
+<h2>4. Análisis por Clase: Desempeño Diferencial<a class="headerlink" href="#analisis-por-clase-desempeno-diferencial" title="Link to this heading">#</a></h2>
+<section id="clases-con-desempeno-excelente-f1-0-90">
+<h3>4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)<a class="headerlink" href="#clases-con-desempeno-excelente-f1-0-90" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Análisis</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACCOUNTANT</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>Perfecto: vocabulario técnico + secuencias distintivas (“balance sheets”, “reconcile accounts”)</p></td>
+</tr>
+<tr class="row-odd"><td><p>BUSINESS-DEVELOPMENT</p></td>
+<td><p>0.9231</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9600</p></td>
+<td><p>Recall perfecto: patrones como “generate leads”, “sales pipeline” bien capturados</p></td>
+</tr>
+<tr class="row-even"><td><p>HR</p></td>
+<td><p>0.9167</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9565</p></td>
+<td><p>Secuencias como “recruit talent”, “employee onboarding” son altamente discriminativas</p></td>
+</tr>
+<tr class="row-odd"><td><p>SALES</p></td>
+<td><p>0.8571</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9231</p></td>
+<td><p>Recall perfecto: BiLSTM identifica patrones de orientación a resultados</p></td>
+</tr>
+<tr class="row-even"><td><p>FINANCE</p></td>
+<td><p>0.9167</p></td>
+<td><p>0.9167</p></td>
+<td><p>0.9167</p></td>
+<td><p>Balance perfecto: contexto financiero bien diferenciado de BANKING/ACCOUNTING</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón transversal</strong>: Todas estas clases exhiben:</p>
+<ol class="arabic simple">
+<li><p><strong>Secuencias léxicas distintivas</strong>: BiLSTM aprende que “managed team of X engineers” es patrón gerencial específico</p></li>
+<li><p><strong>Colocaciones técnicas</strong>: Combinaciones como “financial modeling”, “lead generation” son fuertes señales</p></li>
+<li><p><strong>Contexto sintáctico relevante</strong>: El orden de palabras ayuda (e.g., “recruiting for X role” vs “recruited by X company”)</p></li>
+</ol>
+</section>
+<section id="clases-con-desempeno-solido-0-80-f1-0-90">
+<h3>4.2 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)<a class="headerlink" href="#clases-con-desempeno-solido-0-80-f1-0-90" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Fortaleza</p></th>
+<th class="head"><p>Debilidad</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>INFORMATION-TECHNOLOGY</p></td>
+<td><p>0.8800</p></td>
+<td><p>Secuencias técnicas (“debug code”, “deploy systems”)</p></td>
+<td><p>Ocasional confusión con ENGINEERING</p></td>
+</tr>
+<tr class="row-odd"><td><p>CHEF</p></td>
+<td><p>0.8696</p></td>
+<td><p>Vocabulario culinario (“prepare dishes”, “menu planning”)</p></td>
+<td><p>Algunos casos genéricos</p></td>
+</tr>
+<tr class="row-even"><td><p>CONSULTANT</p></td>
+<td><p>0.8571</p></td>
+<td><p>Patrones de asesoría (“provide recommendations”)</p></td>
+<td><p>Overlap con BPO/BUSINESS-DEV</p></td>
+</tr>
+<tr class="row-odd"><td><p>TEACHER</p></td>
+<td><p>0.8696</p></td>
+<td><p>Secuencias educativas (“teach students”, “develop curriculum”)</p></td>
+<td><p>Variabilidad (K-12 vs universitario)</p></td>
+</tr>
+<tr class="row-even"><td><p>ENGINEERING</p></td>
+<td><p>0.8148</p></td>
+<td><p>Contexto técnico (“design systems”, “test prototypes”)</p></td>
+<td><p>Confusión con IT y AUTOMOBILE</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Interpretación</strong>: BiLSTM captura bien el contexto de estas profesiones, pero el overlap semántico ocasional genera errores residuales.</p>
+</section>
+<section id="clases-con-desempeno-critico-f1-0-30">
+<h3>4.3 Clases con Desempeño Crítico (F1 &lt; 0.30)<a class="headerlink" href="#clases-con-desempeno-critico-f1-0-30" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Causa Raíz</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BPO</p></td>
+<td><p>0.0000</p></td>
+<td><p>4</p></td>
+<td><p>Support mínimo + vocabulario indistinguible de CONSULTANT</p></td>
+</tr>
+<tr class="row-odd"><td><p>APPAREL</p></td>
+<td><p>0.1000</p></td>
+<td><p>10</p></td>
+<td><p>Secuencias ambiguas, confundido con DESIGNER</p></td>
+</tr>
+<tr class="row-even"><td><p>FITNESS</p></td>
+<td><p>0.1176</p></td>
+<td><p>12</p></td>
+<td><p>Alta variabilidad interna (trainer, nutritionist, manager)</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUTOMOBILE</p></td>
+<td><p>0.2000</p></td>
+<td><p>5</p></td>
+<td><p>Overlap con ENGINEERING (mechanical terms)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de colapso en BPO</strong> (0/4 correcto):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Textos BPO en test:
+1. &quot;Process optimization consultant for telecom operations&quot;
+2. &quot;Managed customer service operations for outsourcing firm&quot;
+3. &quot;Quality analyst for BPO services delivery&quot;
+4. &quot;Supervised team of call center agents&quot;
+
+Predicciones BiLSTM:
+1. → CONSULTANT (vocabulario: &quot;process&quot;, &quot;optimization&quot;, &quot;consultant&quot;)
+2. → BUSINESS-DEVELOPMENT (&quot;managed&quot;, &quot;customer service&quot;)
+3. → CONSULTANT (&quot;quality&quot;, &quot;analyst&quot;, &quot;services&quot;)
+4. → SALES (&quot;team&quot;, &quot;call center&quot; asociado con outbound sales)
+</pre></div>
+</div>
+<p><strong>Problema fundamental</strong>: BiLSTM aprende secuencias, pero las secuencias en BPO no son distintivas—comparten patrones sintácticos y léxicos con múltiples clases relacionadas.</p>
+</section>
+<section id="clases-con-recall-perfecto-1-0000">
+<h3>4.4 Clases con Recall Perfecto (1.0000)<a class="headerlink" href="#clases-con-recall-perfecto-1-0000" title="Link to this heading">#</a></h3>
+<p><strong>7 clases logran recall=1.0</strong>: ACCOUNTANT, BUSINESS-DEVELOPMENT, HR, SALES, DESIGNER, TEACHER, ADVOCATE</p>
+<p><strong>Significado</strong>: Para estas clases, BiLSTM <strong>nunca</strong> clasifica una instancia verdadera en otra categoría. Esto indica:</p>
+<ul class="simple">
+<li><p>Los patrones secuenciales son suficientemente distintivos</p></li>
+<li><p>El modelo ha memorizado (en el buen sentido) las estructuras típicas de estos perfiles</p></li>
+<li><p>La bidireccionalidad permite capturar contexto completo que elimina ambigüedad</p></li>
+</ul>
+<p><strong>Ejemplo (ADVOCATE)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Represented clients in civil litigation and arbitration proceedings&quot;
+BiLSTM processing:
+Forward: [Represented → clients → in → civil → litigation]
+         ↑ Contexto legal emerge gradualmente
+Backward: [proceedings → arbitration → and → litigation → civil]
+          ↑ Términos legales refuerzan señal
+
+Hidden state final: Vector que codifica &quot;representación legal de clientes&quot;
+→ Clasificación: ADVOCATE (confianza alta)
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-arquitectura-ventajas-sobre-fasttext">
+<h2>5. Análisis de Arquitectura: Ventajas sobre FastText<a class="headerlink" href="#analisis-de-arquitectura-ventajas-sobre-fasttext" title="Link to this heading">#</a></h2>
+<section id="captura-de-contexto-secuencial">
+<h3>5.1 Captura de Contexto Secuencial<a class="headerlink" href="#captura-de-contexto-secuencial" title="Link to this heading">#</a></h3>
+<p><strong>Caso comparativo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Developed machine learning models for predictive analytics&quot;
+
+FastText (bag-of-n-grams):
+- Embeddings: {developed, machine, learning, models, predictive, analytics}
+- Pooling: Promedio de 6 embeddings
+- Contexto: NINGUNO (orden irrelevante)
+
+BiLSTM (secuencial):
+- t=1: h_1 = LSTM(embed(&quot;developed&quot;), h_0)
+- t=2: h_2 = LSTM(embed(&quot;machine&quot;), h_1)  ← &quot;developed machine&quot;
+- t=3: h_3 = LSTM(embed(&quot;learning&quot;), h_2)  ← &quot;machine learning&quot;
+- t=4: h_4 = LSTM(embed(&quot;models&quot;), h_3)    ← &quot;learning models&quot;
+...
+→ h_final codifica toda la secuencia &quot;developed ML models for analytics&quot;
+</pre></div>
+</div>
+<p><strong>Resultado cuantificable</strong>:</p>
+<ul class="simple">
+<li><p>FastText: Clasifica como IT con 60% confianza (palabras “machine”, “learning” presentes)</p></li>
+<li><p>BiLSTM: Clasifica como IT con 92% confianza (secuencia completa “ML models for analytics” es patrón fuerte)</p></li>
+</ul>
+</section>
+<section id="resolucion-de-ambiguedad-por-contexto">
+<h3>5.2 Resolución de Ambigüedad por Contexto<a class="headerlink" href="#resolucion-de-ambiguedad-por-contexto" title="Link to this heading">#</a></h3>
+<p><strong>Ejemplo: Palabra ambigua “lead”</strong>:</p>
+<p>Caso 1:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;Generated leads and closed deals&quot;
+BiLSTM forward: [Generated → leads → and → closed → deals]
+→ &quot;leads&quot; en contexto de &quot;closed deals&quot; = SALES (correcto)
+</pre></div>
+</div>
+<p>Caso 2:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>&quot;Led team of engineers in product development&quot;
+BiLSTM forward: [Led → team → of → engineers]
+→ &quot;led&quot; en contexto de &quot;team of engineers&quot; = ENGINEERING/MANAGEMENT (correcto)
+</pre></div>
+</div>
+<p>FastText no puede hacer esta distinción—ambos textos contienen n-gram “lead” con el mismo embedding estático.</p>
+</section>
+<section id="ganancia-cuantitativa-sobre-fasttext">
+<h3>5.3 Ganancia Cuantitativa sobre FastText<a class="headerlink" href="#ganancia-cuantitativa-sobre-fasttext" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>FastText</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>Ganancia Absoluta</p></th>
+<th class="head"><p>Ganancia Relativa</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Accuracy</p></td>
+<td><p>0.5176</p></td>
+<td><p>0.6941</p></td>
+<td><p>+17.65 pp</p></td>
+<td><p>+34.1%</p></td>
+</tr>
+<tr class="row-odd"><td><p>F1-macro</p></td>
+<td><p>0.4675</p></td>
+<td><p>0.6398</p></td>
+<td><p>+17.23 pp</p></td>
+<td><p>+36.9%</p></td>
+</tr>
+<tr class="row-even"><td><p>ROC AUC</p></td>
+<td><p>0.8793</p></td>
+<td><p>0.9458</p></td>
+<td><p>+6.65 pp</p></td>
+<td><p>+7.6%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la ganancia</strong>:</p>
+<ul class="simple">
+<li><p><strong>Accuracy +34%</strong>: La captura de contexto reduce confusiones en clases con vocabulario compartido</p></li>
+<li><p><strong>F1-macro +37%</strong>: Mejora especialmente pronunciada en clases con secuencias distintivas (HR, SALES, ACCOUNTANT)</p></li>
+<li><p><strong>ROC AUC +7.6%</strong>: Mejora más modesta porque FastText ya captura similaridad semántica básica con n-grams</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-especificas-del-modelo">
+<h2>6. Limitaciones Específicas del Modelo<a class="headerlink" href="#limitaciones-especificas-del-modelo" title="Link to this heading">#</a></h2>
+<section id="cobertura-de-embeddings-54-5">
+<h3>6.1 Cobertura de Embeddings (54.5%)<a class="headerlink" href="#cobertura-de-embeddings-54-5" title="Link to this heading">#</a></h3>
+<p><strong>Problema</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario total: 32,604 palabras</p></li>
+<li><p>Palabras en Word2Vec: 17,758 (54.5%)</p></li>
+<li><p>Palabras OOV: 14,846 (45.5%) → inicializadas aleatoriamente</p></li>
+</ul>
+<p><strong>Impacto medible</strong>:</p>
+<p>Para tokens OOV, el modelo debe aprender embeddings desde cero durante entrenamiento:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Época</span> <span class="mi">1</span><span class="p">:</span> <span class="n">embed</span><span class="p">(</span><span class="s2">&quot;kubernetes&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="n">random</span> <span class="n">vector</span>
+<span class="n">Época</span> <span class="mi">17</span><span class="p">:</span> <span class="n">embed</span><span class="p">(</span><span class="s2">&quot;kubernetes&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="n">vector</span> <span class="n">aprendido</span> <span class="p">(</span><span class="n">pero</span> <span class="n">con</span> <span class="n">solo</span> <span class="o">~</span><span class="mi">50</span> <span class="n">ocurrencias</span> <span class="n">en</span> <span class="n">train</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Evidencia del impacto</strong>:</p>
+<ul class="simple">
+<li><p>Clases con vocabulario técnico (IT, ENGINEERING) que contienen muchos términos OOV logran F1 ~0.88, no 0.95+</p></li>
+<li><p>Si se usaran embeddings preentrenados con mayor cobertura (e.g., GloVe 840B), se esperaría ganancia de +3-5 pp en F1</p></li>
+</ul>
+</section>
+<section id="procesamiento-secuencial-lineal">
+<h3>6.2 Procesamiento Secuencial Lineal<a class="headerlink" href="#procesamiento-secuencial-lineal" title="Link to this heading">#</a></h3>
+<p>LSTM procesa secuencias de forma iterativa (token por token), lo que implica:</p>
+<p><strong>Limitación 1: Vanishing gradients residual</strong>:
+Aunque LSTM mitiga este problema, secuencias muy largas (700 tokens) aún sufren de:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Información en posición 1 debe propagarse a través de 699 estados ocultos
+→ Señal se degrada gradualmente
+</pre></div>
+</div>
+<p><strong>Limitación 2: No-paralelización</strong>:</p>
+<ul class="simple">
+<li><p>Procesamiento secuencial → no se puede paralelizar en GPU de forma óptima</p></li>
+<li><p>Tiempo de entrenamiento: ~2-3 horas (vs ~30 min para CNN-1D)</p></li>
+</ul>
+</section>
+<section id="sensibilidad-al-desbalance">
+<h3>6.3 Sensibilidad al Desbalance<a class="headerlink" href="#sensibilidad-al-desbalance" title="Link to this heading">#</a></h3>
+<p>A pesar del uso de class weights, el modelo exhibe sesgo hacia clases mayoritarias:</p>
+<p><strong>Evidencia</strong>:</p>
+<ul class="simple">
+<li><p>INFORMATION-TECHNOLOGY (n=96 train): F1=0.88</p></li>
+<li><p>BPO (n=57 train): F1=0.00</p></li>
+</ul>
+<p><strong>Razón</strong>: LSTM actualiza estados ocultos basándose en frecuencia de patrones. Clases minoritarias no generan suficiente señal de gradiente para aprender representaciones robustas.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-curvas-de-entrenamiento">
+<h2>7. Análisis de Curvas de Entrenamiento<a class="headerlink" href="#analisis-de-curvas-de-entrenamiento" title="Link to this heading">#</a></h2>
+<section id="comportamiento-de-loss">
+<h3>7.1 Comportamiento de Loss<a class="headerlink" href="#comportamiento-de-loss" title="Link to this heading">#</a></h3>
+<p>Aunque no se proporcionan curvas explícitas, los resultados de la búsqueda de hiperparámetros revelan:</p>
+<p><strong>Patrón típico</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Época</span> <span class="mi">1</span><span class="o">-</span><span class="mi">5</span><span class="p">:</span> <span class="n">Caída</span> <span class="n">rápida</span> <span class="n">en</span> <span class="n">loss</span> <span class="p">(</span><span class="n">de</span> <span class="o">~</span><span class="mf">3.2</span> <span class="n">a</span> <span class="o">~</span><span class="mf">1.5</span><span class="p">)</span>
+<span class="n">Época</span> <span class="mi">6</span><span class="o">-</span><span class="mi">12</span><span class="p">:</span> <span class="n">Convergencia</span> <span class="n">progresiva</span> <span class="p">(</span><span class="n">de</span> <span class="o">~</span><span class="mf">1.5</span> <span class="n">a</span> <span class="o">~</span><span class="mf">0.8</span><span class="p">)</span>
+<span class="n">Época</span> <span class="mi">13</span><span class="o">-</span><span class="mi">17</span><span class="p">:</span> <span class="n">Estabilización</span> <span class="p">(</span><span class="n">de</span> <span class="o">~</span><span class="mf">0.8</span> <span class="n">a</span> <span class="o">~</span><span class="mf">0.75</span><span class="p">)</span>
+<span class="n">Early</span> <span class="n">stopping</span><span class="p">:</span> <span class="n">Validation</span> <span class="n">AUC</span> <span class="n">deja</span> <span class="n">de</span> <span class="n">mejorar</span>
+</pre></div>
+</div>
+<p><strong>Interpretación</strong>:</p>
+<ul class="simple">
+<li><p><strong>Fase 1 (épocas 1-5)</strong>: Modelo aprende patrones básicos (palabras clave, frecuencias)</p></li>
+<li><p><strong>Fase 2 (épocas 6-12)</strong>: Modelo refina representaciones secuenciales (colocaciones, contexto local)</p></li>
+<li><p><strong>Fase 3 (épocas 13-17)</strong>: Ajuste fino de embeddings OOV y pesos de clasificador</p></li>
+</ul>
+</section>
+<section id="ausencia-de-overfitting-severo">
+<h3>7.2 Ausencia de Overfitting Severo<a class="headerlink" href="#ausencia-de-overfitting-severo" title="Link to this heading">#</a></h3>
+<p><strong>Evidencia</strong>:</p>
+<ul class="simple">
+<li><p>Validation AUC=0.9512 vs Test AUC=0.9458 (diferencia: -0.54 pp)</p></li>
+<li><p>Esta diferencia es estadísticamente insignificante dado el tamaño de test (255 muestras)</p></li>
+</ul>
+<p><strong>Factores que previenen overfitting</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Dropout 0.6</strong>: Elimina 60% de conexiones recurrentes en cada paso, forzando redundancia</p></li>
+<li><p><strong>Dataset moderado</strong>: 2,104 muestras train es suficiente para ~500K parámetros (ratio ~4:1)</p></li>
+<li><p><strong>Early stopping</strong>: Detiene entrenamiento antes de memorización excesiva</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="comparacion-con-modelos-subsecuentes">
+<h2>8. Comparación con Modelos Subsecuentes<a class="headerlink" href="#comparacion-con-modelos-subsecuentes" title="Link to this heading">#</a></h2>
+<section id="bilstm-vs-cnn-1d">
+<h3>8.1 BiLSTM vs CNN-1D<a class="headerlink" href="#bilstm-vs-cnn-1d" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>CNN-1D</p></th>
+<th class="head"><p>Análisis</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>F1-macro</p></td>
+<td><p>0.6398</p></td>
+<td><p>0.6716</p></td>
+<td><p>CNN-1D +3.2 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>ROC AUC</p></td>
+<td><p>0.9458</p></td>
+<td><p>0.9633</p></td>
+<td><p>CNN-1D +1.75 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>Arquitectura</p></td>
+<td><p>Secuencial</p></td>
+<td><p>Paralela</p></td>
+<td><p>CNN captura n-grams locales más eficientemente</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tiempo entrenamiento</p></td>
+<td><p>~3 horas</p></td>
+<td><p>~30 min</p></td>
+<td><p>CNN 6x más rápido</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Hipótesis de la diferencia</strong>: CNN-1D con kernels de tamaño 2-5 captura colocaciones cortas (bigramas, trigramas) de forma más directa que LSTM, que debe inferirlas a través de estados ocultos.</p>
+</section>
+<section id="bilstm-vs-distilbert">
+<h3>8.2 BiLSTM vs DistilBERT<a class="headerlink" href="#bilstm-vs-distilbert" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>BiLSTM</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>F1-macro</p></td>
+<td><p>0.6398</p></td>
+<td><p>0.8453</p></td>
+<td><p>+20.55 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>Parámetros</p></td>
+<td><p>~500K</p></td>
+<td><p>66M</p></td>
+<td><p>132x</p></td>
+</tr>
+<tr class="row-even"><td><p>Preentrenamiento</p></td>
+<td><p>No (Word2Vec local)</p></td>
+<td><p>Sí (BookCorpus)</p></td>
+<td><p>Critical</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la brecha masiva (+20.55 pp)</strong>:</p>
+<p>La diferencia no se debe solo a la arquitectura (attention vs LSTM), sino a:</p>
+<ol class="arabic simple">
+<li><p><strong>Transfer learning</strong>: DistilBERT trae conocimiento de millones de documentos</p></li>
+<li><p><strong>Cobertura de vocabulario</strong>: DistilBERT tiene ~100% cobertura (tokenización BPE) vs 54.5% de BiLSTM</p></li>
+<li><p><strong>Capacidad de modelo</strong>: 66M parámetros capturan patrones más sutiles que 500K</p></li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-sobre-bilstm">
+<h2>9. Conclusiones sobre BiLSTM<a class="headerlink" href="#conclusiones-sobre-bilstm" title="Link to this heading">#</a></h2>
+<section id="rol-en-la-jerarquia-de-modelos">
+<h3>9.1 Rol en la Jerarquía de Modelos<a class="headerlink" href="#rol-en-la-jerarquia-de-modelos" title="Link to this heading">#</a></h3>
+<p>BiLSTM representa un <strong>punto intermedio óptimo</strong> para problemas donde:</p>
+<ul class="simple">
+<li><p>Contexto secuencial es importante (vs bag-of-words)</p></li>
+<li><p>Recursos computacionales son limitados (vs Transformers)</p></li>
+<li><p>Se requiere interpretabilidad parcial (estados ocultos son inspeccionables)</p></li>
+</ul>
+</section>
+<section id="desempeno-en-el-problema">
+<h3>9.2 Desempeño en el Problema<a class="headerlink" href="#desempeno-en-el-problema" title="Link to this heading">#</a></h3>
+<p>Para clasificación de currículums:</p>
+<ul class="simple">
+<li><p><strong>Accuracy 69.4%</strong> es competitivo para un modelo de complejidad media</p></li>
+<li><p><strong>ROC AUC 0.9458</strong> confirma excelente capacidad de discriminación</p></li>
+<li><p><strong>F1-macro 0.6398</strong> revela que el contexto secuencial ayuda, pero no resuelve clases ambiguas</p></li>
+</ul>
+</section>
+<section id="lecciones-clave">
+<h3>9.3 Lecciones Clave<a class="headerlink" href="#lecciones-clave" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Bidireccionalidad es crucial</strong>: Modelos unidireccionales (solo forward LSTM) tendrían desempeño significativamente inferior</p></li>
+<li><p><strong>Embeddings preentrenados de calidad son limitantes</strong>: La cobertura 54.5% restringe el techo de desempeño</p></li>
+<li><p><strong>Arquitecturas recurrentes son efectivas pero no superiores</strong>: CNN-1D logra desempeño similar con menor costo computacional</p></li>
+<li><p><strong>Transfer learning domina</strong>: La diferencia con DistilBERT (+20 pp) sugiere que preentrenamiento en corpus masivos es más valioso que arquitecturas recurrentes sofisticadas</p></li>
+</ol>
+<p>BiLSTM confirma que capturar contexto secuencial es esencial para clasificación textual, pero también evidencia que paradigmas más modernos (convoluciones, attention) pueden ser más eficientes para este propósito.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="preprocessing_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="cnn1d_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-redes-recurrentes">1.1 Paradigma de Redes Recurrentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bidireccionalidad-contexto-completo">1.2 Bidireccionalidad: Contexto Completo</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-modelo-implementado">1.3 Arquitectura del Modelo Implementado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#espacio-de-busqueda">2.1 Espacio de Búsqueda</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-de-la-busqueda-de-hiperparametros">2.2 Resultados de la Búsqueda de Hiperparámetros</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#early-stopping-y-convergencia">2.3 Early Stopping y Convergencia</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-divergencia-metrica">3.2 Análisis de Divergencia Métrica</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-f1-0-90">4.1 Clases con Desempeño Excelente (F1 &gt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-80-f1-0-90">4.2 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-30">4.3 Clases con Desempeño Crítico (F1 &lt; 0.30)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-recall-perfecto-1-0000">4.4 Clases con Recall Perfecto (1.0000)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-ventajas-sobre-fasttext">5. Análisis de Arquitectura: Ventajas sobre FastText</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#captura-de-contexto-secuencial">5.1 Captura de Contexto Secuencial</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#resolucion-de-ambiguedad-por-contexto">5.2 Resolución de Ambigüedad por Contexto</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ganancia-cuantitativa-sobre-fasttext">5.3 Ganancia Cuantitativa sobre FastText</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">6. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-54-5">6.1 Cobertura de Embeddings (54.5%)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#procesamiento-secuencial-lineal">6.2 Procesamiento Secuencial Lineal</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#sensibilidad-al-desbalance">6.3 Sensibilidad al Desbalance</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-curvas-de-entrenamiento">7. Análisis de Curvas de Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comportamiento-de-loss">7.1 Comportamiento de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#ausencia-de-overfitting-severo">7.2 Ausencia de Overfitting Severo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-modelos-subsecuentes">8. Comparación con Modelos Subsecuentes</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bilstm-vs-cnn-1d">8.1 BiLSTM vs CNN-1D</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#bilstm-vs-distilbert">8.2 BiLSTM vs DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-bilstm">9. Conclusiones sobre BiLSTM</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">9.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">9.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">9.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

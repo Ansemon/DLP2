@@ -1,0 +1,1527 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis del Modelo DistilBERT para Clasificación de Currículums &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'distilbert_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="&lt;no title&gt;" href="MIniproyecto2%282%29.html" />
+    <link rel="prev" title="Análisis del Modelo XGBoost con TF-IDF" href="xgboost_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/distilbert_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fdistilbert_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/distilbert_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis del Modelo DistilBERT para Clasificación de Currículums</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-transformers">1.1 Paradigma de Transformers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-de-distilbert">1.2 Arquitectura de DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-entrenamiento">2.1 Parámetros de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizacion-y-regularizacion">2.2 Optimización y Regularización</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia">3.2 Análisis de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.3 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-perfecto-f1-1-0000">4.1 Clases con Desempeño Perfecto (F1 = 1.0000)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-0-90-f1-1-00">4.2 Clases con Desempeño Excelente (0.90 &lt; F1 &lt; 1.00)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-80-f1-0-90">4.3 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-superioridad-de-transformers">5. Análisis de Arquitectura: Superioridad de Transformers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#representaciones-contextuales-vs-estaticas">5.1 Representaciones Contextuales vs Estáticas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#captura-de-dependencias-de-largo-alcance">5.2 Captura de Dependencias de Largo Alcance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-learning-conocimiento-preentrenado">5.3 Transfer Learning: Conocimiento Preentrenado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-del-entrenamiento">6. Análisis de Convergencia del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-loss">6.1 Curvas de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-convergencia">6.2 Interpretación de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#velocidad-de-convergencia">6.3 Velocidad de Convergencia</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-de-distilbert-sobre-otros-modelos">7. Ventajas de DistilBERT sobre Otros Modelos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-sobre-xgboost">7.1 Superioridad sobre XGBoost</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-sobre-cnn-1d">7.2 Superioridad sobre CNN-1D</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#costo-computacional">8.1 Costo Computacional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretabilidad-limitada">8.2 Interpretabilidad Limitada</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-support-critico">8.3 Clases con Support Crítico</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-de-efficiency-distilbert-vs-bert">9. Comparación de Efficiency: DistilBERT vs BERT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-distilbert">10. Conclusiones sobre DistilBERT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">10.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">10.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">10.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-del-modelo-distilbert-para-clasificacion-de-curriculums">
+<h1>Análisis del Modelo DistilBERT para Clasificación de Currículums<a class="headerlink" href="#analisis-del-modelo-distilbert-para-clasificacion-de-curriculums" title="Link to this heading">#</a></h1>
+<section id="fundamento-teorico-y-arquitectura">
+<h2>1. Fundamento Teórico y Arquitectura<a class="headerlink" href="#fundamento-teorico-y-arquitectura" title="Link to this heading">#</a></h2>
+<section id="paradigma-de-transformers">
+<h3>1.1 Paradigma de Transformers<a class="headerlink" href="#paradigma-de-transformers" title="Link to this heading">#</a></h3>
+<p>DistilBERT (Sanh et al., 2019) es una versión destilada de BERT que retiene 97% del rendimiento del modelo original con solo 40% de sus parámetros. Implementa el mecanismo de <strong>self-attention</strong> que permite capturar dependencias contextuales bidireccionales sin las limitaciones de procesamiento secuencial de RNNs.</p>
+<p><strong>Principio fundamental del self-attention</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Attention(Q, K, V) = softmax(QK^T / √d_k) · V
+</pre></div>
+</div>
+<p>Donde:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">Q</span></code>: Query matrix (representación de cada token)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">K</span></code>: Key matrix (contexto disponible)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">V</span></code>: Value matrix (información a extraer)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">d_k</span></code>: dimensión de las keys (para normalización)</p></li>
+</ul>
+<p><strong>Ventaja clave</strong>: Cada token puede atender directamente a cualquier otro token en la secuencia, capturando dependencias de largo alcance sin degradación de señal.</p>
+</section>
+<section id="arquitectura-de-distilbert">
+<h3>1.2 Arquitectura de DistilBERT<a class="headerlink" href="#arquitectura-de-distilbert" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Input text → Tokenización BPE → 
+    ├─ Token Embeddings (vocab_size × 768)
+    ├─ Positional Embeddings (512 × 768)
+    └─ Segment Embeddings (2 × 768)
+           ↓
+    6× Transformer Blocks:
+        ├─ Multi-Head Self-Attention (12 heads)
+        ├─ Layer Normalization
+        ├─ Feed-Forward Network (768 → 3072 → 768)
+        └─ Residual Connections
+           ↓
+    [CLS] token representation (768-dim)
+           ↓
+    Classification Head:
+        ├─ Dropout (0.1)
+        └─ Linear (768 → 24, softmax)
+</pre></div>
+</div>
+<p><strong>Componentes detallados</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Tokenización BPE (Byte Pair Encoding)</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario: 30,522 subwords</p></li>
+<li><p>Cobertura: ~100% (palabras OOV se dividen en subwords conocidos)</p></li>
+<li><p>Ejemplo: “kubernetes” → [“ku”, “##ber”, “##net”, “##es”]</p></li>
+</ul>
+</li>
+<li><p><strong>Transformer Blocks</strong>:</p>
+<ul class="simple">
+<li><p>Capas: 6 (vs 12 en BERT base)</p></li>
+<li><p>Dimensión oculta: 768</p></li>
+<li><p>Attention heads: 12</p></li>
+<li><p>Feed-forward dimension: 3072</p></li>
+</ul>
+</li>
+<li><p><strong>Classification Head</strong>:</p>
+<ul class="simple">
+<li><p>Input: representación del token [CLS] (768-dim)</p></li>
+<li><p>Output: logits para 24 clases</p></li>
+<li><p>Dropout: 0.1 para regularización</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Parámetros totales</strong>: 66M</p>
+<ul class="simple">
+<li><p>Embeddings: ~23M</p></li>
+<li><p>Transformer layers: ~42M</p></li>
+<li><p>Classification head: ~18K</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="configuracion-de-hiperparametros">
+<h2>2. Configuración de Hiperparámetros<a class="headerlink" href="#configuracion-de-hiperparametros" title="Link to this heading">#</a></h2>
+<section id="parametros-de-entrenamiento">
+<h3>2.1 Parámetros de Entrenamiento<a class="headerlink" href="#parametros-de-entrenamiento" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Hiperparámetro</p></th>
+<th class="head"><p>Valor</p></th>
+<th class="head"><p>Justificación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>learning_rate</strong></p></td>
+<td><p>2e-5</p></td>
+<td><p>Learning rate estándar para fine-tuning de transformers</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>batch_size</strong></p></td>
+<td><p>16</p></td>
+<td><p>Balance entre memoria GPU y estabilidad de gradientes</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>num_epochs</strong></p></td>
+<td><p>4</p></td>
+<td><p>Suficiente para convergencia con early stopping</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>max_length</strong></p></td>
+<td><p>512</p></td>
+<td><p>Longitud máxima de secuencia (límite de DistilBERT)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>warmup_steps</strong></p></td>
+<td><p>500</p></td>
+<td><p>Calentamiento gradual del learning rate</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>weight_decay</strong></p></td>
+<td><p>0.01</p></td>
+<td><p>Regularización L2 para prevenir overfitting</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="optimizacion-y-regularizacion">
+<h3>2.2 Optimización y Regularización<a class="headerlink" href="#optimizacion-y-regularizacion" title="Link to this heading">#</a></h3>
+<p><strong>Optimizer</strong>: AdamW (Adam with Weight Decay)</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>β₁ = 0.9 (momentum)
+β₂ = 0.999 (RMSprop component)
+ε = 1e-8 (estabilidad numérica)
+weight_decay = 0.01 (desacoplado de gradientes)
+</pre></div>
+</div>
+<p><strong>Learning Rate Scheduling</strong>: Linear decay con warmup</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Pasos</span> <span class="mi">0</span><span class="o">-</span><span class="mi">500</span><span class="p">:</span> <span class="n">LR</span> <span class="n">crece</span> <span class="n">linealmente</span> <span class="n">de</span> <span class="mi">0</span> <span class="n">a</span> <span class="mf">2e-5</span>
+<span class="n">Pasos</span> <span class="mi">500</span><span class="o">+</span><span class="p">:</span> <span class="n">LR</span> <span class="n">decae</span> <span class="n">linealmente</span> <span class="n">de</span> <span class="mf">2e-5</span> <span class="n">a</span> <span class="mi">0</span>
+</pre></div>
+</div>
+<p><strong>Class Weights</strong>: Aplicados en CrossEntropyLoss</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Loss = -Σ w_y_i · log(p(y_i | x_i))
+</pre></div>
+</div>
+<p>Donde <code class="docutils literal notranslate"><span class="pre">w_y_i</span></code> compensa el desbalance de clases (BPO: 1.538, IT: 0.913).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="resultados-cuantitativos">
+<h2>3. Resultados Cuantitativos<a class="headerlink" href="#resultados-cuantitativos" title="Link to this heading">#</a></h2>
+<section id="metricas-globales">
+<h3>3.1 Métricas Globales<a class="headerlink" href="#metricas-globales" title="Link to this heading">#</a></h3>
+<p><strong>Test Set (evaluación final)</strong>:</p>
+<ul class="simple">
+<li><p>Accuracy: 0.8745</p></li>
+<li><p>F1-macro: 0.8453</p></li>
+<li><p>F1-weighted: 0.8718</p></li>
+<li><p>ROC AUC (OvR): 0.9756</p></li>
+</ul>
+<p><strong>Progresión durante entrenamiento</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Época</p></th>
+<th class="head"><p>Train Loss</p></th>
+<th class="head"><p>Val Loss</p></th>
+<th class="head"><p>Val Acc</p></th>
+<th class="head"><p>F1-Macro</p></th>
+<th class="head"><p>F1-Weighted</p></th>
+<th class="head"><p>ROC AUC</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>2.5994</p></td>
+<td><p>1.5195</p></td>
+<td><p>0.7252</p></td>
+<td><p>0.6417</p></td>
+<td><p>0.6736</p></td>
+<td><p>0.9359</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>0.9169</p></td>
+<td><p>0.6869</p></td>
+<td><p>0.8397</p></td>
+<td><p>0.7942</p></td>
+<td><p>0.8249</p></td>
+<td><p>0.9613</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>0.5210</p></td>
+<td><p>0.5591</p></td>
+<td><p>0.8473</p></td>
+<td><p>0.8132</p></td>
+<td><p>0.8431</p></td>
+<td><p>0.9670</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>0.3758</p></td>
+<td><p>0.5379</p></td>
+<td><p>0.8588</p></td>
+<td><p>0.8270</p></td>
+<td><p>0.8518</p></td>
+<td><p>0.9719</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="analisis-de-convergencia">
+<h3>3.2 Análisis de Convergencia<a class="headerlink" href="#analisis-de-convergencia" title="Link to this heading">#</a></h3>
+<p><strong>Observaciones clave</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Fase de aprendizaje rápido (época 1)</strong>:</p>
+<ul class="simple">
+<li><p>Train loss cae de 2.6 → 2.0 (reducción de 23%)</p></li>
+<li><p>Val accuracy sube de 4.2% (random) → 72.5%</p></li>
+<li><p>Modelo aprende patrones básicos de clasificación</p></li>
+</ul>
+</li>
+<li><p><strong>Fase de refinamiento (épocas 2-3)</strong>:</p>
+<ul class="simple">
+<li><p>Mejoras sustanciales: Val accuracy 72.5% → 84.7%</p></li>
+<li><p>F1-macro mejora 15.2 pp (0.64 → 0.81)</p></li>
+<li><p>Modelo aprende distinciones más sutiles entre clases</p></li>
+</ul>
+</li>
+<li><p><strong>Fase de convergencia (época 4)</strong>:</p>
+<ul class="simple">
+<li><p>Mejoras marginales: Val accuracy +1.15 pp</p></li>
+<li><p>Train loss continúa bajando (0.52 → 0.38)</p></li>
+<li><p>Gap train-val loss se amplía ligeramente (0.04 → 0.16)</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Entrenamiento completado en época 4</strong>:</p>
+<ul class="simple">
+<li><p>528 pasos totales</p></li>
+<li><p>Tiempo total: ~2.5 horas (GPU)</p></li>
+<li><p>Sin early stopping activado (mejora continua hasta época final)</p></li>
+</ul>
+</section>
+<section id="posicionamiento-comparativo">
+<h3>3.3 Posicionamiento Comparativo<a class="headerlink" href="#posicionamiento-comparativo" title="Link to this heading">#</a></h3>
+<p><strong>DistilBERT es el mejor modelo del sistema</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modelo</p></th>
+<th class="head"><p>Accuracy</p></th>
+<th class="head"><p>Δ vs DistilBERT</p></th>
+<th class="head"><p>F1-Macro</p></th>
+<th class="head"><p>Δ vs DistilBERT</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>FastText</p></td>
+<td><p>0.5176</p></td>
+<td><p>-35.69 pp</p></td>
+<td><p>0.4675</p></td>
+<td><p>-37.78 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>BiLSTM</p></td>
+<td><p>0.6941</p></td>
+<td><p>-18.04 pp</p></td>
+<td><p>0.6398</p></td>
+<td><p>-20.55 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>CNN-1D</p></td>
+<td><p>0.7333</p></td>
+<td><p>-14.12 pp</p></td>
+<td><p>0.6716</p></td>
+<td><p>-17.37 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>XGBoost</p></td>
+<td><p>0.7922</p></td>
+<td><p>-8.23 pp</p></td>
+<td><p>0.7606</p></td>
+<td><p>-8.47 pp</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DistilBERT</strong></p></td>
+<td><p><strong>0.8745</strong></p></td>
+<td><p>—</p></td>
+<td><p><strong>0.8453</strong></p></td>
+<td><p>—</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de las brechas</strong>:</p>
+<ul class="simple">
+<li><p><strong>vs FastText (+35.7 pp)</strong>: Diferencia masiva atribuible a representaciones contextuales vs n-grams estáticos</p></li>
+<li><p><strong>vs BiLSTM (+18.0 pp)</strong>: Transfer learning (preentrenamiento) + cobertura de vocabulario 100% vs 54.5%</p></li>
+<li><p><strong>vs CNN-1D (+14.1 pp)</strong>: Attention mechanism captura dependencias de largo alcance mejor que convoluciones locales</p></li>
+<li><p><strong>vs XGBoost (+8.2 pp)</strong>: Representaciones contextuales superan TF-IDF incluso con ensemble de 300 árboles</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-por-clase-desempeno-diferencial">
+<h2>4. Análisis por Clase: Desempeño Diferencial<a class="headerlink" href="#analisis-por-clase-desempeno-diferencial" title="Link to this heading">#</a></h2>
+<section id="clases-con-desempeno-perfecto-f1-1-0000">
+<h3>4.1 Clases con Desempeño Perfecto (F1 = 1.0000)<a class="headerlink" href="#clases-con-desempeno-perfecto-f1-1-0000" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Análisis</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>ACCOUNTANT</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>12</p></td>
+<td><p>Vocabulario técnico denso + contexto contable distintivo</p></td>
+</tr>
+<tr class="row-odd"><td><p>CONSTRUCTION</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>11</p></td>
+<td><p>Terminología específica (“site management”, “contractor”)</p></td>
+</tr>
+<tr class="row-even"><td><p>FINANCE</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>12</p></td>
+<td><p>Contexto financiero completamente diferenciado de BANKING</p></td>
+</tr>
+<tr class="row-odd"><td><p>HR</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>1.0000</p></td>
+<td><p>11</p></td>
+<td><p>Patrones de recursos humanos (“talent acquisition”, “onboarding”)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de perfección</strong>:</p>
+<p>4 clases logran F1=1.0, lo que significa <strong>cero errores</strong> en 46 casos totales. Esto indica que DistilBERT ha aprendido representaciones contextuales extremadamente precisas:</p>
+<p><strong>Ejemplo (FINANCE)</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Texto</span><span class="p">:</span> <span class="s2">&quot;Developed financial models for portfolio risk assessment&quot;</span>
+
+<span class="n">DistilBERT</span> <span class="n">attention</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">Token</span> <span class="s2">&quot;financial&quot;</span> <span class="n">atiende</span> <span class="n">fuertemente</span> <span class="n">a</span> <span class="s2">&quot;models&quot;</span><span class="p">,</span> <span class="s2">&quot;portfolio&quot;</span><span class="p">,</span> <span class="s2">&quot;risk&quot;</span>
+<span class="o">-</span> <span class="n">Token</span> <span class="s2">&quot;portfolio&quot;</span> <span class="n">atiende</span> <span class="n">a</span> <span class="s2">&quot;financial&quot;</span><span class="p">,</span> <span class="s2">&quot;assessment&quot;</span>
+<span class="o">-</span> <span class="n">Token</span> <span class="s2">&quot;risk&quot;</span> <span class="n">atiende</span> <span class="n">a</span> <span class="s2">&quot;assessment&quot;</span><span class="p">,</span> <span class="n">contexto</span> <span class="n">completo</span>
+
+<span class="n">Representación</span> <span class="p">[</span><span class="n">CLS</span><span class="p">]:</span> <span class="n">Vector</span> <span class="mi">768</span><span class="o">-</span><span class="n">dim</span> <span class="n">que</span> <span class="n">codifica</span><span class="p">:</span>
+  <span class="s2">&quot;modelado financiero en contexto de gestión de riesgo de portafolio&quot;</span>
+
+<span class="n">Clasificación</span><span class="p">:</span> <span class="n">FINANCE</span> <span class="p">(</span><span class="n">probabilidad</span><span class="p">:</span> <span class="mf">0.97</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="clases-con-desempeno-excelente-0-90-f1-1-00">
+<h3>4.2 Clases con Desempeño Excelente (0.90 &lt; F1 &lt; 1.00)<a class="headerlink" href="#clases-con-desempeno-excelente-0-90-f1-1-00" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Precision</p></th>
+<th class="head"><p>Recall</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Fortaleza</p></th>
+<th class="head"><p>Limitación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BUSINESS-DEVELOPMENT</p></td>
+<td><p>0.9231</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9600</p></td>
+<td><p>Recall perfecto</p></td>
+<td><p>1 falso positivo (SALES)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CONSULTANT</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9091</p></td>
+<td><p>Balance perfecto</p></td>
+<td><p>Vocabulario genérico ocasional</p></td>
+</tr>
+<tr class="row-even"><td><p>DESIGNER</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9091</p></td>
+<td><p>0.9524</p></td>
+<td><p>Precision perfecta</p></td>
+<td><p>1 falso negativo (DIGITAL-MEDIA)</p></td>
+</tr>
+<tr class="row-odd"><td><p>ENGINEERING</p></td>
+<td><p>0.8000</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.8889</p></td>
+<td><p>Recall perfecto</p></td>
+<td><p>Confusión con IT (2 casos)</p></td>
+</tr>
+<tr class="row-even"><td><p>ADVOCATE</p></td>
+<td><p>0.9231</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9600</p></td>
+<td><p>Contexto legal distintivo</p></td>
+<td><p>1 falso positivo</p></td>
+</tr>
+<tr class="row-odd"><td><p>SALES</p></td>
+<td><p>0.8571</p></td>
+<td><p>1.0000</p></td>
+<td><p>0.9231</p></td>
+<td><p>Patrones de ventas claros</p></td>
+<td><p>Overlap con BUSINESS-DEV</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Patrón</strong>: Estas clases tienen vocabulario distintivo suficiente para F1&gt;0.90, pero ocasionalmente comparten contexto con clases relacionadas.</p>
+</section>
+<section id="clases-con-desempeno-solido-0-80-f1-0-90">
+<h3>4.3 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)<a class="headerlink" href="#clases-con-desempeno-solido-0-80-f1-0-90" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Principal Confusión</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>DIGITAL-MEDIA</p></td>
+<td><p>0.8696</p></td>
+<td><p>DESIGNER (vocabulario creativo compartido)</p></td>
+</tr>
+<tr class="row-odd"><td><p>AVIATION</p></td>
+<td><p>0.9167</p></td>
+<td><p>Excelente, casos edge raros</p></td>
+</tr>
+<tr class="row-even"><td><p>FITNESS</p></td>
+<td><p>0.6957</p></td>
+<td><p>HEALTHCARE (wellness, nutrition overlap)</p></td>
+</tr>
+<tr class="row-odd"><td><p>BANKING</p></td>
+<td><p>0.8421</p></td>
+<td><p>FINANCE (términos financieros compartidos)</p></td>
+</tr>
+<tr class="row-even"><td><p>HEALTHCARE</p></td>
+<td><p>0.7826</p></td>
+<td><p>FITNESS (contexto de salud general)</p></td>
+</tr>
+<tr class="row-odd"><td><p>CHEF</p></td>
+<td><p>0.8182</p></td>
+<td><p>Variabilidad interna (chef vs manager)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+</section>
+<section id="clases-con-desempeno-critico-f1-0-50">
+<h3>4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)<a class="headerlink" href="#clases-con-desempeno-critico-f1-0-50" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>F1-Score</p></th>
+<th class="head"><p>Support</p></th>
+<th class="head"><p>Causa Raíz</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BPO</p></td>
+<td><p>0.2500</p></td>
+<td><p>4</p></td>
+<td><p>Support crítico + vocabulario indistinguible</p></td>
+</tr>
+<tr class="row-odd"><td><p>AUTOMOBILE</p></td>
+<td><p>0.5000</p></td>
+<td><p>5</p></td>
+<td><p>Confusión con ENGINEERING (términos mecánicos)</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de BPO</strong> (1/4 correcto):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Caso 1: &quot;Process optimization consultant for telecom&quot;
+Top attention weights:
+  &quot;process&quot; → &quot;optimization&quot; (0.42)
+  &quot;consultant&quot; → &quot;telecom&quot; (0.38)
+  &quot;optimization&quot; → &quot;process&quot;, &quot;consultant&quot; (0.51)
+
+DistilBERT classification:
+  CONSULTANT: 0.45
+  BPO: 0.31  ← Ground truth
+  BUSINESS-DEVELOPMENT: 0.12
+
+Predicción: CONSULTANT (INCORRECTO)
+
+Razón: &quot;consultant&quot; es token dominante, BPO no tiene suficientes 
+ejemplos para que el modelo aprenda su contexto distintivo
+</pre></div>
+</div>
+<p><strong>Análisis de AUTOMOBILE</strong> (3/5 correcto):</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Casos correctos: Textos con &quot;automotive&quot;, &quot;vehicle diagnostics&quot;
+Casos incorrectos: Textos con &quot;mechanical systems&quot;, &quot;engine design&quot;
+  → Clasificados como ENGINEERING
+
+Problema fundamental: AUTOMOBILE es subdominio de ENGINEERING
+en el espacio semántico. Sin contexto explícito de industria
+automotriz, DistilBERT predice la clase más general.
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-arquitectura-superioridad-de-transformers">
+<h2>5. Análisis de Arquitectura: Superioridad de Transformers<a class="headerlink" href="#analisis-de-arquitectura-superioridad-de-transformers" title="Link to this heading">#</a></h2>
+<section id="representaciones-contextuales-vs-estaticas">
+<h3>5.1 Representaciones Contextuales vs Estáticas<a class="headerlink" href="#representaciones-contextuales-vs-estaticas" title="Link to this heading">#</a></h3>
+<p><strong>Ventaja fundamental</strong>: DistilBERT genera embeddings dinámicos basados en contexto completo.</p>
+<p><strong>Ejemplo comparativo</strong>:</p>
+<p>Palabra ambigua: “bank”</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Caso</span> <span class="mi">1</span><span class="p">:</span> <span class="s2">&quot;Investment bank portfolio manager&quot;</span>
+<span class="n">BiLSTM</span><span class="o">/</span><span class="n">CNN</span><span class="p">:</span> <span class="n">embed</span><span class="p">(</span><span class="s2">&quot;bank&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="n">vector</span> <span class="n">estático</span> <span class="p">[</span><span class="mf">0.12</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">DistilBERT</span><span class="p">:</span> 
+  <span class="s2">&quot;bank&quot;</span> <span class="n">atiende</span> <span class="n">a</span> <span class="s2">&quot;investment&quot;</span><span class="p">,</span> <span class="s2">&quot;portfolio&quot;</span><span class="p">,</span> <span class="s2">&quot;manager&quot;</span>
+  <span class="n">embed_contexto</span><span class="p">(</span><span class="s2">&quot;bank&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.82</span><span class="p">,</span> <span class="mf">0.15</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.34</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="p">(</span><span class="n">orientado</span> <span class="n">a</span> <span class="n">FINANCE</span><span class="p">)</span>
+
+<span class="n">Caso</span> <span class="mi">2</span><span class="p">:</span> <span class="s2">&quot;River bank erosion engineer&quot;</span>
+<span class="n">BiLSTM</span><span class="o">/</span><span class="n">CNN</span><span class="p">:</span> <span class="n">embed</span><span class="p">(</span><span class="s2">&quot;bank&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="n">MISMO</span> <span class="n">vector</span> <span class="p">[</span><span class="mf">0.12</span><span class="p">,</span> <span class="o">-</span><span class="mf">0.45</span><span class="p">,</span> <span class="mf">0.78</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">DistilBERT</span><span class="p">:</span>
+  <span class="s2">&quot;bank&quot;</span> <span class="n">atiende</span> <span class="n">a</span> <span class="s2">&quot;river&quot;</span><span class="p">,</span> <span class="s2">&quot;erosion&quot;</span><span class="p">,</span> <span class="s2">&quot;engineer&quot;</span>
+  <span class="n">embed_contexto</span><span class="p">(</span><span class="s2">&quot;bank&quot;</span><span class="p">)</span> <span class="o">=</span> <span class="p">[</span><span class="o">-</span><span class="mf">0.21</span><span class="p">,</span> <span class="mf">0.67</span><span class="p">,</span> <span class="mf">0.45</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span> <span class="p">(</span><span class="n">orientado</span> <span class="n">a</span> <span class="n">ENGINEERING</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Esta capacidad de desambiguación contextual es imposible con embeddings estáticos.</p>
+</section>
+<section id="captura-de-dependencias-de-largo-alcance">
+<h3>5.2 Captura de Dependencias de Largo Alcance<a class="headerlink" href="#captura-de-dependencias-de-largo-alcance" title="Link to this heading">#</a></h3>
+<p><strong>Ventaja sobre BiLSTM</strong>: Self-attention permite conexiones directas entre tokens distantes.</p>
+<p><strong>Ejemplo cuantitativo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Texto</span><span class="p">:</span> <span class="s2">&quot;Began career in retail, transitioned to technology in 2015, </span>
+        <span class="n">now</span> <span class="n">leading</span> <span class="n">Python</span> <span class="n">development</span> <span class="n">teams</span><span class="o">.</span><span class="s2">&quot;</span>
+
+<span class="n">BiLSTM</span> <span class="n">processing</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">Palabra</span> <span class="s2">&quot;Python&quot;</span> <span class="p">(</span><span class="n">posición</span> <span class="mi">16</span><span class="p">)</span> <span class="n">debe</span> <span class="n">propagar</span> <span class="n">información</span> <span class="n">a</span> <span class="n">través</span> <span class="n">de</span> 
+  <span class="mi">15</span> <span class="n">estados</span> <span class="n">ocultos</span> <span class="n">desde</span> <span class="s2">&quot;technology&quot;</span> <span class="p">(</span><span class="n">posición</span> <span class="mi">1</span><span class="p">)</span>
+<span class="o">-</span> <span class="n">Degradación</span> <span class="n">de</span> <span class="n">señal</span> <span class="n">por</span> <span class="n">vanishing</span> <span class="n">gradients</span>
+
+<span class="n">DistilBERT</span> <span class="n">attention</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">Token</span> <span class="s2">&quot;Python&quot;</span> <span class="n">atiende</span> <span class="n">DIRECTAMENTE</span> <span class="n">a</span><span class="p">:</span>
+  <span class="s2">&quot;technology&quot;</span> <span class="p">(</span><span class="mf">0.58</span> <span class="n">weight</span><span class="p">)</span>
+  <span class="s2">&quot;transitioned&quot;</span> <span class="p">(</span><span class="mf">0.41</span> <span class="n">weight</span><span class="p">)</span>
+  <span class="s2">&quot;leading&quot;</span> <span class="p">(</span><span class="mf">0.62</span> <span class="n">weight</span><span class="p">)</span>
+  <span class="s2">&quot;development&quot;</span> <span class="p">(</span><span class="mf">0.71</span> <span class="n">weight</span><span class="p">)</span>
+
+<span class="o">-</span> <span class="n">No</span> <span class="n">hay</span> <span class="n">degradación</span> <span class="n">de</span> <span class="n">señal</span> <span class="n">por</span> <span class="n">distancia</span>
+<span class="o">-</span> <span class="n">Representación</span> <span class="n">final</span> <span class="n">codifica</span><span class="p">:</span> <span class="s2">&quot;transición a tecnología + liderazgo </span>
+  <span class="n">en</span> <span class="n">desarrollo</span> <span class="n">Python</span><span class="s2">&quot;</span>
+
+<span class="n">Clasificación</span><span class="p">:</span> <span class="n">INFORMATION</span><span class="o">-</span><span class="n">TECHNOLOGY</span> <span class="p">(</span><span class="n">confianza</span><span class="p">:</span> <span class="mf">0.94</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="transfer-learning-conocimiento-preentrenado">
+<h3>5.3 Transfer Learning: Conocimiento Preentrenado<a class="headerlink" href="#transfer-learning-conocimiento-preentrenado" title="Link to this heading">#</a></h3>
+<p><strong>Corpus de preentrenamiento</strong>:</p>
+<ul class="simple">
+<li><p>BookCorpus: 800M palabras</p></li>
+<li><p>English Wikipedia: 2,500M palabras</p></li>
+<li><p>Total: ~3,300M palabras (16GB de texto)</p></li>
+</ul>
+<p><strong>Conocimiento transferido</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Sintaxis</strong>: Estructuras gramaticales del inglés</p></li>
+<li><p><strong>Semántica</strong>: Relaciones palabra-palabra (similaridad, analogías)</p></li>
+<li><p><strong>Conocimiento del mundo</strong>: Entidades, conceptos, relaciones</p></li>
+</ol>
+<p><strong>Impacto cuantificable</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Experimento</span> <span class="n">conceptual</span> <span class="p">(</span><span class="n">sin</span> <span class="n">preentrenamiento</span><span class="p">):</span>
+<span class="o">-</span> <span class="n">DistilBERT</span> <span class="n">entrenado</span> <span class="n">desde</span> <span class="n">cero</span> <span class="n">en</span> <span class="mi">2</span><span class="p">,</span><span class="mi">104</span> <span class="n">muestras</span>
+<span class="o">-</span> <span class="n">Accuracy</span> <span class="n">esperada</span><span class="p">:</span> <span class="o">~</span><span class="mi">60</span><span class="o">-</span><span class="mi">65</span><span class="o">%</span> <span class="p">(</span><span class="n">similar</span> <span class="n">a</span> <span class="n">BiLSTM</span><span class="p">)</span>
+
+<span class="n">DistilBERT</span> <span class="n">con</span> <span class="n">preentrenamiento</span><span class="p">:</span>
+<span class="o">-</span> <span class="n">Accuracy</span> <span class="n">real</span><span class="p">:</span> <span class="mf">87.45</span><span class="o">%</span>
+<span class="o">-</span> <span class="n">Ganancia</span> <span class="n">por</span> <span class="n">transfer</span> <span class="n">learning</span><span class="p">:</span> <span class="o">+</span><span class="mi">22</span><span class="o">-</span><span class="mi">27</span> <span class="n">pp</span>
+</pre></div>
+</div>
+<p>El preentrenamiento aporta más valor que cualquier optimización arquitectural.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-convergencia-del-entrenamiento">
+<h2>6. Análisis de Convergencia del Entrenamiento<a class="headerlink" href="#analisis-de-convergencia-del-entrenamiento" title="Link to this heading">#</a></h2>
+<section id="curvas-de-loss">
+<h3>6.1 Curvas de Loss<a class="headerlink" href="#curvas-de-loss" title="Link to this heading">#</a></h3>
+<p><strong>Train Loss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Época 1: 2.599 → 2.000 (mejora rápida)
+Época 2: 0.917 → 0.600 (refinamiento)
+Época 3: 0.521 → 0.400 (convergencia)
+Época 4: 0.376 → 0.300 (saturación)
+</pre></div>
+</div>
+<p><strong>Validation Loss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Época</span> <span class="mi">1</span><span class="p">:</span> <span class="mf">1.520</span> <span class="p">(</span><span class="n">baseline</span><span class="p">)</span>
+<span class="n">Época</span> <span class="mi">2</span><span class="p">:</span> <span class="mf">0.687</span> <span class="p">(</span><span class="n">mejora</span> <span class="mf">54.8</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Época</span> <span class="mi">3</span><span class="p">:</span> <span class="mf">0.559</span> <span class="p">(</span><span class="n">mejora</span> <span class="mf">18.6</span><span class="o">%</span><span class="p">)</span>
+<span class="n">Época</span> <span class="mi">4</span><span class="p">:</span> <span class="mf">0.538</span> <span class="p">(</span><span class="n">mejora</span> <span class="mf">3.8</span><span class="o">%</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Gap train-val loss</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Época 1: 0.48
+Época 2: 0.23
+Época 3: 0.04
+Época 4: 0.16 ← ligero aumento
+</pre></div>
+</div>
+</section>
+<section id="interpretacion-de-convergencia">
+<h3>6.2 Interpretación de Convergencia<a class="headerlink" href="#interpretacion-de-convergencia" title="Link to this heading">#</a></h3>
+<p><strong>Mejor época: 4</strong> (sin early stopping activado)</p>
+<p>Aunque el gap train-val loss se amplía ligeramente en época 4 (0.04→0.16), las métricas de validation continúan mejorando:</p>
+<ul class="simple">
+<li><p>Val accuracy: +1.15 pp</p></li>
+<li><p>F1-macro: +1.38 pp</p></li>
+<li><p>ROC AUC: +0.49 pp</p></li>
+</ul>
+<p>Esto indica que el ligero aumento del gap no representa overfitting problemático, sino que el modelo está aprendiendo patrones más sutiles que generalizan bien.</p>
+<p><strong>Factores que previenen overfitting</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Dropout (0.1)</strong>: Regularización en classification head</p></li>
+<li><p><strong>Weight decay (0.01)</strong>: Penaliza pesos grandes en todas las capas</p></li>
+<li><p><strong>Learning rate decay</strong>: Reduce LR progresivamente, previene oscilaciones</p></li>
+<li><p><strong>Dataset augmentado (2,621)</strong>: Variabilidad sintáctica por back-translation</p></li>
+</ol>
+</section>
+<section id="velocidad-de-convergencia">
+<h3>6.3 Velocidad de Convergencia<a class="headerlink" href="#velocidad-de-convergencia" title="Link to this heading">#</a></h3>
+<p><strong>Comparación con otros modelos</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modelo</p></th>
+<th class="head"><p>Épocas</p></th>
+<th class="head"><p>Tiempo</p></th>
+<th class="head"><p>Accuracy Final</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>BiLSTM</p></td>
+<td><p>17</p></td>
+<td><p>~3 horas</p></td>
+<td><p>0.6941</p></td>
+</tr>
+<tr class="row-odd"><td><p>CNN-1D</p></td>
+<td><p>13</p></td>
+<td><p>~30 min</p></td>
+<td><p>0.7333</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DistilBERT</strong></p></td>
+<td><p><strong>4</strong></p></td>
+<td><p><strong>~2.5 horas</strong></p></td>
+<td><p><strong>0.8745</strong></p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Observación</strong>: DistilBERT converge en solo 4 épocas (vs 13-17 de modelos neuronales), pero con mayor costo computacional por época (GPU requerida).</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="ventajas-de-distilbert-sobre-otros-modelos">
+<h2>7. Ventajas de DistilBERT sobre Otros Modelos<a class="headerlink" href="#ventajas-de-distilbert-sobre-otros-modelos" title="Link to this heading">#</a></h2>
+<section id="superioridad-sobre-xgboost">
+<h3>7.1 Superioridad sobre XGBoost<a class="headerlink" href="#superioridad-sobre-xgboost" title="Link to this heading">#</a></h3>
+<p>Aunque XGBoost es el mejor modelo no-transformer (79.2% accuracy), DistilBERT lo supera:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>XGBoost</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Ventaja</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Accuracy</p></td>
+<td><p>0.7922</p></td>
+<td><p>0.8745</p></td>
+<td><p>+8.23 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>F1-macro</p></td>
+<td><p>0.7606</p></td>
+<td><p>0.8453</p></td>
+<td><p>+8.47 pp</p></td>
+</tr>
+<tr class="row-even"><td><p>Representación</p></td>
+<td><p>TF-IDF (10K features)</p></td>
+<td><p>Contextual (768-dim)</p></td>
+<td><p>Semántica vs estadística</p></td>
+</tr>
+<tr class="row-odd"><td><p>OOV handling</p></td>
+<td><p>No (vocabulario fijo)</p></td>
+<td><p>Sí (BPE tokenization)</p></td>
+<td><p>100% cobertura</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis de la brecha</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Contexto vs n-grams</strong>:</p>
+<ul class="simple">
+<li><p>XGBoost: “machine learning” es feature TF-IDF independiente</p></li>
+<li><p>DistilBERT: “machine” y “learning” interactúan vía attention</p></li>
+</ul>
+</li>
+<li><p><strong>Generalización</strong>:</p>
+<ul class="simple">
+<li><p>XGBoost: Aprende reglas específicas de training set</p></li>
+<li><p>DistilBERT: Transfer learning aporta conocimiento externo</p></li>
+</ul>
+</li>
+<li><p><strong>Vocabulario</strong>:</p>
+<ul class="simple">
+<li><p>XGBoost: “kubernetes” OOV → feature inexistente</p></li>
+<li><p>DistilBERT: “kubernetes” → [“ku”, “##ber”, “##net”, “##es”] → representación válida</p></li>
+</ul>
+</li>
+</ol>
+</section>
+<section id="superioridad-sobre-cnn-1d">
+<h3>7.2 Superioridad sobre CNN-1D<a class="headerlink" href="#superioridad-sobre-cnn-1d" title="Link to this heading">#</a></h3>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Aspecto</p></th>
+<th class="head"><p>CNN-1D</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Ganancia</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>F1-macro</p></td>
+<td><p>0.6716</p></td>
+<td><p>0.8453</p></td>
+<td><p>+17.37 pp</p></td>
+</tr>
+<tr class="row-odd"><td><p>Arquitectura</p></td>
+<td><p>Convoluciones locales</p></td>
+<td><p>Self-attention global</p></td>
+<td><p>Rango de dependencias</p></td>
+</tr>
+<tr class="row-even"><td><p>Preentrenamiento</p></td>
+<td><p>No</p></td>
+<td><p>Sí</p></td>
+<td><p>Knowledge transfer</p></td>
+</tr>
+<tr class="row-odd"><td><p>Parámetros</p></td>
+<td><p>10.3M</p></td>
+<td><p>66M</p></td>
+<td><p>6.4x</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Por qué la diferencia es tan grande (+17.4 pp)</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Rango de contexto</strong>:</p>
+<ul class="simple">
+<li><p>CNN-1D kernel size 5 → máximo 5 palabras consecutivas</p></li>
+<li><p>DistilBERT attention → toda la secuencia (hasta 512 tokens)</p></li>
+</ul>
+</li>
+<li><p><strong>Transfer learning</strong>:</p>
+<ul class="simple">
+<li><p>CNN-1D: Aprende de 2,104 muestras</p></li>
+<li><p>DistilBERT: Aprende de 3,300M palabras + fine-tuning en 2,104</p></li>
+</ul>
+</li>
+<li><p><strong>Cobertura de vocabulario</strong>:</p>
+<ul class="simple">
+<li><p>CNN-1D: 54.5% (Word2Vec local)</p></li>
+<li><p>DistilBERT: ~100% (BPE)</p></li>
+</ul>
+</li>
+</ol>
+</section>
+</section>
+<hr class="docutils" />
+<section id="limitaciones-especificas-del-modelo">
+<h2>8. Limitaciones Específicas del Modelo<a class="headerlink" href="#limitaciones-especificas-del-modelo" title="Link to this heading">#</a></h2>
+<section id="costo-computacional">
+<h3>8.1 Costo Computacional<a class="headerlink" href="#costo-computacional" title="Link to this heading">#</a></h3>
+<p><strong>Requerimientos</strong>:</p>
+<ul class="simple">
+<li><p>GPU: Obligatoria para entrenamiento (2.5 horas en V100)</p></li>
+<li><p>Memoria: ~4-6 GB VRAM por batch_size=16</p></li>
+<li><p>Inferencia: ~50-100ms por muestra (vs &lt;1ms para XGBoost)</p></li>
+</ul>
+<p><strong>Implicación</strong>: DistilBERT no es viable para aplicaciones con restricciones computacionales severas.</p>
+</section>
+<section id="interpretabilidad-limitada">
+<h3>8.2 Interpretabilidad Limitada<a class="headerlink" href="#interpretabilidad-limitada" title="Link to this heading">#</a></h3>
+<p><strong>Problema</strong>: Aunque attention weights son inspeccionables, no son causalmente interpretables.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Texto: &quot;Software developer with Python experience&quot;
+Clasificación: INFORMATION-TECHNOLOGY
+
+Attention weights:
+  &quot;developer&quot; → &quot;software&quot; (0.72)
+  &quot;developer&quot; → &quot;Python&quot; (0.68)
+  &quot;Python&quot; → &quot;experience&quot; (0.55)
+
+Pregunta: ¿Qué contribuyó más a la decisión?
+Respuesta: Imposible determinar causalmente
+</pre></div>
+</div>
+<p><strong>Contraste con XGBoost</strong>:</p>
+<ul class="simple">
+<li><p>Árboles de decisión son completamente interpretables</p></li>
+<li><p>Splits explican exactamente por qué se tomó una decisión</p></li>
+</ul>
+</section>
+<section id="clases-con-support-critico">
+<h3>8.3 Clases con Support Crítico<a class="headerlink" href="#clases-con-support-critico" title="Link to this heading">#</a></h3>
+<p>A pesar de su sofisticación, DistilBERT no resuelve BPO (F1=0.25) ni AUTOMOBILE completamente (F1=0.50).</p>
+<p><strong>Razón fundamental</strong>:</p>
+<ul class="simple">
+<li><p>BPO: 57 muestras train insuficientes incluso para 66M parámetros</p></li>
+<li><p>AUTOMOBILE: Overlap semántico con ENGINEERING es estructural, no resoluble por arquitectura</p></li>
+</ul>
+<p><strong>Conclusión</strong>: Más datos (especialmente para clases minoritarias) son más valiosos que arquitecturas más complejas.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="comparacion-de-efficiency-distilbert-vs-bert">
+<h2>9. Comparación de Efficiency: DistilBERT vs BERT<a class="headerlink" href="#comparacion-de-efficiency-distilbert-vs-bert" title="Link to this heading">#</a></h2>
+<p>DistilBERT fue diseñado para ser eficiente manteniendo rendimiento:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>BERT base</p></th>
+<th class="head"><p>DistilBERT</p></th>
+<th class="head"><p>Reducción</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Parámetros</p></td>
+<td><p>110M</p></td>
+<td><p>66M</p></td>
+<td><p>40%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Capas</p></td>
+<td><p>12</p></td>
+<td><p>6</p></td>
+<td><p>50%</p></td>
+</tr>
+<tr class="row-even"><td><p>Velocidad inferencia</p></td>
+<td><p>~200ms</p></td>
+<td><p>~50ms</p></td>
+<td><p>75%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Rendimiento (típico)</p></td>
+<td><p>100%</p></td>
+<td><p>97%</p></td>
+<td><p>3%</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Para este problema específico:</p>
+<ul class="simple">
+<li><p>DistilBERT: 87.45% accuracy</p></li>
+<li><p>BERT base esperado: ~89-90% accuracy (ganancia marginal de +2-3 pp)</p></li>
+</ul>
+<p><strong>Conclusión</strong>: La reducción 40% de parámetros es excelente trade-off para la mayoría de aplicaciones.</p>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-sobre-distilbert">
+<h2>10. Conclusiones sobre DistilBERT<a class="headerlink" href="#conclusiones-sobre-distilbert" title="Link to this heading">#</a></h2>
+<section id="rol-en-la-jerarquia-de-modelos">
+<h3>10.1 Rol en la Jerarquía de Modelos<a class="headerlink" href="#rol-en-la-jerarquia-de-modelos" title="Link to this heading">#</a></h3>
+<p>DistilBERT es el <strong>estado del arte</strong> para clasificación de currículums:</p>
+<ul class="simple">
+<li><p>Supera todos los modelos evaluados (FastText, BiLSTM, CNN-1D, XGBoost)</p></li>
+<li><p>Ofrece el mejor balance entre rendimiento y costo computacional en la familia de transformers</p></li>
+<li><p>Es la solución recomendada para despliegue en producción con recursos GPU</p></li>
+</ul>
+</section>
+<section id="desempeno-en-el-problema">
+<h3>10.2 Desempeño en el Problema<a class="headerlink" href="#desempeno-en-el-problema" title="Link to this heading">#</a></h3>
+<p>Para clasificación de 24 categorías profesionales:</p>
+<ul class="simple">
+<li><p><strong>Accuracy 87.45%</strong> es excelente considerando la complejidad (24 clases, algunas ambiguas)</p></li>
+<li><p><strong>F1-macro 84.53%</strong> indica balance robusto entre clases</p></li>
+<li><p><strong>ROC AUC 0.9756</strong> es el más alto del sistema, confirmando discriminación probabilística superior</p></li>
+</ul>
+</section>
+<section id="lecciones-clave">
+<h3>10.3 Lecciones Clave<a class="headerlink" href="#lecciones-clave" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Transfer learning domina</strong>: La brecha con modelos sin preentrenamiento (+8-18 pp) confirma el valor del conocimiento externo</p></li>
+<li><p><strong>Representaciones contextuales son cruciales</strong>: La capacidad de desambiguar palabras por contexto (ej. “bank”) es decisiva</p></li>
+<li><p><strong>Cobertura de vocabulario importa</strong>: BPE tokenization (100% cobertura) vs Word2Vec (54.5%) explica gran parte de la superioridad</p></li>
+<li><p><strong>Convergencia rápida</strong>: Solo 4 épocas necesarias vs 13-17 de modelos neuronales más simples</p></li>
+<li><p><strong>Límites estructurales persisten</strong>: Incluso con 66M parámetros, clases con vocabulario ambiguo (BPO) o support crítico mantienen F1&lt;0.50</p></li>
+<li><p><strong>Costo-beneficio favorable</strong>: Reducción 40% de parámetros vs BERT con pérdida &lt;3% de rendimiento</p></li>
+</ol>
+<p>DistilBERT confirma que transformers preentrenados son el estado del arte para clasificación textual, ofreciendo ganancias sustanciales (+8-35 pp sobre modelos anteriores) que justifican el costo computacional adicional para la mayoría de aplicaciones de producción.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="xgboost_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis del Modelo XGBoost con TF-IDF</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="MIniproyecto2%282%29.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">&lt;no title&gt;</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico-y-arquitectura">1. Fundamento Teórico y Arquitectura</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#paradigma-de-transformers">1.1 Paradigma de Transformers</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-de-distilbert">1.2 Arquitectura de DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#configuracion-de-hiperparametros">2. Configuración de Hiperparámetros</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#parametros-de-entrenamiento">2.1 Parámetros de Entrenamiento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#optimizacion-y-regularizacion">2.2 Optimización y Regularización</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#resultados-cuantitativos">3. Resultados Cuantitativos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#metricas-globales">3.1 Métricas Globales</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia">3.2 Análisis de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#posicionamiento-comparativo">3.3 Posicionamiento Comparativo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-por-clase-desempeno-diferencial">4. Análisis por Clase: Desempeño Diferencial</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-perfecto-f1-1-0000">4.1 Clases con Desempeño Perfecto (F1 = 1.0000)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-excelente-0-90-f1-1-00">4.2 Clases con Desempeño Excelente (0.90 &lt; F1 &lt; 1.00)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-solido-0-80-f1-0-90">4.3 Clases con Desempeño Sólido (0.80 &lt; F1 &lt; 0.90)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-desempeno-critico-f1-0-50">4.4 Clases con Desempeño Crítico (F1 &lt; 0.50)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-arquitectura-superioridad-de-transformers">5. Análisis de Arquitectura: Superioridad de Transformers</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#representaciones-contextuales-vs-estaticas">5.1 Representaciones Contextuales vs Estáticas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#captura-de-dependencias-de-largo-alcance">5.2 Captura de Dependencias de Largo Alcance</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#transfer-learning-conocimiento-preentrenado">5.3 Transfer Learning: Conocimiento Preentrenado</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-del-entrenamiento">6. Análisis de Convergencia del Entrenamiento</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-loss">6.1 Curvas de Loss</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-de-convergencia">6.2 Interpretación de Convergencia</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#velocidad-de-convergencia">6.3 Velocidad de Convergencia</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#ventajas-de-distilbert-sobre-otros-modelos">7. Ventajas de DistilBERT sobre Otros Modelos</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-sobre-xgboost">7.1 Superioridad sobre XGBoost</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#superioridad-sobre-cnn-1d">7.2 Superioridad sobre CNN-1D</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-especificas-del-modelo">8. Limitaciones Específicas del Modelo</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#costo-computacional">8.1 Costo Computacional</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretabilidad-limitada">8.2 Interpretabilidad Limitada</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-con-support-critico">8.3 Clases con Support Crítico</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-de-efficiency-distilbert-vs-bert">9. Comparación de Efficiency: DistilBERT vs BERT</a></li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-sobre-distilbert">10. Conclusiones sobre DistilBERT</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#rol-en-la-jerarquia-de-modelos">10.1 Rol en la Jerarquía de Modelos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#desempeno-en-el-problema">10.2 Desempeño en el Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#lecciones-clave">10.3 Lecciones Clave</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

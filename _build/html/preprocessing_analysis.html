@@ -1,0 +1,1094 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'preprocessing_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)" href="bilstm_analysis.html" />
+    <link rel="prev" title="Análisis General del Sistema de Clasificación Multiclase de Currículums" href="general_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/preprocessing_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fpreprocessing_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/preprocessing_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-pipeline">1. Arquitectura del Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-general">1.1 Estructura General</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#niveles-de-limpieza-textual">2. Niveles de Limpieza Textual</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-basica-text-basic">2.1 Limpieza Básica (text_basic)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-media-text-medium">2.2 Limpieza Media (text_medium)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-avanzada-text-advanced">2.3 Limpieza Avanzada (text_advanced)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-augmentation-mediante-back-translation">3. Data Augmentation mediante Back-Translation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico">3.1 Fundamento Teórico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-sistema-de-augmentation">3.2 Arquitectura del Sistema de Augmentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chunking-dinamico">3.3 Chunking Dinámico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-de-textos-augmentados">3.4 Validación de Textos Augmentados</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-1-longitud-minima">Criterio 1: Longitud Mínima</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-2-ratio-de-longitud">Criterio 2: Ratio de Longitud</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-3-similitud-semantica">Criterio 3: Similitud Semántica</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-4-preservacion-de-keywords-tecnicas">Criterio 4: Preservación de Keywords Técnicas</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-de-sampling-para-augmentation">3.5 Estrategia de Sampling para Augmentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estadisticas-de-augmentation">3.6 Estadísticas de Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-del-dataset-stratified-group-split">4. División del Dataset: Stratified Group Split</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problema-data-leakage-prevention">4.1 Problema: Data Leakage Prevention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solucion-agrupacion-por-original-id">4.2 Solución: Agrupación por original_id</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stratification">4.3 Stratification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-pesos-de-clase">5. Cálculo de Pesos de Clase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento">5.1 Fundamento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-pesos">5.2 Distribución de Pesos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aplicacion-en-diferentes-modelos">5.3 Aplicación en Diferentes Modelos</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-analisis-estadistico">6. Cobertura de Embeddings: Análisis Estadístico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulario-del-dataset">6.1 Vocabulario del Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-word2vec-local">6.2 Cobertura de Word2Vec Local</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-distilbert">6.3 Comparación con DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-del-pipeline">7. Conclusiones del Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fortalezas-del-diseno">7.1 Fortalezas del Diseño</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-inherentes">7.2 Limitaciones Inherentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#impacto-medible-en-modelos">7.3 Impacto Medible en Modelos</a></li>
+</ul>
+</li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="pipeline-de-preprocesamiento-y-data-augmentation-analisis-tecnico">
+<h1>Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico<a class="headerlink" href="#pipeline-de-preprocesamiento-y-data-augmentation-analisis-tecnico" title="Link to this heading">#</a></h1>
+<section id="arquitectura-del-pipeline">
+<h2>1. Arquitectura del Pipeline<a class="headerlink" href="#arquitectura-del-pipeline" title="Link to this heading">#</a></h2>
+<p>El sistema de preparación de datos implementa un pipeline multietapa con tres niveles progresivos de limpieza textual y un módulo de data augmentation basado en back-translation. La arquitectura está diseñada para maximizar la preservación semántica mientras normaliza el texto para consumo por diferentes arquitecturas de modelos.</p>
+<section id="estructura-general">
+<h3>1.1 Estructura General<a class="headerlink" href="#estructura-general" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Dataset Original (2,484 muestras)
+    ↓
+[Limpieza Básica] → text_basic
+    ↓
+[Limpieza Media] → text_medium
+    ↓
+[Limpieza Avanzada] → text_advanced
+    ↓
+[Data Augmentation] → Dataset Expandido (2,621 muestras)
+    ↓
+[Stratified Group Split] → Train (2,104) | Val (262) | Test (255)
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="niveles-de-limpieza-textual">
+<h2>2. Niveles de Limpieza Textual<a class="headerlink" href="#niveles-de-limpieza-textual" title="Link to this heading">#</a></h2>
+<section id="limpieza-basica-text-basic">
+<h3>2.1 Limpieza Básica (text_basic)<a class="headerlink" href="#limpieza-basica-text-basic" title="Link to this heading">#</a></h3>
+<p><strong>Objetivo</strong>: Normalización sintáctica sin pérdida de información semántica.</p>
+<p><strong>Operaciones</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Decodificación HTML</strong>: <code class="docutils literal notranslate"><span class="pre">html.unescape()</span></code> para convertir entidades HTML (&amp; → &amp;)</p></li>
+<li><p><strong>Eliminación de tags HTML</strong>: Regex <code class="docutils literal notranslate"><span class="pre">r'&lt;[^&gt;]+&gt;'</span></code> para remover markup residual</p></li>
+<li><p><strong>Eliminación de URLs</strong>: Regex <code class="docutils literal notranslate"><span class="pre">r'http\S+|www\S+</span></code> para limpiar enlaces</p></li>
+<li><p><strong>Normalización de guiones Unicode</strong>: Conversión de variantes tipográficas (–, —, －) a <code class="docutils literal notranslate"><span class="pre">-</span></code> estándar</p></li>
+<li><p><strong>Eliminación de caracteres de control</strong>: Rango <code class="docutils literal notranslate"><span class="pre">[\x00-\x1F\x7F-\x9F]</span></code> para remover no imprimibles</p></li>
+<li><p><strong>Normalización de espacios</strong>: Colapso de múltiples espacios a uno solo</p></li>
+</ol>
+<p><strong>Justificación</strong>: Esta capa preserva el texto en su forma más cercana a la original, permitiendo que modelos basados en subword tokenization (DistilBERT) o character n-grams (FastText) aprovechen patrones morfológicos completos.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Original</span><span class="p">:</span> <span class="s2">&quot;Managed team  of 5 engineers&amp;#44; developing web&amp;#45;based solutions.&quot;</span>
+<span class="n">text_basic</span><span class="p">:</span> <span class="s2">&quot;Managed team of 5 engineers, developing web-based solutions.&quot;</span>
+</pre></div>
+</div>
+</section>
+<section id="limpieza-media-text-medium">
+<h3>2.2 Limpieza Media (text_medium)<a class="headerlink" href="#limpieza-media-text-medium" title="Link to this heading">#</a></h3>
+<p><strong>Objetivo</strong>: Normalización léxica para modelos basados en word embeddings.</p>
+<p><strong>Operaciones adicionales</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Conversión a minúsculas</strong>: Elimina variabilidad por capitalización</p></li>
+<li><p><strong>Eliminación de puntuación</strong>: Regex <code class="docutils literal notranslate"><span class="pre">r'[^\w\s]'</span></code> remueve todos los caracteres no alfanuméricos</p></li>
+<li><p><strong>Re-normalización de espacios</strong>: Asegura separación consistente entre tokens</p></li>
+</ol>
+<p><strong>Justificación</strong>: Los embeddings preentrenados (Word2Vec, GloVe) típicamente son case-insensitive y no incluyen puntuación en su vocabulario. Esta normalización maximiza la tasa de cobertura (hit rate) en el vocabulario de embeddings.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text_basic</span><span class="p">:</span> <span class="s2">&quot;Managed team of 5 engineers, developing web-based solutions.&quot;</span>
+<span class="n">text_medium</span><span class="p">:</span> <span class="s2">&quot;managed team of 5 engineers developing web based solutions&quot;</span>
+</pre></div>
+</div>
+<p><strong>Trade-off</strong>: Se pierde información de énfasis (capitalización) y estructura sintáctica (puntuación), pero se gana en consistencia de representación.</p>
+</section>
+<section id="limpieza-avanzada-text-advanced">
+<h3>2.3 Limpieza Avanzada (text_advanced)<a class="headerlink" href="#limpieza-avanzada-text-advanced" title="Link to this heading">#</a></h3>
+<p><strong>Objetivo</strong>: Reducción dimensional del espacio léxico mediante lematización y eliminación de stopwords.</p>
+<p><strong>Operaciones adicionales</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Eliminación de stopwords</strong>: Filtrado usando lista NLTK de 179 stopwords en inglés</p></li>
+<li><p><strong>Lematización de verbos</strong>: <code class="docutils literal notranslate"><span class="pre">WordNetLemmatizer</span></code> con <code class="docutils literal notranslate"><span class="pre">pos='v'</span></code> (running → run, managed → manage)</p></li>
+<li><p><strong>Lematización de sustantivos</strong>: <code class="docutils literal notranslate"><span class="pre">WordNetLemmatizer</span></code> con <code class="docutils literal notranslate"><span class="pre">pos='n'</span></code> (engineers → engineer)</p></li>
+</ol>
+<p><strong>Justificación</strong>: Para modelos como XGBoost con representaciones TF-IDF de dimensionalidad fija (10,000 features), reducir la dispersión léxica permite que el modelo se enfoque en raíces semánticas en lugar de variantes morfológicas.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">text_medium</span><span class="p">:</span> <span class="s2">&quot;managed team of 5 engineers developing web based solutions&quot;</span>
+<span class="n">text_advanced</span><span class="p">:</span> <span class="s2">&quot;manage team 5 engineer develop web base solution&quot;</span>
+</pre></div>
+</div>
+<p><strong>Consideraciones</strong>:</p>
+<ul class="simple">
+<li><p><strong>Pérdida de matices</strong>: “managing” vs “managed” colapsan a “manage”, perdiendo información temporal</p></li>
+<li><p><strong>Beneficio en generalización</strong>: Reduce vocabulario de 32,604 a ~18,000 palabras únicas, disminuyendo sparsity en TF-IDF</p></li>
+<li><p><strong>No aplicable a modelos contextuales</strong>: DistilBERT usa text_advanced pero podría beneficiarse más de text_basic debido a su capacidad para capturar morfología</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="data-augmentation-mediante-back-translation">
+<h2>3. Data Augmentation mediante Back-Translation<a class="headerlink" href="#data-augmentation-mediante-back-translation" title="Link to this heading">#</a></h2>
+<section id="fundamento-teorico">
+<h3>3.1 Fundamento Teórico<a class="headerlink" href="#fundamento-teorico" title="Link to this heading">#</a></h3>
+<p>El back-translation es una técnica de augmentation semántica que traduce texto a un idioma intermedio y luego de vuelta al original. El proceso introduce paráfrasis naturales mientras preserva el significado fundamental.</p>
+<p><strong>Modelo teórico</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>T_en→es: Text_original → Text_spanish
+T_es→en: Text_spanish → Text_augmented
+</pre></div>
+</div>
+<p>Donde <code class="docutils literal notranslate"><span class="pre">T_en→es</span></code> y <code class="docutils literal notranslate"><span class="pre">T_es→en</span></code> son modelos de traducción neuronal MarianMT (Helsinki-NLP opus-mt).</p>
+</section>
+<section id="arquitectura-del-sistema-de-augmentation">
+<h3>3.2 Arquitectura del Sistema de Augmentation<a class="headerlink" href="#arquitectura-del-sistema-de-augmentation" title="Link to this heading">#</a></h3>
+<p><strong>Componentes</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Modelos de traducción</strong>: MarianMT preentrenados (en↔es)</p></li>
+<li><p><strong>Modelo de similitud semántica</strong>: SentenceTransformer ‘all-MiniLM-L6-v2’ para validación</p></li>
+<li><p><strong>Sistema de chunking dinámico</strong>: Manejo de textos largos mediante división inteligente</p></li>
+<li><p><strong>Módulo de validación</strong>: Filtros múltiples para asegurar calidad</p></li>
+</ol>
+</section>
+<section id="chunking-dinamico">
+<h3>3.3 Chunking Dinámico<a class="headerlink" href="#chunking-dinamico" title="Link to this heading">#</a></h3>
+<p><strong>Problema</strong>: Los modelos MarianMT tienen límite de 512 tokens. Textos largos (currículums completos) exceden este límite.</p>
+<p><strong>Solución</strong>: División en chunks con overlap.</p>
+<p><strong>Parámetros</strong>:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">MAX_TOKENS_PER_CHUNK</span> <span class="pre">=</span> <span class="pre">450</span></code> (margen de seguridad de 62 tokens)</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">CHUNK_OVERLAP</span> <span class="pre">=</span> <span class="pre">50</span></code> palabras (preserva contexto en bordes)</p></li>
+</ul>
+<p><strong>Algoritmo</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">words_per_chunk</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="mi">450</span> <span class="o">/</span> <span class="mf">1.33</span><span class="p">)</span>  <span class="c1"># Estimación heurística token-to-word ratio</span>
+<span class="n">chunks</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="n">i</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="k">while</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">):</span>
+    <span class="n">chunk</span> <span class="o">=</span> <span class="n">words</span><span class="p">[</span><span class="n">i</span> <span class="p">:</span> <span class="n">i</span> <span class="o">+</span> <span class="n">words_per_chunk</span><span class="p">]</span>
+    <span class="n">chunks</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">chunk</span><span class="p">))</span>
+    <span class="n">i</span> <span class="o">+=</span> <span class="n">words_per_chunk</span> <span class="o">-</span> <span class="n">overlap</span>
+</pre></div>
+</div>
+<p><strong>Ejemplo</strong>:</p>
+<ul class="simple">
+<li><p>Texto original: 800 palabras (~1,064 tokens estimados)</p></li>
+<li><p>División: 3 chunks de ~267 palabras cada uno</p></li>
+<li><p>Overlap: 50 palabras entre chunks consecutivos</p></li>
+</ul>
+<p><strong>Post-procesamiento de chunks</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">merged</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">translated_chunks</span><span class="p">)</span>
+<span class="c1"># Eliminación de duplicaciones por overlap</span>
+<span class="n">merged</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\b(\w+)(\s+\1\b)+&#39;</span><span class="p">,</span> <span class="sa">r</span><span class="s1">&#39;\1&#39;</span><span class="p">,</span> <span class="n">merged</span><span class="p">)</span>
+</pre></div>
+</div>
+</section>
+<section id="validacion-de-textos-augmentados">
+<h3>3.4 Validación de Textos Augmentados<a class="headerlink" href="#validacion-de-textos-augmentados" title="Link to this heading">#</a></h3>
+<p>El sistema implementa un pipeline de validación multi-criterio para asegurar que los textos augmentados sean semánticamente válidos:</p>
+<section id="criterio-1-longitud-minima">
+<h4>Criterio 1: Longitud Mínima<a class="headerlink" href="#criterio-1-longitud-minima" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MIN_TEXT_LENGTH</span> <span class="o">=</span> <span class="mi">50</span>  <span class="c1"># caracteres</span>
+</pre></div>
+</div>
+<p><strong>Justificación</strong>: Textos muy cortos (e.g., “software engineer”) no aportan contexto suficiente para clasificación.</p>
+</section>
+<section id="criterio-2-ratio-de-longitud">
+<h4>Criterio 2: Ratio de Longitud<a class="headerlink" href="#criterio-2-ratio-de-longitud" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MIN_LENGTH_RATIO</span> <span class="o">=</span> <span class="mf">0.60</span>
+<span class="n">MAX_LENGTH_RATIO</span> <span class="o">=</span> <span class="mf">1.50</span>
+</pre></div>
+</div>
+<p><strong>Justificación</strong>: Si el texto augmentado es &lt;60% o &gt;150% del original, la traducción probablemente es defectuosa (pérdida de información o expansión artificial).</p>
+<p><strong>Estadísticas observadas</strong>:</p>
+<ul class="simple">
+<li><p>Mean length ratio (textos válidos): 1.03</p></li>
+<li><p>Textos rechazados por ratio: ~8%</p></li>
+</ul>
+</section>
+<section id="criterio-3-similitud-semantica">
+<h4>Criterio 3: Similitud Semántica<a class="headerlink" href="#criterio-3-similitud-semantica" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">MIN_SEMANTIC_SIMILARITY</span> <span class="o">=</span> <span class="mf">0.70</span>
+</pre></div>
+</div>
+<p><strong>Método</strong>: Cosine similarity entre embeddings de SentenceTransformer.</p>
+<p><strong>Cálculo</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">embeddings</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">([</span><span class="n">original</span><span class="p">,</span> <span class="n">augmented</span><span class="p">])</span>
+<span class="n">similarity</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">embeddings</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">embeddings</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+</pre></div>
+</div>
+<p><strong>Interpretación</strong>:</p>
+<ul class="simple">
+<li><p>similarity ≥ 0.75: Preservación semántica excelente</p></li>
+<li><p>0.70 ≤ similarity &lt; 0.75: Paráfrasis aceptable</p></li>
+<li><p>similarity &lt; 0.70: Desviación semántica inaceptable</p></li>
+</ul>
+<p><strong>Estadísticas observadas</strong>:</p>
+<ul class="simple">
+<li><p>Mean similarity (textos válidos): 0.85</p></li>
+<li><p>Textos rechazados por similitud: ~12%</p></li>
+</ul>
+</section>
+<section id="criterio-4-preservacion-de-keywords-tecnicas">
+<h4>Criterio 4: Preservación de Keywords Técnicas<a class="headerlink" href="#criterio-4-preservacion-de-keywords-tecnicas" title="Link to this heading">#</a></h4>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">tech_terms</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;python&#39;</span><span class="p">,</span> <span class="s1">&#39;java&#39;</span><span class="p">,</span> <span class="s1">&#39;sql&#39;</span><span class="p">,</span> <span class="s1">&#39;react&#39;</span><span class="p">,</span> <span class="s1">&#39;aws&#39;</span><span class="p">,</span> <span class="s1">&#39;docker&#39;</span><span class="p">,</span> <span class="o">...</span><span class="p">]</span>
+<span class="n">keywords_preserved</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_kw</span> <span class="err">∩</span> <span class="n">augmented_kw</span><span class="p">)</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">original_kw</span><span class="p">)</span>
+<span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.70</span>
+</pre></div>
+</div>
+<p><strong>Justificación</strong>: Términos técnicos (lenguajes de programación, herramientas, metodologías) son cruciales para clasificación de perfiles profesionales. Su pérdida degrada significativamente la calidad del augmentation.</p>
+<p><strong>Ejemplo</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Original keywords: {python, java, sql, docker, kubernetes}
+Augmented keywords: {python, java, sql, docker}
+Preservation rate: 4/5 = 0.80 → PASS
+</pre></div>
+</div>
+</section>
+</section>
+<section id="estrategia-de-sampling-para-augmentation">
+<h3>3.5 Estrategia de Sampling para Augmentation<a class="headerlink" href="#estrategia-de-sampling-para-augmentation" title="Link to this heading">#</a></h3>
+<p><strong>Objetivo</strong>: Llevar clases minoritarias al 80% de la clase mayoritaria.</p>
+<p><strong>Algoritmo</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">threshold</span> <span class="o">=</span> <span class="mf">0.80</span> <span class="o">*</span> <span class="n">max_class_count</span>
+<span class="k">for</span> <span class="k">class</span><span class="w"> </span><span class="nc">in</span> <span class="n">classes</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">count</span><span class="p">(</span><span class="n">class</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">threshold</span><span class="p">:</span>
+        <span class="n">needed</span> <span class="o">=</span> <span class="n">threshold</span> <span class="o">-</span> <span class="n">count</span><span class="p">(</span><span class="n">class</span><span class="p">)</span>
+        <span class="n">max_augment</span> <span class="o">=</span> <span class="n">count</span><span class="p">(</span><span class="n">class</span><span class="p">)</span> <span class="o">*</span> <span class="mf">2.0</span>  <span class="c1"># MAX_AUGMENTATION_RATIO</span>
+        <span class="n">needed</span> <span class="o">=</span> <span class="nb">min</span><span class="p">(</span><span class="n">needed</span><span class="p">,</span> <span class="n">max_augment</span><span class="p">)</span>
+        
+        <span class="c1"># Sampling con reemplazo si needed &gt; count(class)</span>
+        <span class="n">samples</span> <span class="o">=</span> <span class="n">sample</span><span class="p">(</span><span class="n">class</span><span class="p">,</span> <span class="n">n</span><span class="o">=</span><span class="n">needed</span><span class="p">,</span> <span class="n">replace</span><span class="o">=</span><span class="p">(</span><span class="n">needed</span> <span class="o">&gt;</span> <span class="n">count</span><span class="p">(</span><span class="n">class</span><span class="p">)))</span>
+        <span class="n">augment</span><span class="p">(</span><span class="n">samples</span><span class="p">)</span>
+</pre></div>
+</div>
+<p><strong>Justificación del límite 2.0x</strong>:</p>
+<ul class="simple">
+<li><p>Evita oversampling excesivo que pueda causar overfitting a las augmentations</p></li>
+<li><p>Mantiene balance entre diversidad real (ejemplos originales) y sintética (augmentations)</p></li>
+</ul>
+<p><strong>Resultados</strong>:</p>
+<ul class="simple">
+<li><p>Clase mayoritaria: 120 muestras</p></li>
+<li><p>Threshold: 0.80 × 120 = 96 muestras</p></li>
+<li><p>Clases bajo threshold: BPO (66), AGRICULTURE (96), APPAREL (97), etc.</p></li>
+<li><p>Total agregado: 137 muestras (2,484 → 2,621)</p></li>
+</ul>
+</section>
+<section id="estadisticas-de-augmentation">
+<h3>3.6 Estadísticas de Augmentation<a class="headerlink" href="#estadisticas-de-augmentation" title="Link to this heading">#</a></h3>
+<p><strong>Resultados del proceso completo</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Métrica</p></th>
+<th class="head"><p>Valor</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>Textos procesados</p></td>
+<td><p>137</p></td>
+</tr>
+<tr class="row-odd"><td><p>Textos válidos generados</p></td>
+<td><p>~120 (87.6%)</p></td>
+</tr>
+<tr class="row-even"><td><p>Textos procesados directamente</p></td>
+<td><p>~85 (62%)</p></td>
+</tr>
+<tr class="row-odd"><td><p>Textos divididos en chunks</p></td>
+<td><p>~52 (38%)</p></td>
+</tr>
+<tr class="row-even"><td><p>Total de chunks procesados</p></td>
+<td><p>~180</p></td>
+</tr>
+<tr class="row-odd"><td><p>Promedio chunks por texto largo</p></td>
+<td><p>3.46</p></td>
+</tr>
+<tr class="row-even"><td><p>Tasa de rechazo por similitud</p></td>
+<td><p>~12%</p></td>
+</tr>
+<tr class="row-odd"><td><p>Tasa de rechazo por keywords</p></td>
+<td><p>~8%</p></td>
+</tr>
+<tr class="row-even"><td><p>Similitud semántica promedio</p></td>
+<td><p>0.85 ± 0.07</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Interpretación</strong>: El sistema logra una alta tasa de éxito (87.6%) manteniendo estándares estrictos de calidad semántica. El chunking dinámico permite procesar textos largos sin degradación de calidad.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="division-del-dataset-stratified-group-split">
+<h2>4. División del Dataset: Stratified Group Split<a class="headerlink" href="#division-del-dataset-stratified-group-split" title="Link to this heading">#</a></h2>
+<section id="problema-data-leakage-prevention">
+<h3>4.1 Problema: Data Leakage Prevention<a class="headerlink" href="#problema-data-leakage-prevention" title="Link to this heading">#</a></h3>
+<p><strong>Escenario problemático</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Original text → Augmented text_1, Augmented text_2
+</pre></div>
+</div>
+<p>Si <code class="docutils literal notranslate"><span class="pre">Original</span> <span class="pre">text</span></code> está en train y <code class="docutils literal notranslate"><span class="pre">Augmented</span> <span class="pre">text_1</span></code> está en test, el modelo puede memorizar patrones del texto original y “trapear” en test (data leakage).</p>
+</section>
+<section id="solucion-agrupacion-por-original-id">
+<h3>4.2 Solución: Agrupación por original_id<a class="headerlink" href="#solucion-agrupacion-por-original-id" title="Link to this heading">#</a></h3>
+<p><strong>Estrategia</strong>:</p>
+<ol class="arabic simple">
+<li><p>Asignar <code class="docutils literal notranslate"><span class="pre">original_id</span></code> a cada texto original</p></li>
+<li><p>Propagar <code class="docutils literal notranslate"><span class="pre">original_id</span></code> a todos sus augmentations</p></li>
+<li><p>Realizar split sobre <code class="docutils literal notranslate"><span class="pre">original_id</span></code> (no sobre muestras individuales)</p></li>
+<li><p>Mantener stratification por clase en el nivel de grupos</p></li>
+</ol>
+<p><strong>Implementación</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="c1"># Split train-val-test sobre grupos únicos</span>
+<span class="n">unique_groups</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="n">train_groups</span><span class="p">,</span> <span class="n">test_groups</span> <span class="o">=</span> <span class="n">stratified_split</span><span class="p">(</span><span class="n">unique_groups</span><span class="p">,</span> <span class="n">labels</span><span class="p">)</span>
+
+<span class="c1"># Asignar todas las muestras de cada grupo a su split correspondiente</span>
+<span class="n">train_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">train_groups</span><span class="p">)]</span>
+<span class="n">test_data</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;original_id&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">isin</span><span class="p">(</span><span class="n">test_groups</span><span class="p">)]</span>
+</pre></div>
+</div>
+<p><strong>Resultado</strong>:</p>
+<ul class="simple">
+<li><p>Train: 2,104 muestras (80%)</p></li>
+<li><p>Validation: 262 muestras (10%)</p></li>
+<li><p>Test: 255 muestras (10%)</p></li>
+</ul>
+<p><strong>Garantía</strong>: Ningún texto original aparece en múltiples splits, incluso si tiene augmentations.</p>
+</section>
+<section id="stratification">
+<h3>4.3 Stratification<a class="headerlink" href="#stratification" title="Link to this heading">#</a></h3>
+<p><strong>Objetivo</strong>: Mantener distribución de clases consistente en train/val/test.</p>
+<p><strong>Método</strong>: <code class="docutils literal notranslate"><span class="pre">StratifiedShuffleSplit</span></code> aplicado a los grupos únicos.</p>
+<p><strong>Verificación</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>Train distribution: INFORMATION-TECHNOLOGY (96), ACCOUNTANT (94), ...
+Test distribution: INFORMATION-TECHNOLOGY (12), ACCOUNTANT (12), ...
+
+Proportions preserved: ✓
+</pre></div>
+</div>
+</section>
+</section>
+<hr class="docutils" />
+<section id="calculo-de-pesos-de-clase">
+<h2>5. Cálculo de Pesos de Clase<a class="headerlink" href="#calculo-de-pesos-de-clase" title="Link to this heading">#</a></h2>
+<section id="fundamento">
+<h3>5.1 Fundamento<a class="headerlink" href="#fundamento" title="Link to this heading">#</a></h3>
+<p>A pesar del augmentation, persiste desbalance residual (ratio 1.82x). Los pesos de clase compensan esto durante entrenamiento.</p>
+<p><strong>Fórmula</strong>:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>weight_class_i = n_samples / (n_classes × n_samples_class_i)
+</pre></div>
+</div>
+<p><strong>Ejemplo</strong>:</p>
+<ul class="simple">
+<li><p>Total samples: 2,104</p></li>
+<li><p>n_classes: 24</p></li>
+<li><p>Class ACCOUNTANT: 94 samples</p></li>
+</ul>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>weight = 2104 / (24 × 94) = 0.933
+</pre></div>
+</div>
+</section>
+<section id="distribucion-de-pesos">
+<h3>5.2 Distribución de Pesos<a class="headerlink" href="#distribucion-de-pesos" title="Link to this heading">#</a></h3>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span>BPO (n=57)                 → peso: 1.538 (más penalizado)
+TEACHER (n=82)             → peso: 1.069
+AGRICULTURE (n=76)         → peso: 1.154
+...
+ACCOUNTANT (n=94)          → peso: 0.933
+INFORMATION-TECHNOLOGY (n=96) → peso: 0.913 (menos penalizado)
+</pre></div>
+</div>
+<p><strong>Interpretación</strong>:</p>
+<ul class="simple">
+<li><p>Clases pequeñas (BPO) tienen peso 1.68x mayor que clases grandes (IT)</p></li>
+<li><p>Durante entrenamiento, errores en BPO contribuyen más a la loss function</p></li>
+<li><p>Esto fuerza al modelo a prestar atención a clases minoritarias</p></li>
+</ul>
+</section>
+<section id="aplicacion-en-diferentes-modelos">
+<h3>5.3 Aplicación en Diferentes Modelos<a class="headerlink" href="#aplicacion-en-diferentes-modelos" title="Link to this heading">#</a></h3>
+<p><strong>Modelos neuronales (BiLSTM, CNN-1D, DistilBERT)</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">loss</span> <span class="o">=</span> <span class="n">CrossEntropyLoss</span><span class="p">(</span><span class="n">weight</span><span class="o">=</span><span class="n">class_weights_tensor</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Pesos aplicados directamente en la función de pérdida.</p>
+<p><strong>XGBoost</strong>:</p>
+<div class="highlight-python notranslate"><div class="highlight"><pre><span></span><span class="n">dtrain</span> <span class="o">=</span> <span class="n">xgb</span><span class="o">.</span><span class="n">DMatrix</span><span class="p">(</span><span class="n">X_train</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="n">y_train</span><span class="p">,</span> <span class="n">weight</span><span class="o">=</span><span class="n">sample_weights</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>Pesos aplicados a nivel de muestra (cada muestra recibe el peso de su clase).</p>
+<p><strong>FastText</strong>:
+No soporta pesos directamente, pero el augmentation compensa parcialmente.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cobertura-de-embeddings-analisis-estadistico">
+<h2>6. Cobertura de Embeddings: Análisis Estadístico<a class="headerlink" href="#cobertura-de-embeddings-analisis-estadistico" title="Link to this heading">#</a></h2>
+<section id="vocabulario-del-dataset">
+<h3>6.1 Vocabulario del Dataset<a class="headerlink" href="#vocabulario-del-dataset" title="Link to this heading">#</a></h3>
+<p><strong>Estadísticas</strong>:</p>
+<ul class="simple">
+<li><p>Vocabulario único (text_medium): 32,604 palabras</p></li>
+<li><p>Top 10 palabras más frecuentes: state (14,209), company (13,303), city (12,803), management (10,691), name (10,005), customer (9,812), service (8,198), work (7,472), sale (7,038), business (6,875)</p></li>
+</ul>
+<p><strong>Distribución de frecuencias</strong>:</p>
+<ul class="simple">
+<li><p>~15% del vocabulario: palabras comunes (&gt;1000 ocurrencias)</p></li>
+<li><p>~45% del vocabulario: palabras moderadas (100-1000 ocurrencias)</p></li>
+<li><p>~40% del vocabulario: palabras raras (&lt;100 ocurrencias)</p></li>
+</ul>
+</section>
+<section id="cobertura-de-word2vec-local">
+<h3>6.2 Cobertura de Word2Vec Local<a class="headerlink" href="#cobertura-de-word2vec-local" title="Link to this heading">#</a></h3>
+<p><strong>Modelo</strong>: Word2Vec entrenado localmente en el corpus de 2,621 muestras.</p>
+<p><strong>Configuración</strong>:</p>
+<ul class="simple">
+<li><p>Dimensión: 300</p></li>
+<li><p>Window size: 5</p></li>
+<li><p>Min count: 2</p></li>
+<li><p>Algoritmo: Skip-gram</p></li>
+</ul>
+<p><strong>Resultados</strong>:</p>
+<ul class="simple">
+<li><p>Palabras en embeddings: 17,758 / 32,604 (54.5%)</p></li>
+<li><p>Palabras OOV: 14,846 (45.5%)</p></li>
+</ul>
+<p><strong>Análisis de OOV</strong>:
+Las palabras OOV tienden a ser:</p>
+<ul class="simple">
+<li><p>Nombres propios (empresas, ciudades, personas)</p></li>
+<li><p>Términos muy específicos con &lt;2 ocurrencias</p></li>
+<li><p>Typos o variantes ortográficas</p></li>
+</ul>
+<p><strong>Implicaciones</strong>:</p>
+<ul class="simple">
+<li><p>BiLSTM y CNN-1D deben aprender representaciones para ~45% del vocabulario desde cero</p></li>
+<li><p>Palabras OOV se inicializan con vectores aleatorios, requiriendo más épocas de entrenamiento para convergencia</p></li>
+<li><p>A pesar de esto, ambos modelos logran ROC AUC &gt;0.94, indicando que las palabras cubiertas capturan la mayoría de la información semántica</p></li>
+</ul>
+</section>
+<section id="comparacion-con-distilbert">
+<h3>6.3 Comparación con DistilBERT<a class="headerlink" href="#comparacion-con-distilbert" title="Link to this heading">#</a></h3>
+<p><strong>Tokenización BPE (Byte Pair Encoding)</strong>:</p>
+<ul class="simple">
+<li><p>DistilBERT divide palabras OOV en subwords conocidos</p></li>
+<li><p>Cobertura efectiva: ~100%</p></li>
+<li><p>Ejemplo: “kubernetes” → “ku”, “ber”, “net”, “es” (todos en vocabulario)</p></li>
+</ul>
+<p><strong>Ventaja cuantificable</strong>:</p>
+<ul class="simple">
+<li><p>DistilBERT (+14.1 pp F1-macro sobre CNN-1D)</p></li>
+<li><p>Atribuible parcialmente a la cobertura total del vocabulario</p></li>
+</ul>
+</section>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-del-pipeline">
+<h2>7. Conclusiones del Pipeline<a class="headerlink" href="#conclusiones-del-pipeline" title="Link to this heading">#</a></h2>
+<section id="fortalezas-del-diseno">
+<h3>7.1 Fortalezas del Diseño<a class="headerlink" href="#fortalezas-del-diseno" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Modularidad</strong>: Tres niveles de limpieza permiten adaptar el preprocesamiento a diferentes arquitecturas sin re-ejecutar todo el pipeline</p></li>
+<li><p><strong>Robustez del augmentation</strong>: Validación multi-criterio asegura que solo augmentations de alta calidad se incorporan al dataset</p></li>
+<li><p><strong>Prevención de data leakage</strong>: Stratified group split garantiza evaluación honesta del modelo</p></li>
+<li><p><strong>Manejo de textos largos</strong>: Chunking dinámico permite procesar currículums completos sin truncamiento</p></li>
+</ol>
+</section>
+<section id="limitaciones-inherentes">
+<h3>7.2 Limitaciones Inherentes<a class="headerlink" href="#limitaciones-inherentes" title="Link to this heading">#</a></h3>
+<ol class="arabic simple">
+<li><p><strong>Augmentation limitado</strong>: Solo se agregan 137 muestras (+5.5%), insuficiente para resolver completamente el desbalance</p></li>
+<li><p><strong>Cobertura de embeddings</strong>: Word2Vec local cubre solo 54.5% del vocabulario, limitando modelos basados en word embeddings</p></li>
+<li><p><strong>Pérdida de información en text_advanced</strong>: Lematización y remoción de stopwords pueden eliminar matices semánticos relevantes</p></li>
+<li><p><strong>Sesgo del idioma intermedio</strong>: Back-translation vía español introduce sesgos lingüísticos específicos (e.g., morfología verbal española influye en el resultado)</p></li>
+</ol>
+</section>
+<section id="impacto-medible-en-modelos">
+<h3>7.3 Impacto Medible en Modelos<a class="headerlink" href="#impacto-medible-en-modelos" title="Link to this heading">#</a></h3>
+<p>El pipeline proporciona una base sólida que permite a todos los modelos superar significativamente baselines simples:</p>
+<ul class="simple">
+<li><p>FastText (51.8% accuracy): Beneficiado por text_basic que preserva n-grams morfológicos</p></li>
+<li><p>XGBoost (79.2% accuracy): Maximizado por text_advanced que reduce dimensionalidad de TF-IDF</p></li>
+<li><p>DistilBERT (87.5% accuracy): Aprovecha text_advanced pero su arquitectura BPE hace el preprocesamiento menos crítico</p></li>
+</ul>
+<p>El sistema demuestra que un pipeline de preprocesamiento bien diseñado es fundamental para el éxito de modelos de clasificación textual, especialmente en escenarios de datos limitados.</p>
+</section>
+</section>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="general_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis General del Sistema de Clasificación Multiclase de Currículums</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="bilstm_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-pipeline">1. Arquitectura del Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estructura-general">1.1 Estructura General</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#niveles-de-limpieza-textual">2. Niveles de Limpieza Textual</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-basica-text-basic">2.1 Limpieza Básica (text_basic)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-media-text-medium">2.2 Limpieza Media (text_medium)</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limpieza-avanzada-text-advanced">2.3 Limpieza Avanzada (text_advanced)</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#data-augmentation-mediante-back-translation">3. Data Augmentation mediante Back-Translation</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento-teorico">3.1 Fundamento Teórico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#arquitectura-del-sistema-de-augmentation">3.2 Arquitectura del Sistema de Augmentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#chunking-dinamico">3.3 Chunking Dinámico</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#validacion-de-textos-augmentados">3.4 Validación de Textos Augmentados</a><ul class="nav section-nav flex-column">
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-1-longitud-minima">Criterio 1: Longitud Mínima</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-2-ratio-de-longitud">Criterio 2: Ratio de Longitud</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-3-similitud-semantica">Criterio 3: Similitud Semántica</a></li>
+<li class="toc-h4 nav-item toc-entry"><a class="reference internal nav-link" href="#criterio-4-preservacion-de-keywords-tecnicas">Criterio 4: Preservación de Keywords Técnicas</a></li>
+</ul>
+</li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estrategia-de-sampling-para-augmentation">3.5 Estrategia de Sampling para Augmentation</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#estadisticas-de-augmentation">3.6 Estadísticas de Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#division-del-dataset-stratified-group-split">4. División del Dataset: Stratified Group Split</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#problema-data-leakage-prevention">4.1 Problema: Data Leakage Prevention</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#solucion-agrupacion-por-original-id">4.2 Solución: Agrupación por original_id</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#stratification">4.3 Stratification</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#calculo-de-pesos-de-clase">5. Cálculo de Pesos de Clase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fundamento">5.1 Fundamento</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#distribucion-de-pesos">5.2 Distribución de Pesos</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#aplicacion-en-diferentes-modelos">5.3 Aplicación en Diferentes Modelos</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-analisis-estadistico">6. Cobertura de Embeddings: Análisis Estadístico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#vocabulario-del-dataset">6.1 Vocabulario del Dataset</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-word2vec-local">6.2 Cobertura de Word2Vec Local</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#comparacion-con-distilbert">6.3 Comparación con DistilBERT</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-del-pipeline">7. Conclusiones del Pipeline</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#fortalezas-del-diseno">7.1 Fortalezas del Diseño</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#limitaciones-inherentes">7.2 Limitaciones Inherentes</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#impacto-medible-en-modelos">7.3 Impacto Medible en Modelos</a></li>
+</ul>
+</li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

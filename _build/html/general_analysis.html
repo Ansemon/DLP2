@@ -1,0 +1,821 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>Análisis General del Sistema de Clasificación Multiclase de Currículums &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'general_analysis';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico" href="preprocessing_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+        
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="#">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1 current active">
+                <a class="reference internal" href="#">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/general_analysis.md" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2Fgeneral_analysis.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/general_analysis.md" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.md</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>Análisis General del Sistema de Clasificación Multiclase de Currículums</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-del-problema">1. Contexto del Problema</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caracteristicas-del-problema">1.1 Características del Problema</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#divergencia-entre-roc-auc-y-f1-score-fundamento-teorico">2. Divergencia entre ROC AUC y F1-Score: Fundamento Teórico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-auc-discriminacion-probabilistica">2.1 ROC AUC: Discriminación Probabilística</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f1-score-decisiones-discretas">2.2 F1-Score: Decisiones Discretas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implicaciones-para-problemas-multiclase-desbalanceados">2.3 Implicaciones para Problemas Multiclase Desbalanceados</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-para-este-trabajo">2.4 Interpretación para Este Trabajo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparativa-global-de-arquitecturas">3. Comparativa Global de Arquitecturas</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observaciones-clave">3.1 Observaciones Clave</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#patrones-transversales-en-el-comportamiento-por-clase">4. Patrones Transversales en el Comportamiento por Clase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-consistentemente-robustas">4.1 Clases Consistentemente Robustas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-consistentemente-problematicas">4.2 Clases Consistentemente Problemáticas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#impacto-del-data-augmentation">4.3 Impacto del Data Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-y-generalizacion">5. Análisis de Convergencia y Generalización</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evidencia-de-overfitting-controlado">5.1 Evidencia de Overfitting Controlado</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-aprendizaje">5.2 Curvas de Aprendizaje</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-y-su-impacto">6. Cobertura de Embeddings y su Impacto</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implicaciones">6.1 Implicaciones</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-generales">7. Conclusiones Generales</a></li>
+</ul>
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="analisis-general-del-sistema-de-clasificacion-multiclase-de-curriculums">
+<h1>Análisis General del Sistema de Clasificación Multiclase de Currículums<a class="headerlink" href="#analisis-general-del-sistema-de-clasificacion-multiclase-de-curriculums" title="Link to this heading">#</a></h1>
+<section id="contexto-del-problema">
+<h2>1. Contexto del Problema<a class="headerlink" href="#contexto-del-problema" title="Link to this heading">#</a></h2>
+<p>El presente trabajo aborda un problema de clasificación multiclase en el dominio del procesamiento de lenguaje natural (NLP), específicamente la categorización automática de currículums vitae en 24 categorías profesionales distintas. El dataset original contiene 2,484 muestras textuales correspondientes a descripciones profesionales, con una distribución moderadamente desbalanceada entre clases.</p>
+<section id="caracteristicas-del-problema">
+<h3>1.1 Características del Problema<a class="headerlink" href="#caracteristicas-del-problema" title="Link to this heading">#</a></h3>
+<ul class="simple">
+<li><p><strong>Dominio</strong>: Clasificación de texto en lenguaje natural</p></li>
+<li><p><strong>Número de clases</strong>: 24 categorías profesionales</p></li>
+<li><p><strong>Tamaño del corpus</strong>: 2,484 muestras originales, expandidas a 2,621 mediante data augmentation</p></li>
+<li><p><strong>Tipo de tarea</strong>: Clasificación multiclase (no multilabel)</p></li>
+<li><p><strong>Desbalance</strong>: Ratio máximo de 1.82x entre clase mayoritaria y minoritaria post-augmentation</p></li>
+</ul>
+<p>Las categorías incluyen perfiles profesionales diversos como INFORMATION-TECHNOLOGY, HEALTHCARE, BPO, AUTOMOBILE, DESIGNER, entre otros, lo que representa un espacio semántico heterogéneo con diferentes niveles de especificidad léxica.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="divergencia-entre-roc-auc-y-f1-score-fundamento-teorico">
+<h2>2. Divergencia entre ROC AUC y F1-Score: Fundamento Teórico<a class="headerlink" href="#divergencia-entre-roc-auc-y-f1-score-fundamento-teorico" title="Link to this heading">#</a></h2>
+<p>Uno de los hallazgos consistentes a través de todos los modelos evaluados es la notable divergencia entre el ROC AUC (típicamente &gt;0.88) y el F1-Score macro (típicamente 0.46-0.87). Este fenómeno no representa una contradicción, sino que refleja diferencias fundamentales en lo que cada métrica mide.</p>
+<section id="roc-auc-discriminacion-probabilistica">
+<h3>2.1 ROC AUC: Discriminación Probabilística<a class="headerlink" href="#roc-auc-discriminacion-probabilistica" title="Link to this heading">#</a></h3>
+<p>El ROC AUC (Area Under the Receiver Operating Characteristic Curve) en configuración One-vs-Rest (OvR) para problemas multiclase evalúa la capacidad del modelo para <strong>ordenar correctamente las probabilidades</strong>. Específicamente:</p>
+<ul class="simple">
+<li><p>Mide si la probabilidad asignada a la clase correcta es, en promedio, mayor que las probabilidades asignadas a las clases incorrectas</p></li>
+<li><p><strong>No requiere</strong> que la probabilidad correcta sea la máxima absoluta, solo que sea consistentemente mayor</p></li>
+<li><p>Es robusta ante desbalances de clase y diferencias en la confianza del modelo</p></li>
+</ul>
+<p><strong>Ejemplo ilustrativo</strong>:</p>
+<p>Para una instancia de la clase AGRICULTURE:</p>
+<ul class="simple">
+<li><p>Probabilidad verdadera: 0.18</p></li>
+<li><p>Probabilidades falsas: 0.16, 0.14, 0.12, 0.10, …</p></li>
+</ul>
+<p>Este patrón contribuye positivamente al ROC AUC (la clase correcta tiene mayor probabilidad que las incorrectas), pero resulta en una predicción incorrecta bajo <code class="docutils literal notranslate"><span class="pre">argmax</span></code>, ya que otra clase podría tener probabilidad 0.19.</p>
+</section>
+<section id="f1-score-decisiones-discretas">
+<h3>2.2 F1-Score: Decisiones Discretas<a class="headerlink" href="#f1-score-decisiones-discretas" title="Link to this heading">#</a></h3>
+<p>El F1-Score evalúa el rendimiento después de la <strong>decisión discreta</strong> (típicamente vía <code class="docutils literal notranslate"><span class="pre">argmax</span></code> en el vector de probabilidades softmax). Esta métrica:</p>
+<ul class="simple">
+<li><p>Requiere que la clase correcta tenga la probabilidad más alta para considerarse un acierto</p></li>
+<li><p>Es sensible a la calibración del modelo</p></li>
+<li><p>Penaliza fuertemente los errores en clases minoritarias (en su variante macro)</p></li>
+</ul>
+</section>
+<section id="implicaciones-para-problemas-multiclase-desbalanceados">
+<h3>2.3 Implicaciones para Problemas Multiclase Desbalanceados<a class="headerlink" href="#implicaciones-para-problemas-multiclase-desbalanceados" title="Link to this heading">#</a></h3>
+<p>En contextos de 24 clases con desbalance moderado, esta divergencia se manifiesta especialmente en:</p>
+<ol class="arabic simple">
+<li><p><strong>Clases con vocabulario ambiguo</strong>: El modelo aprende patrones semánticos correctos (alto AUC) pero no logra la suficiente confianza para dominar el softmax (bajo F1)</p></li>
+<li><p><strong>Clases minoritarias</strong>: Incluso con buenos embeddings, la falta de ejemplos impide que el modelo alcance probabilidades suficientemente altas para ganar la competencia multiclase</p></li>
+<li><p><strong>Solapamiento semántico</strong>: Clases como CONSULTANT vs BPO, o ARTS vs DESIGNER comparten vocabulario, resultando en distribuciones de probabilidad difusas</p></li>
+</ol>
+</section>
+<section id="interpretacion-para-este-trabajo">
+<h3>2.4 Interpretación para Este Trabajo<a class="headerlink" href="#interpretacion-para-este-trabajo" title="Link to this heading">#</a></h3>
+<p>Los valores de ROC AUC consistentemente altos (0.88-0.98) a través de todos los modelos indican que:</p>
+<ul class="simple">
+<li><p>Las arquitecturas neuronales y estadísticas empleadas <strong>sí capturan la estructura subyacente</strong> del problema</p></li>
+<li><p>Los embeddings (Word2Vec, fastText, DistilBERT) codifican información semántica relevante</p></li>
+<li><p>El problema radica en la <strong>conversión de conocimiento probabilístico a decisiones discretas</strong></p></li>
+</ul>
+<p>Por tanto, modelos con AUC &gt;0.90 pero F1 &lt;0.70 no están “fallando”, sino que enfrentan limitaciones inherentes al espacio de decisión multiclase con información ambigua.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="comparativa-global-de-arquitecturas">
+<h2>3. Comparativa Global de Arquitecturas<a class="headerlink" href="#comparativa-global-de-arquitecturas" title="Link to this heading">#</a></h2>
+<p>La siguiente tabla resume el desempeño de los cinco modelos evaluados:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Modelo</p></th>
+<th class="head"><p>Accuracy</p></th>
+<th class="head"><p>F1-Macro</p></th>
+<th class="head"><p>F1-Weighted</p></th>
+<th class="head"><p>ROC AUC (OvR)</p></th>
+<th class="head"><p>Parámetros</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>FastText</strong></p></td>
+<td><p>0.5176</p></td>
+<td><p>0.4675</p></td>
+<td><p>0.4921</p></td>
+<td><p>0.8793</p></td>
+<td><p>N/A (n-grams)</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>BiLSTM</strong></p></td>
+<td><p>0.6941</p></td>
+<td><p>0.6398</p></td>
+<td><p>0.6775</p></td>
+<td><p>0.9458</p></td>
+<td><p>~500K</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>CNN-1D</strong></p></td>
+<td><p>0.7333</p></td>
+<td><p>0.6716</p></td>
+<td><p>0.7112</p></td>
+<td><p>0.9633</p></td>
+<td><p>10.3M</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>XGBoost</strong></p></td>
+<td><p>0.7922</p></td>
+<td><p>0.7606</p></td>
+<td><p>0.7849</p></td>
+<td><p>0.9816</p></td>
+<td><p>N/A (300 trees)</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>DistilBERT</strong></p></td>
+<td><p><strong>0.8745</strong></p></td>
+<td><p><strong>0.8453</strong></p></td>
+<td><p><strong>0.8718</strong></p></td>
+<td><p><strong>0.9756</strong></p></td>
+<td><p>66M</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<section id="observaciones-clave">
+<h3>3.1 Observaciones Clave<a class="headerlink" href="#observaciones-clave" title="Link to this heading">#</a></h3>
+<p><strong>Jerarquía de complejidad vs desempeño</strong>: Se observa una correlación clara entre la sofisticación arquitectural y el rendimiento, aunque con rendimientos decrecientes:</p>
+<ul class="simple">
+<li><p>FastText (baseline) → BiLSTM: +17.6 pp en accuracy</p></li>
+<li><p>BiLSTM → CNN-1D: +3.9 pp en accuracy</p></li>
+<li><p>CNN-1D → XGBoost: +5.9 pp en accuracy</p></li>
+<li><p>XGBoost → DistilBERT: +8.2 pp en accuracy</p></li>
+</ul>
+<p><strong>Brecha de representación contextual</strong>: Los modelos basados en arquitecturas que capturan contexto (BiLSTM, CNN-1D, DistilBERT) superan significativamente a métodos basados en n-grams estáticos (FastText). La excepción notable es XGBoost, cuyo rendimiento superior se atribuye a:</p>
+<ul class="simple">
+<li><p>Representaciones TF-IDF de alta dimensionalidad (10,000 features, n-grams 1-3)</p></li>
+<li><p>Capacidad de modelar interacciones no lineales complejas entre features</p></li>
+<li><p>Robustez ante datos tabulares de alta dimensión</p></li>
+</ul>
+<p><strong>Transferencia de conocimiento</strong>: DistilBERT, al aprovechar preentrenamiento en corpus masivos, logra la mayor ventaja absoluta (+8.2 pp sobre XGBoost), confirmando la hipótesis de que representaciones preentrenadas son superiores para tareas de clasificación textual con datos limitados.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="patrones-transversales-en-el-comportamiento-por-clase">
+<h2>4. Patrones Transversales en el Comportamiento por Clase<a class="headerlink" href="#patrones-transversales-en-el-comportamiento-por-clase" title="Link to this heading">#</a></h2>
+<section id="clases-consistentemente-robustas">
+<h3>4.1 Clases Consistentemente Robustas<a class="headerlink" href="#clases-consistentemente-robustas" title="Link to this heading">#</a></h3>
+<p>Las siguientes categorías exhiben F1-Score &gt;0.80 en al menos 4 de los 5 modelos:</p>
+<ul class="simple">
+<li><p><strong>ACCOUNTANT</strong>: Vocabulario altamente técnico (audit, ledger, payroll, reconciliation)</p></li>
+<li><p><strong>HR</strong>: Terminología específica (recruitment, onboarding, HRIS, benefits)</p></li>
+<li><p><strong>INFORMATION-TECHNOLOGY</strong>: Densidad de términos técnicos (Java, SQL, debugging, deployment)</p></li>
+<li><p><strong>DESIGNER</strong>: Léxico distintivo (UX, Figma, wireframe, prototyping)</p></li>
+<li><p><strong>BUSINESS-DEVELOPMENT</strong>: Patrones semánticos claros (pipeline, lead generation, revenue)</p></li>
+</ul>
+<p><strong>Hipótesis</strong>: Estas clases combinan alta especificidad léxica con suficiente representación en el dataset, permitiendo que incluso modelos simples (FastText) logren F1 &gt;0.60.</p>
+</section>
+<section id="clases-consistentemente-problematicas">
+<h3>4.2 Clases Consistentemente Problemáticas<a class="headerlink" href="#clases-consistentemente-problematicas" title="Link to this heading">#</a></h3>
+<p>Las siguientes categorías exhiben F1-Score &lt;0.50 en al menos 3 de los 5 modelos:</p>
+<ul class="simple">
+<li><p><strong>BPO</strong> (Business Process Outsourcing): n=57 en train, vocabulario genérico solapado con CONSULTANT y SALES</p></li>
+<li><p><strong>AUTOMOBILE</strong>: n=83 en train, solapamiento semántico con ENGINEERING (mechanical systems)</p></li>
+<li><p><strong>APPAREL</strong>: n=77 en train, lenguaje compartido con DESIGNER y ARTS</p></li>
+<li><p><strong>ARTS</strong>: n=83 en train, alta variabilidad interna (visual arts, performing arts, etc.)</p></li>
+</ul>
+<p><strong>Análisis</strong>: El bajo desempeño en estas clases no se debe únicamente al tamaño muestral (el augmentation llevó la mayoría al ~80% del máximo), sino a:</p>
+<ol class="arabic simple">
+<li><p><strong>Ambigüedad semántica estructural</strong>: El vocabulario es inherentemente polisémico</p></li>
+<li><p><strong>Granularidad subóptima</strong>: Algunas categorías podrían beneficiarse de sub-categorización (e.g., ARTS → VISUAL-ARTS, PERFORMING-ARTS)</p></li>
+<li><p><strong>Límites difusos</strong>: Las fronteras entre estas clases y otras no están bien definidas en el espacio semántico</p></li>
+</ol>
+</section>
+<section id="impacto-del-data-augmentation">
+<h3>4.3 Impacto del Data Augmentation<a class="headerlink" href="#impacto-del-data-augmentation" title="Link to this heading">#</a></h3>
+<p>El proceso de back-translation logró expandir el dataset de 2,484 a 2,621 muestras (+5.5%), llevando las clases minoritarias a un máximo del 80% de la clase mayoritaria. Sin embargo, el análisis por clase revela que:</p>
+<ul class="simple">
+<li><p><strong>Clases con vocabulario técnico específico</strong>: Beneficio marginal del augmentation, ya que la semántica distintiva se preserva incluso con pocas muestras</p></li>
+<li><p><strong>Clases con lenguaje genérico</strong>: El augmentation no resuelve la ambigüedad fundamental, solo aumenta la representación de patrones ambiguos</p></li>
+</ul>
+<p>Esto explica por qué BPO, a pesar de recibir augmentation significativo, mantiene F1 &lt;0.40 en la mayoría de modelos.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="analisis-de-convergencia-y-generalizacion">
+<h2>5. Análisis de Convergencia y Generalización<a class="headerlink" href="#analisis-de-convergencia-y-generalizacion" title="Link to this heading">#</a></h2>
+<section id="evidencia-de-overfitting-controlado">
+<h3>5.1 Evidencia de Overfitting Controlado<a class="headerlink" href="#evidencia-de-overfitting-controlado" title="Link to this heading">#</a></h3>
+<p>Todos los modelos neuronales (BiLSTM, CNN-1D, DistilBERT) exhiben diferencias esperables entre train y validation loss, sin colapso de generalización:</p>
+<ul class="simple">
+<li><p><strong>BiLSTM</strong>: 17 épocas hasta early stopping, ROC AUC validation estabilizado en 0.9512</p></li>
+<li><p><strong>CNN-1D</strong>: 13 épocas hasta early stopping, validation metrics mejoraron consistentemente hasta época 10</p></li>
+<li><p><strong>DistilBERT</strong>: 4 épocas con mejoras continuas en validation (0.64 → 0.83 F1-macro)</p></li>
+</ul>
+<p>La ausencia de overfitting severo sugiere que:</p>
+<ul class="simple">
+<li><p>Los mecanismos de regularización (dropout 0.5-0.8, weight decay) son efectivos</p></li>
+<li><p>El tamaño del dataset, aunque limitado, es suficiente para estas arquitecturas</p></li>
+<li><p>El augmentation introduce variabilidad genuina que previene memorización</p></li>
+</ul>
+</section>
+<section id="curvas-de-aprendizaje">
+<h3>5.2 Curvas de Aprendizaje<a class="headerlink" href="#curvas-de-aprendizaje" title="Link to this heading">#</a></h3>
+<p><strong>CNN-1D</strong>: Exhibe la curva de aprendizaje más ilustrativa:</p>
+<ul class="simple">
+<li><p>Épocas 1-5: Mejora rápida en train y validation (accuracy 0.14 → 0.64)</p></li>
+<li><p>Épocas 6-10: Convergencia progresiva (validation accuracy 0.64 → 0.75)</p></li>
+<li><p>Épocas 11-13: Estabilización, mejoras marginales (&lt;1 pp)</p></li>
+</ul>
+<p>Este patrón confirma que el modelo extrae el máximo conocimiento disponible en los datos antes de que early stopping termine el entrenamiento.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="cobertura-de-embeddings-y-su-impacto">
+<h2>6. Cobertura de Embeddings y su Impacto<a class="headerlink" href="#cobertura-de-embeddings-y-su-impacto" title="Link to this heading">#</a></h2>
+<p>Un factor técnico relevante es la cobertura de vocabulario en embeddings preentrenados:</p>
+<ul class="simple">
+<li><p><strong>Word2Vec local (BiLSTM, CNN-1D)</strong>: 54.5% de cobertura (17,758/32,604 palabras)</p></li>
+<li><p><strong>FastText</strong>: Cobertura implícitamente mayor por embeddings basados en subword</p></li>
+<li><p><strong>DistilBERT</strong>: Cobertura ~100% gracias a tokenización BPE (Byte Pair Encoding)</p></li>
+</ul>
+<section id="implicaciones">
+<h3>6.1 Implicaciones<a class="headerlink" href="#implicaciones" title="Link to this heading">#</a></h3>
+<p>La cobertura del 54.5% en Word2Vec significa que <strong>casi la mitad de las palabras</strong> se representan como vectores aleatorios inicializados. A pesar de esto:</p>
+<ul class="simple">
+<li><p>BiLSTM y CNN-1D logran ROC AUC &gt;0.94, indicando que las palabras cubiertas son suficientemente informativas</p></li>
+<li><p>DistilBERT, con cobertura total, obtiene una ventaja de +14 pp en F1-macro sobre CNN-1D</p></li>
+</ul>
+<p>Esto sugiere que el vocabulario OOV (Out Of Vocabulary) contiene información semántica relevante que solo modelos con tokenización subword (DistilBERT) pueden aprovechar completamente.</p>
+</section>
+</section>
+<hr class="docutils" />
+<section id="conclusiones-generales">
+<h2>7. Conclusiones Generales<a class="headerlink" href="#conclusiones-generales" title="Link to this heading">#</a></h2>
+<p>El sistema de clasificación multiclase de currículums presenta un caso de estudio representativo de los desafíos en NLP con datos limitados:</p>
+<ol class="arabic simple">
+<li><p><strong>Arquitecturas modernas son superiores pero no milagrosas</strong>: DistilBERT (87.5% accuracy) supera significativamente a FastText (51.8%), pero ningún modelo resuelve completamente las clases ambiguas</p></li>
+<li><p><strong>El problema tiene límites inherentes</strong>: La divergencia ROC AUC vs F1 indica que el desafío no es solo arquitectural, sino semántico—algunas clases son genuinamente difíciles de distinguir</p></li>
+<li><p><strong>Data augmentation es útil pero no suficiente</strong>: El back-translation preserva semántica (0.75 similarity threshold) pero no puede crear información que no existe en los textos originales</p></li>
+<li><p><strong>XGBoost como alternativa competitiva</strong>: Con representaciones TF-IDF adecuadas, métodos clásicos pueden competir con redes neuronales más complejas (79.2% accuracy), ofreciendo ventajas en interpretabilidad y velocidad</p></li>
+<li><p><strong>Transferencia de conocimiento es crucial</strong>: El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en corpus masivos aporta conocimiento semántico que datasets pequeños no pueden proporcionar por sí solos</p></li>
+</ol>
+<p>El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales, interpretabilidad y los límites inherentes de los datos disponibles.</p>
+</section>
+<div class="toctree-wrapper compound">
+</div>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="right-next"
+       href="preprocessing_analysis.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-del-problema">1. Contexto del Problema</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caracteristicas-del-problema">1.1 Características del Problema</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#divergencia-entre-roc-auc-y-f1-score-fundamento-teorico">2. Divergencia entre ROC AUC y F1-Score: Fundamento Teórico</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#roc-auc-discriminacion-probabilistica">2.1 ROC AUC: Discriminación Probabilística</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#f1-score-decisiones-discretas">2.2 F1-Score: Decisiones Discretas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implicaciones-para-problemas-multiclase-desbalanceados">2.3 Implicaciones para Problemas Multiclase Desbalanceados</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#interpretacion-para-este-trabajo">2.4 Interpretación para Este Trabajo</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#comparativa-global-de-arquitecturas">3. Comparativa Global de Arquitecturas</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#observaciones-clave">3.1 Observaciones Clave</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#patrones-transversales-en-el-comportamiento-por-clase">4. Patrones Transversales en el Comportamiento por Clase</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-consistentemente-robustas">4.1 Clases Consistentemente Robustas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-consistentemente-problematicas">4.2 Clases Consistentemente Problemáticas</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#impacto-del-data-augmentation">4.3 Impacto del Data Augmentation</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#analisis-de-convergencia-y-generalizacion">5. Análisis de Convergencia y Generalización</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#evidencia-de-overfitting-controlado">5.1 Evidencia de Overfitting Controlado</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#curvas-de-aprendizaje">5.2 Curvas de Aprendizaje</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#cobertura-de-embeddings-y-su-impacto">6. Cobertura de Embeddings y su Impacto</a><ul class="nav section-nav flex-column">
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#implicaciones">6.1 Implicaciones</a></li>
+</ul>
+</li>
+<li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#conclusiones-generales">7. Conclusiones Generales</a></li>
+</ul>
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>
