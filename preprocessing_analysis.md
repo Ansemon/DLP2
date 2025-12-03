@@ -38,6 +38,8 @@ Dataset Original (2,484 muestras)
 
 **Justificación**: Esta capa preserva el texto en su forma más cercana a la original, permitiendo que modelos basados en subword tokenization (DistilBERT) o character n-grams (FastText) aprovechen patrones morfológicos completos.
 
+**Limitación detectada en EDA**: Esta limpieza no elimina metadatos estructurales como "company city state" que contaminan el corpus. El análisis de n-gramas revela que estos trigramas aparecen con frecuencia 5-10x mayor que términos técnicos discriminativos, introduciendo ruido sistemático.
+
 **Ejemplo**:
 ```
 Original: "Managed team  of 5 engineers&#44; developing web&#45;based solutions."
@@ -429,6 +431,12 @@ Las palabras OOV tienden a ser:
 3. **Pérdida de información en text_advanced**: Lematización y remoción de stopwords pueden eliminar matices semánticos relevantes
 
 4. **Sesgo del idioma intermedio**: Back-translation vía español introduce sesgos lingüísticos específicos (e.g., morfología verbal española influye en el resultado)
+
+5. **Ruido estructural persistente**: Los tres niveles de limpieza no eliminan patrones como "company city state" que el EDA identificó como contaminantes. Una estrategia de limpieza adicional (regex específicos para metadatos) habría mejorado la calidad del corpus.
+
+6. **Duplicados no gestionados**: Los 2 duplicados exactos y 29 casi-idénticos no fueron removidos durante el preprocesamiento, lo que podría generar data leakage si uno cae en train y otro en test (aunque el stratified group split mitiga parcialmente esto).
+
+7. **Alta redundancia semántica post-augmentation**: El análisis con SentenceTransformers reveló 33 duplicados semánticos (>0.90 similarity), sugiriendo que el back-translation, aunque preserva significado, no introduce suficiente variabilidad para expandir efectivamente el espacio de representaciones.
 
 ### 7.3 Impacto Medible en Modelos
 

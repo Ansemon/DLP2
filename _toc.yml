@@ -8,4 +8,6 @@ chapters:
   - file: fasttext_analysis
   - file: xgboost_analysis
   - file: distilbert_analysis
-  - file: MIniproyecto2(2)
+  - file: Jarvis_eda
+  - file: Miniproyecto2
+
