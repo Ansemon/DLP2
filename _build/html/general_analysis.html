@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -734,27 +734,27 @@ document.write(`
 <ul class="simple">
 <li><p><strong>ACCOUNTANT</strong>: Vocabulario altamente técnico (audit, ledger, payroll, reconciliation)</p>
 <ul>
-<li><p><em>Nota EDA</em>: Aunque tiene similaridad 0.91 con FINANCE, términos como “reconciliation”, “audit trail” son distintivos</p></li>
+<li><p>Aunque tiene similaridad 0.91 con FINANCE, términos como “reconciliation”, “audit trail” son distintivos</p></li>
 </ul>
 </li>
 <li><p><strong>HR</strong>: Terminología específica (recruitment, onboarding, HRIS, benefits)</p>
 <ul>
-<li><p><em>Fortaleza</em>: TTR alto (0.62) indica lenguaje variado y especializado</p></li>
+<li><p>TTR alto (0.62) indica lenguaje variado y especializado</p></li>
 </ul>
 </li>
 <li><p><strong>INFORMATION-TECHNOLOGY</strong>: Densidad de términos técnicos (Java, SQL, debugging, deployment)</p>
 <ul>
-<li><p><em>Fortaleza</em>: Mayor diversidad léxica (TTR=0.64) del corpus, términos únicos por clase</p></li>
+<li><p>Mayor diversidad léxica (TTR=0.64) del corpus, términos únicos por clase</p></li>
 </ul>
 </li>
 <li><p><strong>DESIGNER</strong>: Léxico distintivo (UX, Figma, wireframe, prototyping)</p>
 <ul>
-<li><p><em>Limitación EDA</em>: Similaridad 0.83 con APPAREL y DIGITAL-MEDIA, pero suficientes términos técnicos únicos</p></li>
+<li><p>Similaridad 0.83 con APPAREL y DIGITAL-MEDIA, pero suficientes términos técnicos únicos</p></li>
 </ul>
 </li>
 <li><p><strong>BUSINESS-DEVELOPMENT</strong>: Patrones semánticos claros (pipeline, lead generation, revenue)</p>
 <ul>
-<li><p><em>Advertencia</em>: Similaridad 0.85 con CONSULTANT y 0.84 con SALES puede generar confusión en casos edge</p></li>
+<li><p>Similaridad 0.85 con CONSULTANT y 0.84 con SALES puede generar confusión en casos edge</p></li>
 </ul>
 </li>
 </ul>
@@ -914,7 +914,7 @@ document.write(`
 <ul class="simple">
 <li><p>El back-translation expandió el dataset 5.5% (2,484→2,621), reduciendo desbalance de 5.45x a 1.82x</p></li>
 <li><p>Sin embargo, el análisis de duplicados semánticos post-augmentation reveló 33 casos con &gt;0.90 similarity</p></li>
-<li><p><strong>Conclusión EDA</strong>: El augmentation preserva semántica (bueno) pero no introduce diversidad sintáctica suficiente (limitación). Para clases con vocabulario ambiguo (CONSULTANT, BPO), más augmentations simplemente replican la ambigüedad</p></li>
+<li><p><strong>Conclusión EDA</strong>: El augmentation preserva semántica (bueno) pero no introduce diversidad sintáctica suficiente. Para clases con vocabulario ambiguo (CONSULTANT, BPO), más augmentations simplemente replican la ambigüedad</p></li>
 </ul>
 </li>
 <li><p><strong>Contaminación de corpus afecta todos los modelos</strong>:</p>
@@ -933,8 +933,7 @@ document.write(`
 </li>
 <li><p><strong>Transferencia de conocimiento es crucial pero tiene límites</strong>:</p>
 <ul class="simple">
-<li><p>El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en BookCorpus/Wikipedia aporta conocimiento que 2,104 muestras locales no pueden proporcionar</p></li>
-<li><p>Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)</p></li>
+<li><p>Incluso DistilBERT que es el modelo mas avanzado falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)</p></li>
 <li><p><strong>Insight EDA</strong>: Estas fallas no son por falta de capacidad del modelo, sino porque el corpus tiene clases inherentemente mal definidas (APPAREL: 17 pares &gt;0.80 similaridad)</p></li>
 </ul>
 </li>
@@ -945,15 +944,15 @@ document.write(`
 <li><p><strong>Lección</strong>: La diversidad léxica importa menos que la especificidad de vocabulario único por clase</p></li>
 </ul>
 </li>
-<li><p><strong>Separabilidad lineal es insuficiente, pero contexto ayuda</strong>:</p>
+<li><p><strong>Separabilidad lineal es insuficiente</strong>:</p>
 <ul class="simple">
-<li><p>PCA/UMAP sobre TF-IDF: clases mezcladas (explica por qué XGBoost no supera 79%)</p></li>
+<li><p>PCA/UMAP sobre TF-IDF: clases mezcladas, explica por qué XGBoost no supera 79%</p></li>
 <li><p>Self-attention de DistilBERT: captura dependencias que separan mejor las clases (+8.2 pp sobre XGBoost)</p></li>
 <li><p>Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles</p></li>
 </ul>
 </li>
 </ol>
-<p>El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, <strong>pero más importante aún, debe reconocer los límites inherentes de los datos</strong>. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).</p>
+<p>El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, <strong>pero más importante aún, debe reconocer los límites inherentes de los datos</strong>. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales.</p>
 </section>
 <div class="toctree-wrapper compound">
 </div>

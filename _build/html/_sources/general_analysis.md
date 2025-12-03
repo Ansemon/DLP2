@@ -188,19 +188,19 @@ La siguiente tabla resume el desempeño de los cinco modelos evaluados:
 Las siguientes categorías exhiben F1-Score >0.80 en al menos 4 de los 5 modelos:
 
 - **ACCOUNTANT**: Vocabulario altamente técnico (audit, ledger, payroll, reconciliation)
-  - *Nota EDA*: Aunque tiene similaridad 0.91 con FINANCE, términos como "reconciliation", "audit trail" son distintivos
+  - Aunque tiene similaridad 0.91 con FINANCE, términos como "reconciliation", "audit trail" son distintivos
   
 - **HR**: Terminología específica (recruitment, onboarding, HRIS, benefits)
-  - *Fortaleza*: TTR alto (0.62) indica lenguaje variado y especializado
+  - TTR alto (0.62) indica lenguaje variado y especializado
   
 - **INFORMATION-TECHNOLOGY**: Densidad de términos técnicos (Java, SQL, debugging, deployment)
-  - *Fortaleza*: Mayor diversidad léxica (TTR=0.64) del corpus, términos únicos por clase
+  - Mayor diversidad léxica (TTR=0.64) del corpus, términos únicos por clase
   
 - **DESIGNER**: Léxico distintivo (UX, Figma, wireframe, prototyping)
-  - *Limitación EDA*: Similaridad 0.83 con APPAREL y DIGITAL-MEDIA, pero suficientes términos técnicos únicos
+  - Similaridad 0.83 con APPAREL y DIGITAL-MEDIA, pero suficientes términos técnicos únicos
   
 - **BUSINESS-DEVELOPMENT**: Patrones semánticos claros (pipeline, lead generation, revenue)
-  - *Advertencia*: Similaridad 0.85 con CONSULTANT y 0.84 con SALES puede generar confusión en casos edge
+  - Similaridad 0.85 con CONSULTANT y 0.84 con SALES puede generar confusión en casos edge
 
 **Hipótesis validada por EDA**: Estas clases tienen bajo TTR pero alto vocabulario único. INFORMATION-TECHNOLOGY tiene 847 palabras que no aparecen en ninguna otra clase, HR tiene 612, DESIGNER tiene 531. Esta especificidad supera el overlap semántico general.
 
@@ -315,7 +315,7 @@ El sistema de clasificación multiclase de currículums presenta un caso de estu
 3. **Data augmentation es útil pero enfrenta el "ceiling effect"**: 
    - El back-translation expandió el dataset 5.5% (2,484→2,621), reduciendo desbalance de 5.45x a 1.82x
    - Sin embargo, el análisis de duplicados semánticos post-augmentation reveló 33 casos con >0.90 similarity
-   - **Conclusión EDA**: El augmentation preserva semántica (bueno) pero no introduce diversidad sintáctica suficiente (limitación). Para clases con vocabulario ambiguo (CONSULTANT, BPO), más augmentations simplemente replican la ambigüedad
+   - **Conclusión EDA**: El augmentation preserva semántica (bueno) pero no introduce diversidad sintáctica suficiente. Para clases con vocabulario ambiguo (CONSULTANT, BPO), más augmentations simplemente replican la ambigüedad
 
 4. **Contaminación de corpus afecta todos los modelos**: 
    - El análisis de n-gramas identificó que "company city state" aparece con frecuencia 5-10x mayor que términos técnicos
@@ -328,8 +328,7 @@ El sistema de clasificación multiclase de currículums presenta un caso de estu
    - El análisis de feature importance reveló que aprende reglas sensatas ("Python" + "debugging" → IT) pero también captura ruido ("menu" con gain 130 → CHEF)
 
 6. **Transferencia de conocimiento es crucial pero tiene límites**: 
-   - El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en BookCorpus/Wikipedia aporta conocimiento que 2,104 muestras locales no pueden proporcionar
-   - Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)
+   - Incluso DistilBERT que es el modelo mas avanzado falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)
    - **Insight EDA**: Estas fallas no son por falta de capacidad del modelo, sino porque el corpus tiene clases inherentemente mal definidas (APPAREL: 17 pares >0.80 similaridad)
 
 7. **Diversidad léxica vs redundancia**: 
@@ -337,9 +336,9 @@ El sistema de clasificación multiclase de currículums presenta un caso de estu
    - Clases con bajo TTR pero vocabulario único fuerte (HR: 0.58 pero 612 palabras exclusivas) tienen F1 >0.90
    - **Lección**: La diversidad léxica importa menos que la especificidad de vocabulario único por clase
 
-8. **Separabilidad lineal es insuficiente, pero contexto ayuda**:
-   - PCA/UMAP sobre TF-IDF: clases mezcladas (explica por qué XGBoost no supera 79%)
+8. **Separabilidad lineal es insuficiente**:
+   - PCA/UMAP sobre TF-IDF: clases mezcladas, explica por qué XGBoost no supera 79%
    - Self-attention de DistilBERT: captura dependencias que separan mejor las clases (+8.2 pp sobre XGBoost)
    - Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles
 
- El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, **pero más importante aún, debe reconocer los límites inherentes de los datos**. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).
+ El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, **pero más importante aún, debe reconocer los límites inherentes de los datos**. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales.
