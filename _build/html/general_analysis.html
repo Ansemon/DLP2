@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -934,7 +934,7 @@ document.write(`
 <li><p><strong>Transferencia de conocimiento es crucial pero tiene límites</strong>:</p>
 <ul class="simple">
 <li><p>El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en BookCorpus/Wikipedia aporta conocimiento que 2,104 muestras locales no pueden proporcionar</p></li>
-<li><p><strong>Pero</strong>: Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)</p></li>
+<li><p>Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)</p></li>
 <li><p><strong>Insight EDA</strong>: Estas fallas no son por falta de capacidad del modelo, sino porque el corpus tiene clases inherentemente mal definidas (APPAREL: 17 pares &gt;0.80 similaridad)</p></li>
 </ul>
 </li>
@@ -949,11 +949,11 @@ document.write(`
 <ul class="simple">
 <li><p>PCA/UMAP sobre TF-IDF: clases mezcladas (explica por qué XGBoost no supera 79%)</p></li>
 <li><p>Self-attention de DistilBERT: captura dependencias que separan mejor las clases (+8.2 pp sobre XGBoost)</p></li>
-<li><p><strong>Pero</strong>: Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles</p></li>
+<li><p>Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles</p></li>
 </ul>
 </li>
 </ol>
-<p><strong>Conclusión integrada</strong>: El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, <strong>pero más importante aún, debe reconocer los límites inherentes de los datos</strong>. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).</p>
+<p>El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, <strong>pero más importante aún, debe reconocer los límites inherentes de los datos</strong>. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).</p>
 </section>
 <div class="toctree-wrapper compound">
 </div>

@@ -329,7 +329,7 @@ El sistema de clasificación multiclase de currículums presenta un caso de estu
 
 6. **Transferencia de conocimiento es crucial pero tiene límites**: 
    - El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en BookCorpus/Wikipedia aporta conocimiento que 2,104 muestras locales no pueden proporcionar
-   - **Pero**: Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)
+   - Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)
    - **Insight EDA**: Estas fallas no son por falta de capacidad del modelo, sino porque el corpus tiene clases inherentemente mal definidas (APPAREL: 17 pares >0.80 similaridad)
 
 7. **Diversidad léxica vs redundancia**: 
@@ -340,6 +340,6 @@ El sistema de clasificación multiclase de currículums presenta un caso de estu
 8. **Separabilidad lineal es insuficiente, pero contexto ayuda**:
    - PCA/UMAP sobre TF-IDF: clases mezcladas (explica por qué XGBoost no supera 79%)
    - Self-attention de DistilBERT: captura dependencias que separan mejor las clases (+8.2 pp sobre XGBoost)
-   - **Pero**: Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles
+   - Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles
 
-**Conclusión integrada**: El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, **pero más importante aún, debe reconocer los límites inherentes de los datos**. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).
+ El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, **pero más importante aún, debe reconocer los límites inherentes de los datos**. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).
