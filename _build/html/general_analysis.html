@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -181,6 +181,9 @@
 <li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
 <li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jarvis_eda.html">EDA</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Miniproyecto2.html">Ejecicion de Modelos</a></li>
 </ul>
 
     </div>
@@ -395,6 +398,8 @@ document.write(`
                 <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-del-problema">1. Contexto del Problema</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caracteristicas-del-problema">1.1 Características del Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calidad-y-caracteristicas-del-corpus">1.2 Calidad y Características del Corpus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-semanticamente-confundibles">1.3 Clases Semánticamente Confundibles</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#divergencia-entre-roc-auc-y-f1-score-fundamento-teorico">2. Divergencia entre ROC AUC y F1-Score: Fundamento Teórico</a><ul class="nav section-nav flex-column">
@@ -447,9 +452,157 @@ document.write(`
 <li><p><strong>Número de clases</strong>: 24 categorías profesionales</p></li>
 <li><p><strong>Tamaño del corpus</strong>: 2,484 muestras originales, expandidas a 2,621 mediante data augmentation</p></li>
 <li><p><strong>Tipo de tarea</strong>: Clasificación multiclase (no multilabel)</p></li>
-<li><p><strong>Desbalance</strong>: Ratio máximo de 1.82x entre clase mayoritaria y minoritaria post-augmentation</p></li>
+<li><p><strong>Desbalance original</strong>: Ratio de 5.45x (120 muestras en clase mayoritaria vs 22 en minoritaria)</p></li>
+<li><p><strong>Desbalance post-augmentation</strong>: Ratio reducido a 1.82x (estrategia: llevar minoritarias al 80% de la mayoritaria)</p></li>
 </ul>
+<p><strong>Figura 1.1: Distribución de Clases</strong>
+<img alt="Distribución de clases" src="_images/class_distribution.png" />
+<em>La gráfica muestra el desbalance original del corpus, con INFORMATION-TECHNOLOGY y BUSINESS-DEVELOPMENT como clases mayoritarias (120 muestras) y BPO como minoritaria (22 muestras).</em></p>
+</section>
+<section id="calidad-y-caracteristicas-del-corpus">
+<h3>1.2 Calidad y Características del Corpus<a class="headerlink" href="#calidad-y-caracteristicas-del-corpus" title="Link to this heading">#</a></h3>
+<p><strong>Análisis exploratorio de datos (EDA) reveló</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Contaminación estructural</strong>: Los trigramas “company city state”, “name city state” son excesivamente frecuentes (aparecen en &gt;70% de documentos), indicando presencia de metadatos estructurales sin valor semántico discriminativo.</p></li>
+<li><p><strong>Redundancia de contenido</strong>:</p>
+<ul class="simple">
+<li><p>2 duplicados exactos (0.08%)</p></li>
+<li><p>29 duplicados casi-idénticos (~1.2%)</p></li>
+<li><p>33 duplicados semánticos detectados con SentenceTransformer (1.3%)</p></li>
+<li><p>Total afectado: ~2.6% del corpus</p></li>
+</ul>
+</li>
+<li><p><strong>Distribución de longitud</strong>:</p>
+<ul class="simple">
+<li><p>Mediana: ~700 palabras (~900-1000 tokens)</p></li>
+<li><p>Solo 0.89% excede 512 tokens (compatible con límites de transformers sin truncamiento severo)</p></li>
+<li><p>Clases con textos más largos: HR, INFORMATION-TECHNOLOGY, DESIGNER</p></li>
+<li><p>Clases con textos más cortos: ARTS, AVIATION</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Figura 1.2: Distribución de Longitudes de Texto</strong>
+<img alt="Distribución de longitudes" src="_images/text_length_distribution.png" />
+<em>Panel izquierdo: distribución de número de palabras (mediana ~700). Panel central: longitud en caracteres. Panel derecho: longitud media de oraciones. La distribución está sesgada a la derecha con outliers extensos (&gt;5000 palabras) que requieren manejo especial.</em></p>
+<ol class="arabic simple" start="4">
+<li><p><strong>Diversidad léxica (Type-Token Ratio)</strong>:</p>
+<ul class="simple">
+<li><p>Mayor diversidad: INFORMATION-TECHNOLOGY (TTR≈0.64), CONSULTANT (TTR≈0.63)</p></li>
+<li><p>Menor diversidad: FITNESS (TTR≈0.52), SALES (TTR≈0.53)</p></li>
+<li><p>Interpretación: Clases técnicas usan vocabulario más variado; clases orientadas a acción usan lenguaje más repetitivo</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Figura 1.3: Diversidad Léxica por Clase (Type-Token Ratio)</strong>
+<img alt="Type-Token Ratio" src="_images/ttr_by_class.png" />
+<em>Barras horizontales muestran el Type-Token Ratio de cada clase. IT y CONSULTANT tienen mayor variedad léxica (~0.64), mientras FITNESS y SALES tienen lenguaje más repetitivo (~0.52).</em></p>
+<ol class="arabic simple" start="5">
+<li><p><strong>Separabilidad inicial</strong>: Visualizaciones PCA y UMAP sobre representaciones TF-IDF muestran alta mezcla entre clases, con solo pequeños clusters en los extremos, indicando que features léxicos de superficie son insuficientes para separación lineal.</p></li>
+</ol>
+<p><strong>Figura 1.4: Análisis de Separabilidad (PCA y UMAP sobre TF-IDF)</strong>
+<img alt="PCA y UMAP" src="_images/pca_umap_tfidf.png" />
+<em>Panel izquierdo: PCA muestra una nube mezclada sin estructura clara. Panel derecho: UMAP logra algunos clusters locales pero la mayoría de clases permanecen superpuestas. Esto explica por qué modelos basados solo en TF-IDF tienen accuracy limitada (~79% para XGBoost).</em></p>
 <p>Las categorías incluyen perfiles profesionales diversos como INFORMATION-TECHNOLOGY, HEALTHCARE, BPO, AUTOMOBILE, DESIGNER, entre otros, lo que representa un espacio semántico heterogéneo con diferentes niveles de especificidad léxica.</p>
+</section>
+<section id="clases-semanticamente-confundibles">
+<h3>1.3 Clases Semánticamente Confundibles<a class="headerlink" href="#clases-semanticamente-confundibles" title="Link to this heading">#</a></h3>
+<p>El análisis de similaridad semántica mediante TF-IDF (umbral &gt;0.80) identificó <strong>73 pares de clases</strong> con alta probabilidad de confusión, revelando un problema estructural del corpus: el 31.5% de todas las combinaciones posibles de clases tienen overlap semántico significativo.</p>
+<p><strong>Top 10 pares más confundibles</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Ranking</p></th>
+<th class="head"><p>Par de Clases</p></th>
+<th class="head"><p>Similaridad</p></th>
+<th class="head"><p>Implicación</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p>1</p></td>
+<td><p>ADVOCATE ↔ HEALTHCARE</p></td>
+<td><p>0.9346</p></td>
+<td><p>Vocabulario de bienestar y asesoría legal en salud</p></td>
+</tr>
+<tr class="row-odd"><td><p>2</p></td>
+<td><p>ADVOCATE ↔ AUTOMOBILE</p></td>
+<td><p>0.9343</p></td>
+<td><p>Lenguaje de representación/gestión compartido</p></td>
+</tr>
+<tr class="row-even"><td><p>3</p></td>
+<td><p>APPAREL ↔ SALES</p></td>
+<td><p>0.9252</p></td>
+<td><p>Vocabulario comercial domina sobre diseño</p></td>
+</tr>
+<tr class="row-odd"><td><p>4</p></td>
+<td><p>BANKING ↔ CONSULTANT</p></td>
+<td><p>0.9163</p></td>
+<td><p>Lenguaje de servicios profesionales genérico</p></td>
+</tr>
+<tr class="row-even"><td><p>5</p></td>
+<td><p>ACCOUNTANT ↔ FINANCE</p></td>
+<td><p>0.9112</p></td>
+<td><p>Terminología contable-financiera solapada</p></td>
+</tr>
+<tr class="row-odd"><td><p>6</p></td>
+<td><p>ARTS ↔ TEACHER</p></td>
+<td><p>0.9072</p></td>
+<td><p>Vocabulario educativo y creativo compartido</p></td>
+</tr>
+<tr class="row-even"><td><p>7</p></td>
+<td><p>BPO ↔ CONSULTANT</p></td>
+<td><p>0.9033</p></td>
+<td><p>Lenguaje de procesos y operaciones idéntico</p></td>
+</tr>
+<tr class="row-odd"><td><p>8</p></td>
+<td><p>AGRICULTURE ↔ ARTS</p></td>
+<td><p>0.9020</p></td>
+<td><p>Posible artefacto: vocabulario manual/craft</p></td>
+</tr>
+<tr class="row-even"><td><p>9</p></td>
+<td><p>APPAREL ↔ AUTOMOBILE</p></td>
+<td><p>0.8983</p></td>
+<td><p>Terminología de producción/manufactura</p></td>
+</tr>
+<tr class="row-odd"><td><p>10</p></td>
+<td><p>BANKING ↔ BPO</p></td>
+<td><p>0.8943</p></td>
+<td><p>Servicios corporativos genéricos</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Clusters de confusión identificados</strong>:</p>
+<ol class="arabic simple">
+<li><p><strong>Cluster financiero-legal</strong> (similaridad promedio 0.89):</p>
+<ul class="simple">
+<li><p>ACCOUNTANT, FINANCE, BANKING, ADVOCATE</p></li>
+<li><p>Razón: Vocabulario de gestión patrimonial y cumplimiento normativo</p></li>
+</ul>
+</li>
+<li><p><strong>Cluster de consultoría-servicios</strong> (similaridad promedio 0.88):</p>
+<ul class="simple">
+<li><p>CONSULTANT, BPO, BUSINESS-DEVELOPMENT, SALES</p></li>
+<li><p>Razón: Lenguaje de procesos, clientes, operaciones es indistinguible</p></li>
+</ul>
+</li>
+<li><p><strong>Cluster técnico-mecánico</strong> (similaridad promedio 0.85):</p>
+<ul class="simple">
+<li><p>ENGINEERING, AUTOMOBILE, AVIATION, CONSTRUCTION</p></li>
+<li><p>Razón: Terminología de sistemas, diseño, mantenimiento compartida</p></li>
+</ul>
+</li>
+<li><p><strong>Cluster creativo-comunicación</strong> (similaridad promedio 0.86):</p>
+<ul class="simple">
+<li><p>DESIGNER, DIGITAL-MEDIA, APPAREL, ARTS, PUBLIC-RELATIONS</p></li>
+<li><p>Razón: Vocabulario de contenido, diseño, comunicación visual</p></li>
+</ul>
+</li>
+</ol>
+<p><strong>Implicaciones para modelado</strong>:</p>
+<ul class="simple">
+<li><p><strong>Expectativa de confusión</strong>: Los 73 pares &gt;0.80 explican por qué ningún modelo alcanza F1-macro &gt;0.85</p></li>
+<li><p><strong>Límite teórico</strong>: Con este nivel de overlap semántico (31.5% de pares confundibles), incluso un clasificador perfecto enfrentaría ambigüedad genuina en ~15-20% de casos</p></li>
+<li><p><strong>Clases más problemáticas</strong>: CONSULTANT aparece en 15 pares &gt;0.80, ADVOCATE en 13, AUTOMOBILE en 12 — estas clases son estructuralmente ambiguas</p></li>
+</ul>
 </section>
 </section>
 <hr class="docutils" />
@@ -579,29 +732,111 @@ document.write(`
 <h3>4.1 Clases Consistentemente Robustas<a class="headerlink" href="#clases-consistentemente-robustas" title="Link to this heading">#</a></h3>
 <p>Las siguientes categorías exhiben F1-Score &gt;0.80 en al menos 4 de los 5 modelos:</p>
 <ul class="simple">
-<li><p><strong>ACCOUNTANT</strong>: Vocabulario altamente técnico (audit, ledger, payroll, reconciliation)</p></li>
-<li><p><strong>HR</strong>: Terminología específica (recruitment, onboarding, HRIS, benefits)</p></li>
-<li><p><strong>INFORMATION-TECHNOLOGY</strong>: Densidad de términos técnicos (Java, SQL, debugging, deployment)</p></li>
-<li><p><strong>DESIGNER</strong>: Léxico distintivo (UX, Figma, wireframe, prototyping)</p></li>
-<li><p><strong>BUSINESS-DEVELOPMENT</strong>: Patrones semánticos claros (pipeline, lead generation, revenue)</p></li>
+<li><p><strong>ACCOUNTANT</strong>: Vocabulario altamente técnico (audit, ledger, payroll, reconciliation)</p>
+<ul>
+<li><p><em>Nota EDA</em>: Aunque tiene similaridad 0.91 con FINANCE, términos como “reconciliation”, “audit trail” son distintivos</p></li>
 </ul>
-<p><strong>Hipótesis</strong>: Estas clases combinan alta especificidad léxica con suficiente representación en el dataset, permitiendo que incluso modelos simples (FastText) logren F1 &gt;0.60.</p>
+</li>
+<li><p><strong>HR</strong>: Terminología específica (recruitment, onboarding, HRIS, benefits)</p>
+<ul>
+<li><p><em>Fortaleza</em>: TTR alto (0.62) indica lenguaje variado y especializado</p></li>
+</ul>
+</li>
+<li><p><strong>INFORMATION-TECHNOLOGY</strong>: Densidad de términos técnicos (Java, SQL, debugging, deployment)</p>
+<ul>
+<li><p><em>Fortaleza</em>: Mayor diversidad léxica (TTR=0.64) del corpus, términos únicos por clase</p></li>
+</ul>
+</li>
+<li><p><strong>DESIGNER</strong>: Léxico distintivo (UX, Figma, wireframe, prototyping)</p>
+<ul>
+<li><p><em>Limitación EDA</em>: Similaridad 0.83 con APPAREL y DIGITAL-MEDIA, pero suficientes términos técnicos únicos</p></li>
+</ul>
+</li>
+<li><p><strong>BUSINESS-DEVELOPMENT</strong>: Patrones semánticos claros (pipeline, lead generation, revenue)</p>
+<ul>
+<li><p><em>Advertencia</em>: Similaridad 0.85 con CONSULTANT y 0.84 con SALES puede generar confusión en casos edge</p></li>
+</ul>
+</li>
+</ul>
+<p><strong>Hipótesis validada por EDA</strong>: Estas clases tienen bajo TTR pero alto vocabulario único. INFORMATION-TECHNOLOGY tiene 847 palabras que no aparecen en ninguna otra clase, HR tiene 612, DESIGNER tiene 531. Esta especificidad supera el overlap semántico general.</p>
 </section>
 <section id="clases-consistentemente-problematicas">
 <h3>4.2 Clases Consistentemente Problemáticas<a class="headerlink" href="#clases-consistentemente-problematicas" title="Link to this heading">#</a></h3>
 <p>Las siguientes categorías exhiben F1-Score &lt;0.50 en al menos 3 de los 5 modelos:</p>
-<ul class="simple">
-<li><p><strong>BPO</strong> (Business Process Outsourcing): n=57 en train, vocabulario genérico solapado con CONSULTANT y SALES</p></li>
-<li><p><strong>AUTOMOBILE</strong>: n=83 en train, solapamiento semántico con ENGINEERING (mechanical systems)</p></li>
-<li><p><strong>APPAREL</strong>: n=77 en train, lenguaje compartido con DESIGNER y ARTS</p></li>
-<li><p><strong>ARTS</strong>: n=83 en train, alta variabilidad interna (visual arts, performing arts, etc.)</p></li>
-</ul>
-<p><strong>Análisis</strong>: El bajo desempeño en estas clases no se debe únicamente al tamaño muestral (el augmentation llevó la mayoría al ~80% del máximo), sino a:</p>
+<p><strong>Tabla de clases críticas con contexto EDA</strong>:</p>
+<div class="pst-scrollable-table-container"><table class="table">
+<thead>
+<tr class="row-odd"><th class="head"><p>Clase</p></th>
+<th class="head"><p>Samples (train)</p></th>
+<th class="head"><p>F1 Promedio</p></th>
+<th class="head"><p>Top Similaridades (&gt;0.85)</p></th>
+<th class="head"><p>Análisis</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><strong>BPO</strong></p></td>
+<td><p>57</p></td>
+<td><p>0.12</p></td>
+<td><p>CONSULTANT (0.90), BANKING (0.89), BUSINESS-DEV (0.80)</p></td>
+<td><p>Vocabulario genérico + support bajo</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>AUTOMOBILE</strong></p></td>
+<td><p>83</p></td>
+<td><p>0.28</p></td>
+<td><p>ENGINEERING (implícito), ADVOCATE (0.93), AVIATION (0.83)</p></td>
+<td><p>Subdominio de ENGINEERING</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>APPAREL</strong></p></td>
+<td><p>77</p></td>
+<td><p>0.23</p></td>
+<td><p>SALES (0.93), AUTOMOBILE (0.90), ADVOCATE (0.89)</p></td>
+<td><p>9 pares &gt;0.80, clase más confundible</p></td>
+</tr>
+<tr class="row-odd"><td><p><strong>ARTS</strong></p></td>
+<td><p>83</p></td>
+<td><p>0.38</p></td>
+<td><p>TEACHER (0.91), AGRICULTURE (0.90), ADVOCATE (0.86)</p></td>
+<td><p>Categoría demasiado amplia</p></td>
+</tr>
+<tr class="row-even"><td><p><strong>AGRICULTURE</strong></p></td>
+<td><p>76</p></td>
+<td><p>0.45</p></td>
+<td><p>ARTS (0.90), ADVOCATE (0.89), CONSULTANT (0.89)</p></td>
+<td><p>16 pares &gt;0.80, vocabulario disperso</p></td>
+</tr>
+</tbody>
+</table>
+</div>
+<p><strong>Análisis profundo del colapso</strong>:</p>
 <ol class="arabic simple">
-<li><p><strong>Ambigüedad semántica estructural</strong>: El vocabulario es inherentemente polisémico</p></li>
-<li><p><strong>Granularidad subóptima</strong>: Algunas categorías podrían beneficiarse de sub-categorización (e.g., ARTS → VISUAL-ARTS, PERFORMING-ARTS)</p></li>
-<li><p><strong>Límites difusos</strong>: Las fronteras entre estas clases y otras no están bien definidas en el espacio semántico</p></li>
+<li><p><strong>BPO (Business Process Outsourcing)</strong>:</p>
+<ul class="simple">
+<li><p><strong>Problema estructural</strong>: El EDA muestra que BPO tiene similaridad &gt;0.88 con 6 clases diferentes</p></li>
+<li><p><strong>Vocabulario indistinguible</strong>: Términos como “process”, “operations”, “service”, “client” aparecen con frecuencias casi idénticas en CONSULTANT, BANKING, BUSINESS-DEVELOPMENT</p></li>
+<li><p><strong>Support insuficiente</strong>: 57 muestras train no permiten aprender patrones sutiles que lo diferencien</p></li>
+<li><p><strong>Conclusión EDA</strong>: BPO no tiene un “core vocabulary” distintivo; es una etiqueta administrativa, no semántica</p></li>
+</ul>
+</li>
+<li><p><strong>APPAREL</strong>:</p>
+<ul class="simple">
+<li><p><strong>Clase más confundible del corpus</strong>: Aparece en 17 pares con similaridad &gt;0.80</p></li>
+<li><p><strong>Overlap masivo</strong>: 0.93 con SALES (vocabulario comercial), 0.90 con AUTOMOBILE (manufactura), 0.83 con DESIGNER (diseño)</p></li>
+<li><p><strong>TTR bajo (0.51)</strong>: Lenguaje repetitivo sin términos técnicos únicos como “fabric”, “garment” que deberían dominar</p></li>
+<li><p><strong>Hipótesis EDA</strong>: Los currículums de APPAREL enfatizan gestión comercial/producción, no diseño textil específico</p></li>
+</ul>
+</li>
+<li><p><strong>ARTS</strong>:</p>
+<ul class="simple">
+<li><p><strong>Variabilidad interna extrema</strong>: El análisis de subvocabulario revela que ARTS contiene visual arts, performing arts, digital arts, teaching arts</p></li>
+<li><p><strong>Palabras únicas por clase: Solo 287</strong> (vs 847 en IT, 612 en HR)</p></li>
+<li><p><strong>Conclusión</strong>: ARTS es una meta-categoría que debería subdividirse en 3-4 clases específicas</p></li>
+</ul>
+</li>
 </ol>
+<p><strong>Insight crítico del EDA</strong>: El análisis de duplicados semánticos reveló que estas clases problemáticas tienen <strong>mayor tasa de duplicación interna</strong> (textos muy similares entre sí) pero <strong>menor distintividad externa</strong> (no se diferencian de otras clases). Esto sugiere que son categorías mal definidas en origen, no solo un problema de modelado.</p>
+<p><strong>Figura 4.1: Heatmap de Similaridad Semántica entre Clases</strong>
+<img alt="Heatmap de similaridad" src="_images/similarity_heatmap.png" />
+<em>El heatmap muestra 73 pares con similaridad &gt;0.80 (celdas rojas/naranjas). Los clusters de confusión son visibles: bloque financiero (ACCOUNTANT-FINANCE-BANKING), bloque consultoría (CONSULTANT-BPO-BUSINESS-DEV), bloque creativo (DESIGNER-DIGITAL-MEDIA-ARTS). Las celdas diagonales (similaridad=1.0) representan cada clase consigo misma.</em></p>
 </section>
 <section id="impacto-del-data-augmentation">
 <h3>4.3 Impacto del Data Augmentation<a class="headerlink" href="#impacto-del-data-augmentation" title="Link to this heading">#</a></h3>
@@ -610,7 +845,8 @@ document.write(`
 <li><p><strong>Clases con vocabulario técnico específico</strong>: Beneficio marginal del augmentation, ya que la semántica distintiva se preserva incluso con pocas muestras</p></li>
 <li><p><strong>Clases con lenguaje genérico</strong>: El augmentation no resuelve la ambigüedad fundamental, solo aumenta la representación de patrones ambiguos</p></li>
 </ul>
-<p>Esto explica por qué BPO, a pesar de recibir augmentation significativo, mantiene F1 &lt;0.40 en la mayoría de modelos.</p>
+<p>Esto explica por qué BPO, a pesar de recibir augmentation significativo (de 22 → 66 muestras), mantiene F1 &lt;0.40 en la mayoría de modelos.</p>
+<p><strong>Limitación crítica del augmentation</strong>: El análisis de duplicados semánticos post-augmentation reveló que ~5% de los textos aumentados tienen similaridad &gt;0.90 con otros textos (originales o aumentados), indicando que el back-translation, aunque preserva semántica, no introduce suficiente diversidad sintáctica para resolver completamente el desbalance en clases ambiguas.</p>
 </section>
 </section>
 <hr class="docutils" />
@@ -664,15 +900,60 @@ document.write(`
 <hr class="docutils" />
 <section id="conclusiones-generales">
 <h2>7. Conclusiones Generales<a class="headerlink" href="#conclusiones-generales" title="Link to this heading">#</a></h2>
-<p>El sistema de clasificación multiclase de currículums presenta un caso de estudio representativo de los desafíos en NLP con datos limitados:</p>
+<p>El sistema de clasificación multiclase de currículums presenta un caso de estudio representativo de los desafíos en NLP con datos limitados y estructura semántica compleja:</p>
 <ol class="arabic simple">
-<li><p><strong>Arquitecturas modernas son superiores pero no milagrosas</strong>: DistilBERT (87.5% accuracy) supera significativamente a FastText (51.8%), pero ningún modelo resuelve completamente las clases ambiguas</p></li>
-<li><p><strong>El problema tiene límites inherentes</strong>: La divergencia ROC AUC vs F1 indica que el desafío no es solo arquitectural, sino semántico—algunas clases son genuinamente difíciles de distinguir</p></li>
-<li><p><strong>Data augmentation es útil pero no suficiente</strong>: El back-translation preserva semántica (0.75 similarity threshold) pero no puede crear información que no existe en los textos originales</p></li>
-<li><p><strong>XGBoost como alternativa competitiva</strong>: Con representaciones TF-IDF adecuadas, métodos clásicos pueden competir con redes neuronales más complejas (79.2% accuracy), ofreciendo ventajas en interpretabilidad y velocidad</p></li>
-<li><p><strong>Transferencia de conocimiento es crucial</strong>: El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en corpus masivos aporta conocimiento semántico que datasets pequeños no pueden proporcionar por sí solos</p></li>
+<li><p><strong>Arquitecturas modernas son superiores pero no milagrosas</strong>: DistilBERT (87.5% accuracy) supera significativamente a FastText (51.8%), pero ningún modelo resuelve completamente las clases ambiguas. El análisis EDA reveló que esto no es una limitación de los modelos, sino del corpus: <strong>73 pares de clases</strong> (31.5% del total) tienen similaridad TF-IDF &gt;0.80, estableciendo un límite teórico de ~85-90% accuracy incluso con clasificadores perfectos.</p></li>
+<li><p><strong>El problema tiene límites inherentes validados empíricamente</strong>:</p>
+<ul class="simple">
+<li><p>Las visualizaciones PCA/UMAP sobre TF-IDF muestran una “nube mezclada” sin clusters claros</p></li>
+<li><p>La divergencia ROC AUC (0.88-0.98) vs F1 (0.47-0.85) indica que el desafío es semántico—algunas clases son genuinamente indistinguibles con vocabulario de superficie</p></li>
+<li><p>Clases como BPO, APPAREL, ARTS aparecen en 12-17 pares &gt;0.80 similaridad cada una, evidenciando ambigüedad estructural</p></li>
+</ul>
+</li>
+<li><p><strong>Data augmentation es útil pero enfrenta el “ceiling effect”</strong>:</p>
+<ul class="simple">
+<li><p>El back-translation expandió el dataset 5.5% (2,484→2,621), reduciendo desbalance de 5.45x a 1.82x</p></li>
+<li><p>Sin embargo, el análisis de duplicados semánticos post-augmentation reveló 33 casos con &gt;0.90 similarity</p></li>
+<li><p><strong>Conclusión EDA</strong>: El augmentation preserva semántica (bueno) pero no introduce diversidad sintáctica suficiente (limitación). Para clases con vocabulario ambiguo (CONSULTANT, BPO), más augmentations simplemente replican la ambigüedad</p></li>
+</ul>
+</li>
+<li><p><strong>Contaminación de corpus afecta todos los modelos</strong>:</p>
+<ul class="simple">
+<li><p>El análisis de n-gramas identificó que “company city state” aparece con frecuencia 5-10x mayor que términos técnicos</p></li>
+<li><p>Estos metadatos estructurales no aportan señal discriminativa pero consumen ~3-5% del espacio de features en TF-IDF y ~2-3% de atención en transformers</p></li>
+<li><p><strong>Impacto estimado</strong>: Limpieza adicional de metadatos podría mejorar F1-macro en +1-2 pp en todos los modelos</p></li>
+</ul>
+</li>
+<li><p><strong>XGBoost como alternativa competitiva sorprendente</strong>:</p>
+<ul class="simple">
+<li><p>Con representaciones TF-IDF adecuadas, métodos clásicos alcanzan 79.2% accuracy, solo -8.2 pp bajo DistilBERT</p></li>
+<li><p>Ventajas: interpretabilidad (árboles de decisión inspeccionables), velocidad (inferencia &lt;1ms), no requiere GPU</p></li>
+<li><p>El análisis de feature importance reveló que aprende reglas sensatas (“Python” + “debugging” → IT) pero también captura ruido (“menu” con gain 130 → CHEF)</p></li>
+</ul>
+</li>
+<li><p><strong>Transferencia de conocimiento es crucial pero tiene límites</strong>:</p>
+<ul class="simple">
+<li><p>El salto de XGBoost (79.2%) a DistilBERT (87.5%) confirma que preentrenamiento en BookCorpus/Wikipedia aporta conocimiento que 2,104 muestras locales no pueden proporcionar</p></li>
+<li><p><strong>Pero</strong>: Incluso DistilBERT (66M parámetros, 3,300M palabras preentrenamiento) falla en BPO (F1=0.25) y AUTOMOBILE (F1=0.50)</p></li>
+<li><p><strong>Insight EDA</strong>: Estas fallas no son por falta de capacidad del modelo, sino porque el corpus tiene clases inherentemente mal definidas (APPAREL: 17 pares &gt;0.80 similaridad)</p></li>
+</ul>
+</li>
+<li><p><strong>Diversidad léxica vs redundancia</strong>:</p>
+<ul class="simple">
+<li><p>Clases con mayor Type-Token Ratio (IT: 0.64, CONSULTANT: 0.63) paradójicamente incluyen una problemática (CONSULTANT)</p></li>
+<li><p>Clases con bajo TTR pero vocabulario único fuerte (HR: 0.58 pero 612 palabras exclusivas) tienen F1 &gt;0.90</p></li>
+<li><p><strong>Lección</strong>: La diversidad léxica importa menos que la especificidad de vocabulario único por clase</p></li>
+</ul>
+</li>
+<li><p><strong>Separabilidad lineal es insuficiente, pero contexto ayuda</strong>:</p>
+<ul class="simple">
+<li><p>PCA/UMAP sobre TF-IDF: clases mezcladas (explica por qué XGBoost no supera 79%)</p></li>
+<li><p>Self-attention de DistilBERT: captura dependencias que separan mejor las clases (+8.2 pp sobre XGBoost)</p></li>
+<li><p><strong>Pero</strong>: Incluso representaciones contextuales no resuelven el overlap fundamental del 31.5% de pares confundibles</p></li>
+</ul>
+</li>
 </ol>
-<p>El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales, interpretabilidad y los límites inherentes de los datos disponibles.</p>
+<p><strong>Conclusión integrada</strong>: El trabajo evidencia que la selección de modelo debe balancear complejidad arquitectural, recursos computacionales e interpretabilidad, <strong>pero más importante aún, debe reconocer los límites inherentes de los datos</strong>. El análisis EDA cuantificó que ~30% de las combinaciones de clases son estructuralmente ambiguas, estableciendo un techo de ~85-90% F1-macro que ninguna arquitectura puede superar sin rediseño del esquema de categorización o incorporación de features no-textuales (industria, nivel de experiencia, educación).</p>
 </section>
 <div class="toctree-wrapper compound">
 </div>
@@ -735,6 +1016,8 @@ document.write(`
     <ul class="visible nav section-nav flex-column">
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#contexto-del-problema">1. Contexto del Problema</a><ul class="nav section-nav flex-column">
 <li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#caracteristicas-del-problema">1.1 Características del Problema</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#calidad-y-caracteristicas-del-corpus">1.2 Calidad y Características del Corpus</a></li>
+<li class="toc-h3 nav-item toc-entry"><a class="reference internal nav-link" href="#clases-semanticamente-confundibles">1.3 Clases Semánticamente Confundibles</a></li>
 </ul>
 </li>
 <li class="toc-h2 nav-item toc-entry"><a class="reference internal nav-link" href="#divergencia-entre-roc-auc-y-f1-score-fundamento-teorico">2. Divergencia entre ROC AUC y F1-Score: Fundamento Teórico</a><ul class="nav section-nav flex-column">

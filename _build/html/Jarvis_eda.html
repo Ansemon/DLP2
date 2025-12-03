@@ -1,0 +1,1828 @@
+
+<!DOCTYPE html>
+
+
+<html lang="en" data-content_root="./" >
+
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>EDA &#8212; DL MP2 Analysis Book</title>
+  
+  
+  
+  <script data-cfasync="false">
+    document.documentElement.dataset.mode = localStorage.getItem("mode") || "";
+    document.documentElement.dataset.theme = localStorage.getItem("theme") || "";
+  </script>
+  
+  <!-- Loaded before other Sphinx assets -->
+  <link href="_static/styles/theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/bootstrap.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+<link href="_static/styles/pydata-sphinx-theme.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+
+  
+  <link href="_static/vendor/fontawesome/6.5.2/css/all.min.css?digest=dfe6caa3a7d634c4db9b" rel="stylesheet" />
+  <link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-solid-900.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-brands-400.woff2" />
+<link rel="preload" as="font" type="font/woff2" crossorigin href="_static/vendor/fontawesome/6.5.2/webfonts/fa-regular-400.woff2" />
+
+    <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=03e43079" />
+    <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
+    <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
+    <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
+    <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
+  
+  <!-- Pre-loaded scripts that we'll load fully later -->
+  <link rel="preload" as="script" href="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b" />
+<link rel="preload" as="script" href="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b" />
+  <script src="_static/vendor/fontawesome/6.5.2/js/all.min.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+    <script src="_static/documentation_options.js?v=9eb32ce0"></script>
+    <script src="_static/doctools.js?v=9a2dae69"></script>
+    <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/clipboard.min.js?v=a7894cd8"></script>
+    <script src="_static/copybutton.js?v=f281be69"></script>
+    <script src="_static/scripts/sphinx-book-theme.js?v=887ef09a"></script>
+    <script>let toggleHintShow = 'Click to show';</script>
+    <script>let toggleHintHide = 'Click to hide';</script>
+    <script>let toggleOpenOnPrint = 'true';</script>
+    <script src="_static/togglebutton.js?v=4a39c7ea"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script src="_static/design-tabs.js?v=f930bc37"></script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script async="async" src="_static/sphinx-thebe.js?v=c100c467"></script>
+    <script>var togglebuttonSelector = '.toggle, .admonition.dropdown';</script>
+    <script>const THEBE_JS_URL = "https://unpkg.com/thebe@0.8.2/lib/index.js"; const thebe_selector = ".thebe,.cell"; const thebe_selector_input = "pre"; const thebe_selector_output = ".output, .cell_output"</script>
+    <script>DOCUMENTATION_OPTIONS.pagename = 'Jarvis_eda';</script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Ejecicion de Modelos" href="Miniproyecto2.html" />
+    <link rel="prev" title="Análisis del Modelo DistilBERT para Clasificación de Currículums" href="distilbert_analysis.html" />
+  <meta name="viewport" content="width=device-width, initial-scale=1"/>
+  <meta name="docsearch:language" content="en"/>
+  </head>
+  
+  
+  <body data-bs-spy="scroll" data-bs-target=".bd-toc-nav" data-offset="180" data-bs-root-margin="0px 0px -60%" data-default-mode="">
+
+  
+  
+  <div id="pst-skip-link" class="skip-link d-print-none"><a href="#main-content">Skip to main content</a></div>
+  
+  <div id="pst-scroll-pixel-helper"></div>
+  
+  <button type="button" class="btn rounded-pill" id="pst-back-to-top">
+    <i class="fa-solid fa-arrow-up"></i>Back to top</button>
+
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-primary-sidebar-checkbox"/>
+  <label class="overlay overlay-primary" for="pst-primary-sidebar-checkbox"></label>
+  
+  <input type="checkbox"
+          class="sidebar-toggle"
+          id="pst-secondary-sidebar-checkbox"/>
+  <label class="overlay overlay-secondary" for="pst-secondary-sidebar-checkbox"></label>
+  
+  <div class="search-button__wrapper">
+    <div class="search-button__overlay"></div>
+    <div class="search-button__search-container">
+<form class="bd-search d-flex align-items-center"
+      action="search.html"
+      method="get">
+  <i class="fa-solid fa-magnifying-glass"></i>
+  <input type="search"
+         class="form-control"
+         name="q"
+         id="search-input"
+         placeholder="Search this book..."
+         aria-label="Search this book..."
+         autocomplete="off"
+         autocorrect="off"
+         autocapitalize="off"
+         spellcheck="false"/>
+  <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd>K</kbd></span>
+</form></div>
+  </div>
+
+  <div class="pst-async-banner-revealer d-none">
+  <aside id="bd-header-version-warning" class="d-none d-print-none" aria-label="Version warning"></aside>
+</div>
+
+  
+    <header class="bd-header navbar navbar-expand-lg bd-navbar d-print-none">
+    </header>
+  
+
+  <div class="bd-container">
+    <div class="bd-container__inner bd-page-width">
+      
+      
+      
+      <div class="bd-sidebar-primary bd-sidebar">
+        
+
+  
+  <div class="sidebar-header-items sidebar-primary__section">
+    
+    
+    
+    
+  </div>
+  
+    <div class="sidebar-primary-items__start sidebar-primary__section">
+        <div class="sidebar-primary-item">
+
+  
+    
+  
+
+<a class="navbar-brand logo" href="general_analysis.html">
+  
+  
+  
+  
+  
+  
+    <p class="title logo__title">DL MP2 Analysis Book</p>
+  
+</a></div>
+        <div class="sidebar-primary-item">
+
+ <script>
+ document.write(`
+   <button class="btn search-button-field search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass"></i>
+    <span class="search-button__default-text">Search</span>
+    <span class="search-button__kbd-shortcut"><kbd class="kbd-shortcut__modifier">Ctrl</kbd>+<kbd class="kbd-shortcut__modifier">K</kbd></span>
+   </button>
+ `);
+ </script></div>
+        <div class="sidebar-primary-item"><nav class="bd-links bd-docs-nav" aria-label="Main">
+    <div class="bd-toc-item navbar-nav active">
+        
+        <ul class="nav bd-sidenav bd-sidenav__home-link">
+            <li class="toctree-l1">
+                <a class="reference internal" href="general_analysis.html">
+                    Análisis General del Sistema de Clasificación Multiclase de Currículums
+                </a>
+            </li>
+        </ul>
+        <ul class="current nav bd-sidenav">
+<li class="toctree-l1"><a class="reference internal" href="preprocessing_analysis.html">Pipeline de Preprocesamiento y Data Augmentation: Análisis Técnico</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bilstm_analysis.html">Análisis del Modelo BiLSTM (Bidirectional Long Short-Term Memory)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cnn1d_analysis.html">Análisis del Modelo CNN-1D (Convolutional Neural Network para Texto)</a></li>
+<li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
+<li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
+<li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+<li class="toctree-l1 current active"><a class="current reference internal" href="#">EDA</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Miniproyecto2.html">Ejecicion de Modelos</a></li>
+</ul>
+
+    </div>
+</nav></div>
+    </div>
+  
+  
+  <div class="sidebar-primary-items__end sidebar-primary__section">
+  </div>
+  
+  <div id="rtd-footer-container"></div>
+
+
+      </div>
+      
+      <main id="main-content" class="bd-main" role="main">
+        
+        
+
+<div class="sbt-scroll-pixel-helper"></div>
+
+          <div class="bd-content">
+            <div class="bd-article-container">
+              
+              <div class="bd-header-article d-print-none">
+<div class="header-article-items header-article__inner">
+  
+    <div class="header-article-items__start">
+      
+        <div class="header-article-item"><button class="sidebar-toggle primary-toggle btn btn-sm" title="Toggle primary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+  <span class="fa-solid fa-bars"></span>
+</button></div>
+      
+    </div>
+  
+  
+    <div class="header-article-items__end">
+      
+        <div class="header-article-item">
+
+<div class="article-header-buttons">
+
+
+
+
+
+<div class="dropdown dropdown-source-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Source repositories">
+    <i class="fab fa-github"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2" target="_blank"
+   class="btn btn-sm btn-source-repository-button dropdown-item"
+   title="Source repository"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fab fa-github"></i>
+  </span>
+<span class="btn__text-container">Repository</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/edit/main/Jarvis_eda.ipynb" target="_blank"
+   class="btn btn-sm btn-source-edit-button dropdown-item"
+   title="Suggest edit"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-pencil-alt"></i>
+  </span>
+<span class="btn__text-container">Suggest edit</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li><a href="https://github.com/Ansemon/DLP2/issues/new?title=Issue%20on%20page%20%2FJarvis_eda.html&body=Your%20issue%20content%20here." target="_blank"
+   class="btn btn-sm btn-source-issues-button dropdown-item"
+   title="Open an issue"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-lightbulb"></i>
+  </span>
+<span class="btn__text-container">Open issue</span>
+</a>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+
+
+<div class="dropdown dropdown-download-buttons">
+  <button class="btn dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false" aria-label="Download this page">
+    <i class="fas fa-download"></i>
+  </button>
+  <ul class="dropdown-menu">
+      
+      
+      
+      <li><a href="_sources/Jarvis_eda.ipynb" target="_blank"
+   class="btn btn-sm btn-download-source-button dropdown-item"
+   title="Download source file"
+   data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file"></i>
+  </span>
+<span class="btn__text-container">.ipynb</span>
+</a>
+</li>
+      
+      
+      
+      
+      <li>
+<button onclick="window.print()"
+  class="btn btn-sm btn-download-pdf-button dropdown-item"
+  title="Print to PDF"
+  data-bs-placement="left" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-file-pdf"></i>
+  </span>
+<span class="btn__text-container">.pdf</span>
+</button>
+</li>
+      
+  </ul>
+</div>
+
+
+
+
+<button onclick="toggleFullScreen()"
+  class="btn btn-sm btn-fullscreen-button"
+  title="Fullscreen mode"
+  data-bs-placement="bottom" data-bs-toggle="tooltip"
+>
+  
+
+<span class="btn__icon-container">
+  <i class="fas fa-expand"></i>
+  </span>
+
+</button>
+
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm nav-link pst-navbar-icon theme-switch-button" title="light/dark" aria-label="light/dark" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="theme-switch fa-solid fa-sun fa-lg" data-mode="light"></i>
+    <i class="theme-switch fa-solid fa-moon fa-lg" data-mode="dark"></i>
+    <i class="theme-switch fa-solid fa-circle-half-stroke fa-lg" data-mode="auto"></i>
+  </button>
+`);
+</script>
+
+
+<script>
+document.write(`
+  <button class="btn btn-sm pst-navbar-icon search-button search-button__button" title="Search" aria-label="Search" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <i class="fa-solid fa-magnifying-glass fa-lg"></i>
+  </button>
+`);
+</script>
+<button class="sidebar-toggle secondary-toggle btn btn-sm" title="Toggle secondary sidebar" data-bs-placement="bottom" data-bs-toggle="tooltip">
+    <span class="fa-solid fa-list"></span>
+</button>
+</div></div>
+      
+    </div>
+  
+</div>
+</div>
+              
+              
+
+<div id="jb-print-docs-body" class="onlyprint">
+    <h1>EDA</h1>
+    <!-- Table of contents -->
+    <div id="print-main-content">
+        <div id="jb-print-toc">
+            
+            <div>
+                <h2> Contents </h2>
+            </div>
+            <nav aria-label="Page">
+                <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">EDA</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen-general">Resumen general</a></li>
+</ul>
+
+            </nav>
+        </div>
+    </div>
+</div>
+
+              
+                
+<div id="searchbox"></div>
+                <article class="bd-article">
+                  
+  <section class="tex2jax_ignore mathjax_ignore" id="eda">
+<h1>EDA<a class="headerlink" href="#eda" title="Link to this heading">#</a></h1>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># EDA_Jarvis.py</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">nltk</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">tqdm</span><span class="w"> </span><span class="kn">import</span> <span class="n">trange</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.stem</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordNetLemmatizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.probability</span><span class="w"> </span><span class="kn">import</span> <span class="n">FreqDist</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">CountVectorizer</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">warnings</span>
+<span class="n">warnings</span><span class="o">.</span><span class="n">filterwarnings</span><span class="p">(</span><span class="s1">&#39;ignore&#39;</span><span class="p">)</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;omw-1.4&#39;</span><span class="p">,</span> <span class="n">quiet</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">set_style</span><span class="p">(</span><span class="s1">&#39;darkgrid&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;figure.figsize&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="mi">17</span><span class="p">,</span><span class="mi">7</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">rcParams</span><span class="p">[</span><span class="s1">&#39;font.size&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="mi">18</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;punkt&#39;</span><span class="p">)</span>
+<span class="n">nltk</span><span class="o">.</span><span class="n">download</span><span class="p">(</span><span class="s1">&#39;punkt_tab&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[nltk_data] Downloading package punkt to
+[nltk_data]     C:\Users\adria\AppData\Roaming\nltk_data...
+[nltk_data]   Package punkt is already up-to-date!
+[nltk_data] Downloading package punkt_tab to
+[nltk_data]     C:\Users\adria\AppData\Roaming\nltk_data...
+[nltk_data]   Package punkt_tab is already up-to-date!
+</pre></div>
+</div>
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>True
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">read_csv</span><span class="p">(</span><span class="s1">&#39;Resume.csv&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">word_count</span><span class="p">(</span><span class="n">review</span><span class="p">):</span>
+    <span class="n">review_list</span> <span class="o">=</span> <span class="n">review</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">review_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Word_count&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Resume_str&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">word_count</span><span class="p">)</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;Length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Resume_str&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;mean_word_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Resume_str&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rev</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">word</span><span class="p">)</span> <span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="n">rev</span><span class="o">.</span><span class="n">split</span><span class="p">()]))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>Resume_str</th>
+      <th>Resume_html</th>
+      <th>Category</th>
+      <th>Word_count</th>
+      <th>Length</th>
+      <th>mean_word_length</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>16852973</td>
+      <td>HR ADMINISTRATOR/MARKETING ASSOCIATE\...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>674</td>
+      <td>5442</td>
+      <td>6.459941</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>22323967</td>
+      <td>HR SPECIALIST, US HR OPERATIONS      ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>708</td>
+      <td>5572</td>
+      <td>6.307910</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>33176873</td>
+      <td>HR DIRECTOR       Summary      Over 2...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1017</td>
+      <td>7720</td>
+      <td>6.218289</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>27018550</td>
+      <td>HR SPECIALIST       Summary    Dedica...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>379</td>
+      <td>2855</td>
+      <td>5.997361</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>17812897</td>
+      <td>HR MANAGER         Skill Highlights  ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1206</td>
+      <td>9172</td>
+      <td>6.368159</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>11592605</td>
+      <td>HR GENERALIST       Summary     Dedic...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>666</td>
+      <td>5480</td>
+      <td>6.735736</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>25824789</td>
+      <td>HR MANAGER       Summary    HUMAN RES...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>637</td>
+      <td>5250</td>
+      <td>6.872841</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>15375009</td>
+      <td>HR MANAGER         Professional Summa...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1106</td>
+      <td>9033</td>
+      <td>6.813743</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>11847784</td>
+      <td>HR SPECIALIST       Summary    Posses...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>796</td>
+      <td>6720</td>
+      <td>6.988693</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>32896934</td>
+      <td>HR CLERK       Summary    Translates ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>716</td>
+      <td>5978</td>
+      <td>6.825419</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">resume_html_value</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">iloc</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="s1">&#39;Resume_html&#39;</span><span class="p">]</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">resume_html_value</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;div class=&quot;fontsize fontface vmargins hmargins linespacing pagesize&quot; id=&quot;document&quot;&gt; &lt;div class=&quot;section firstsection&quot; id=&quot;SECTION_NAME500375979&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;paragraph PARAGRAPH_NAME firstparagraph&quot; id=&quot;PARAGRAPH_500375979_1_326506904&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;name&quot; itemprop=&quot;name&quot;&gt; &lt;span class=&quot;field fName&quot; id=&quot;500375979FNAM1&quot;&gt; &lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;field&quot; id=&quot;500375979LNAM1&quot;&gt; HR ADMINISTRATOR/MARKETING ASSOCIATE
+
+HR ADMINISTRATOR&lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_SUMM500375981&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_SUMM500375981&quot;&gt; Summary&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500375981_1_326506917&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;field singlecolumn&quot; id=&quot;500375981FRFM1&quot;&gt; &lt;p align=&quot;LEFT&quot;&gt; Dedicated Customer Service Manager with 15+ years of experience in Hospitality and Customer Service Management. &lt;/p&gt; &lt;p align=&quot;LEFT&quot;&gt; Respected builder and leader of customer-focused teams; strives to instill a shared, enthusiastic commitment to customer service.  &lt;/p&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_HILT500375982&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_HILT500375982&quot;&gt; Highlights&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500375982_1_326509244&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn maincolumn&quot;&gt; &lt;table class=&quot;twocol&quot;&gt; &lt;tbody&gt; &lt;tr&gt; &lt;td class=&quot;field twocol_1&quot; id=&quot;500375982SKC11&quot;&gt; &lt;p align=&quot;CENTER&quot;&gt; Focused on customer satisfaction&lt;/p&gt; &lt;p align=&quot;CENTER&quot;&gt; Team management&lt;/p&gt; &lt;p align=&quot;CENTER&quot;&gt; Marketing savvy&lt;/p&gt; &lt;p align=&quot;CENTER&quot;&gt; Conflict resolution techniques&lt;/p&gt; &lt;br/&gt; &lt;/td&gt; &lt;td class=&quot;field twocol_2&quot; id=&quot;500375982SKC21&quot;&gt; &lt;p align=&quot;CENTER&quot;&gt; Training and development&lt;/p&gt; &lt;p align=&quot;CENTER&quot;&gt; Skilled multi-tasker&lt;/p&gt; &lt;p align=&quot;CENTER&quot;&gt; Client relations specialist&lt;/p&gt; &lt;/td&gt; &lt;/tr&gt; &lt;/tbody&gt; &lt;/table&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_ACCM500375993&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_ACCM500375993&quot;&gt; Accomplishments&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500375993_1_326506914&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;field singlecolumn&quot; id=&quot;500375993FRFM1&quot;&gt; &lt;ul&gt; &lt;li&gt; Missouri DOT Supervisor Training Certification&lt;/li&gt; &lt;li&gt; Certified by IHG in Customer Loyalty and Marketing by Segment &lt;/li&gt; &lt;li&gt; Hilton Worldwide General Manager Training Certification&lt;/li&gt; &lt;li&gt; Accomplished Trainer for cross server hospitality systems such as  &lt;b&gt; &lt;u&gt; Hilton OnQ&lt;/u&gt; &lt;/b&gt; ,  &lt;u&gt; Micros &lt;/u&gt; &lt;b&gt; &lt;u&gt; Opera PMS&lt;/u&gt; &lt;/b&gt; &lt;u&gt; , Fidelio &lt;/u&gt; &lt;b&gt; &lt;u&gt; OPERA&lt;/u&gt; &lt;/b&gt; &lt;u&gt;  Reservation System (ORS)&lt;/u&gt; , &lt;b&gt; &lt;u&gt; Holidex&lt;/u&gt; &lt;/b&gt; &lt;/li&gt; &lt;li&gt; Completed courses and seminars in customer service, sales strategies, inventory control, loss prevention, safety, time management, leadership and performance assessment.&lt;/li&gt; &lt;/ul&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_EXPR500375983&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_EXPR500375983&quot;&gt; Experience&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500375983_1_326506906&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT1&quot;&gt; HR Administrator/Marketing Associate
+
+HR Administrator&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD1&quot;&gt; Dec 2013&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT1&quot;&gt; Current&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP1&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT1&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA1&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES1&quot; itemprop=&quot;description&quot;&gt; &lt;ul&gt; &lt;li&gt; Helps to develop policies, directs and coordinates activities such as employment, compensation, labor relations, benefits, training, and employee services.&lt;/li&gt; &lt;li&gt; Prepares employee separation notices and related documentation&lt;/li&gt; &lt;li&gt; Keeps records of benefits plans participation such as insurance and pension plan, personnel transactions such as hires, promotions, transfers, performance reviews, and terminations, and employee statistics for government reporting.&lt;/li&gt; &lt;li&gt; Advises management in appropriate resolution of employee relations issues.&lt;/li&gt; &lt;li&gt; Administers benefits programs such as life, health, dental, insurance, pension plans, vacation, sick leave, leave of absence, and employee assistance.&lt;/li&gt; &lt;/ul&gt; &lt;br/&gt; &lt;p align=&quot;LEFT&quot;&gt; &lt;b&gt; Marketing Associate&lt;/b&gt;  &lt;/p&gt; &lt;ul&gt; &lt;li&gt; Designed and created marketing collateral for sales meetings, trade shows and company executives.&lt;/li&gt; &lt;li&gt; Managed the in-house advertising program consisting of print and media collateral pieces.&lt;/li&gt; &lt;li&gt; Assisted in the complete design and launch of the company&#39;s website in 2 months.&lt;/li&gt; &lt;li&gt; Created an official company page on Facebook to facilitate interaction with customers.&lt;/li&gt; &lt;li&gt; Analyzed ratings and programming features of competitors to evaluate the effectiveness of marketing strategies.&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_2_326506907&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:10px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT2&quot;&gt; Advanced Medical Claims Analyst&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD2&quot;&gt; Mar 2012&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT2&quot;&gt; Dec 2013&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP2&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT2&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA2&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES2&quot; itemprop=&quot;description&quot;&gt; &lt;ul&gt; &lt;li&gt; Reviewed medical bills for the accuracy of the treatments, tests, and hospital stays prior to sanctioning the claims.&lt;/li&gt; &lt;li&gt; Trained to interpret the codes (ICD-9, CPT) and terminology commonly used in medical billing to fully understand the paperwork that is submitted by healthcare providers.&lt;/li&gt; &lt;li&gt; Required to have organizational and analytical skills as well as computer skills, knowledge of medical terminology and procedures, statistics, billing standards, data analysis and laws regarding medical billing.&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_3_326506908&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:15px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT3&quot;&gt; Assistant General Manager&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD3&quot;&gt; Jun 2010&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT3&quot;&gt; Dec 2010&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP3&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT3&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA3&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES3&quot; itemprop=&quot;description&quot;&gt; &lt;ul&gt; &lt;li&gt; Performed duties including but not limited to, budgeting and financial management, accounting, human resources, payroll and purchasing.&lt;/li&gt; &lt;li&gt; Established and maintained close working relationships with all departments of the hotel to ensure maximum operation, productivity, morale and guest service.&lt;/li&gt; &lt;li&gt; Handled daily operations and reported directly to the corporate office.&lt;/li&gt; &lt;li&gt; Hired and trained staff on overall objectives and goals with an emphasis on high customer service.&lt;/li&gt; &lt;li&gt; Marketing and Advertising, working on public relations with the media, government and local businesses and Chamber of Commerce.&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_4_326506910&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:5px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT4&quot;&gt; Executive Support / Marketing Assistant&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD4&quot;&gt; Jul 2007&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT4&quot;&gt; Jun 2010&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP4&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT4&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA4&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES4&quot; itemprop=&quot;description&quot;&gt; &lt;ul&gt; &lt;li&gt; Provided assistance to various department heads - Executive, Marketing, Customer Service, Human Resources.&lt;/li&gt; &lt;li&gt; Managed front-end operations to ensure friendly and efficient transactions.&lt;/li&gt; &lt;li&gt; Ensured the swift resolution of customer issues to preserve customer loyalty while complying with company policies.&lt;/li&gt; &lt;li&gt; Exemplified the second-to-none customer service delivery in all interactions with customers and potential clients.&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_5_326506911&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:10px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT5&quot;&gt; Reservation &amp;amp; Front Office Manager&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD5&quot;&gt; Jun 2004&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT5&quot;&gt; Jul 2007&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP5&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT5&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA5&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES5&quot; itemprop=&quot;description&quot;&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_6_326506912&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:10px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT6&quot;&gt; Owner/ Partner&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD6&quot;&gt; Dec 2001&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT6&quot;&gt; May 2004&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP6&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT6&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA6&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES6&quot; itemprop=&quot;description&quot;&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500375983_7_326506913&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/Organization&quot; style=&quot;
+      padding-top:10px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;jobtitle&quot; id=&quot;500375983JTIT7&quot;&gt; Price Integrity Coordinator&lt;/span&gt; &lt;span&gt; &lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983JSTD7&quot;&gt; Aug 1999&lt;/span&gt; &lt;span&gt;  to &lt;/span&gt; &lt;span class=&quot;jobdates&quot; format=&quot;%b %Y&quot; id=&quot;500375983EDDT7&quot;&gt; Dec 2001&lt;/span&gt; &lt;br/&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/postalAddress&quot;&gt; &lt;span class=&quot;companyname&quot; id=&quot;500375983COMP7&quot; itemprop=&quot;name&quot;&gt; Company Name&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500375983JCIT7&quot; itemprop=&quot;addressLocality&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500375983JSTA7&quot; itemprop=&quot;addressRegion&quot;&gt; State&lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;jobline&quot; id=&quot;500375983JDES7&quot; itemprop=&quot;description&quot;&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_EDUC500400498&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_EDUC500400498&quot;&gt; Education&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500400498_1_326523310&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/EducationalOrganization&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot; itemprop=&quot;description&quot;&gt; &lt;span class=&quot;degree&quot; id=&quot;500400498DGRE1&quot; itemprop=&quot;name&quot;&gt; N/A&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;programline&quot; id=&quot;500400498STUY1&quot;&gt; Business Administration&lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; id=&quot;500400498GRYR1&quot;&gt; 1999&lt;/span&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;companyname companyname_educ&quot; id=&quot;500400498SCHO1&quot; itemprop=&quot;name&quot;&gt; Jefferson College&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500400498SCIT1&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500400498SSTA1&quot;&gt; State&lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500400498SCNT1&quot;&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;field&quot; id=&quot;500400498FRFM1&quot;&gt; &lt;ul&gt; &lt;li&gt; Business Administration&lt;/li&gt; &lt;li&gt; Marketing / Advertising&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph&quot; id=&quot;PARAGRAPH_500400498_2_326522471&quot; itemscope=&quot;&quot; itemtype=&quot;https://schema.org/EducationalOrganization&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;singlecolumn&quot;&gt; &lt;span class=&quot;paddedline&quot; itemprop=&quot;description&quot;&gt; &lt;span class=&quot;degree&quot; id=&quot;500400498DGRE2&quot; itemprop=&quot;name&quot;&gt; High School Diploma&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;programline&quot; id=&quot;500400498STUY2&quot;&gt; College Prep. studies&lt;/span&gt; &lt;span class=&quot;datesWrapper&quot;&gt; &lt;span class=&quot;jobdates&quot; id=&quot;500400498GRYR2&quot;&gt; 1998&lt;/span&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;paddedline&quot;&gt; &lt;span class=&quot;companyname companyname_educ&quot; id=&quot;500400498SCHO2&quot; itemprop=&quot;name&quot;&gt; Sainte Genevieve Senior High&lt;/span&gt; &lt;span&gt;  － &lt;/span&gt; &lt;span class=&quot;joblocation jobcity&quot; id=&quot;500400498SCIT2&quot;&gt; City&lt;/span&gt; &lt;span&gt; , &lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500400498SSTA2&quot;&gt; State&lt;/span&gt; &lt;span class=&quot;joblocation jobstate&quot; id=&quot;500400498SCNT2&quot;&gt; &lt;/span&gt; &lt;/span&gt; &lt;span class=&quot;field&quot; id=&quot;500400498FRFM2&quot;&gt; &lt;ul&gt; &lt;li&gt; Awarded American Shrubel Leadership Scholarship to Jefferson College&lt;/li&gt; &lt;/ul&gt; &lt;/span&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;section&quot; id=&quot;SECTION_SKLL500375994&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;heading bottomborder&quot;&gt; &lt;div class=&quot;sectiontitle&quot; id=&quot;SECTNAME_SKLL500375994&quot;&gt; Skills&lt;/div&gt; &lt;/div&gt; &lt;div class=&quot;paragraph firstparagraph&quot; id=&quot;PARAGRAPH_500375994_1_326506918&quot; style=&quot;
+      padding-top:0px;
+    &quot;&gt; &lt;div class=&quot;field singlecolumn&quot; id=&quot;500375994FRFM1&quot;&gt; &lt;p align=&quot;LEFT&quot;&gt; Accounting, ads, advertising, analytical skills, benefits, billing, budgeting, clients, Customer Service, data analysis, delivery, documentation, employee relations, financial management, government relations, Human Resources, insurance, labor relations, layout, Marketing, marketing collateral, medical billing, medical terminology, office, organizational, payroll, performance reviews, personnel, policies, posters, presentations, public relations, purchasing, reporting, statistics, website.&lt;/p&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt; &lt;/div&gt;
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;mean_sent_length&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Resume_str&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">map</span><span class="p">(</span><span class="k">lambda</span> <span class="n">rev</span><span class="p">:</span> <span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">([</span><span class="nb">len</span><span class="p">(</span><span class="n">sent</span><span class="p">)</span> <span class="k">for</span> <span class="n">sent</span> <span class="ow">in</span> <span class="n">tokenize</span><span class="o">.</span><span class="n">sent_tokenize</span><span class="p">(</span><span class="n">rev</span><span class="p">)]))</span>
+<span class="n">data</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_html"><div>
+<style scoped>
+    .dataframe tbody tr th:only-of-type {
+        vertical-align: middle;
+    }
+
+    .dataframe tbody tr th {
+        vertical-align: top;
+    }
+
+    .dataframe thead th {
+        text-align: right;
+    }
+</style>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>ID</th>
+      <th>Resume_str</th>
+      <th>Resume_html</th>
+      <th>Category</th>
+      <th>Word_count</th>
+      <th>Length</th>
+      <th>mean_word_length</th>
+      <th>mean_sent_length</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>0</th>
+      <td>16852973</td>
+      <td>HR ADMINISTRATOR/MARKETING ASSOCIATE\...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>674</td>
+      <td>5442</td>
+      <td>6.459941</td>
+      <td>205.538462</td>
+    </tr>
+    <tr>
+      <th>1</th>
+      <td>22323967</td>
+      <td>HR SPECIALIST, US HR OPERATIONS      ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>708</td>
+      <td>5572</td>
+      <td>6.307910</td>
+      <td>202.074074</td>
+    </tr>
+    <tr>
+      <th>2</th>
+      <td>33176873</td>
+      <td>HR DIRECTOR       Summary      Over 2...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1017</td>
+      <td>7720</td>
+      <td>6.218289</td>
+      <td>199.921053</td>
+    </tr>
+    <tr>
+      <th>3</th>
+      <td>27018550</td>
+      <td>HR SPECIALIST       Summary    Dedica...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>379</td>
+      <td>2855</td>
+      <td>5.997361</td>
+      <td>164.823529</td>
+    </tr>
+    <tr>
+      <th>4</th>
+      <td>17812897</td>
+      <td>HR MANAGER         Skill Highlights  ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1206</td>
+      <td>9172</td>
+      <td>6.368159</td>
+      <td>164.236364</td>
+    </tr>
+    <tr>
+      <th>5</th>
+      <td>11592605</td>
+      <td>HR GENERALIST       Summary     Dedic...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>666</td>
+      <td>5480</td>
+      <td>6.735736</td>
+      <td>153.942857</td>
+    </tr>
+    <tr>
+      <th>6</th>
+      <td>25824789</td>
+      <td>HR MANAGER       Summary    HUMAN RES...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>637</td>
+      <td>5250</td>
+      <td>6.872841</td>
+      <td>171.966667</td>
+    </tr>
+    <tr>
+      <th>7</th>
+      <td>15375009</td>
+      <td>HR MANAGER         Professional Summa...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>1106</td>
+      <td>9033</td>
+      <td>6.813743</td>
+      <td>106.277108</td>
+    </tr>
+    <tr>
+      <th>8</th>
+      <td>11847784</td>
+      <td>HR SPECIALIST       Summary    Posses...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>796</td>
+      <td>6720</td>
+      <td>6.988693</td>
+      <td>119.000000</td>
+    </tr>
+    <tr>
+      <th>9</th>
+      <td>32896934</td>
+      <td>HR CLERK       Summary    Translates ...</td>
+      <td>&lt;div class="fontsize fontface vmargins hmargin...</td>
+      <td>HR</td>
+      <td>716</td>
+      <td>5978</td>
+      <td>6.825419</td>
+      <td>195.666667</td>
+    </tr>
+  </tbody>
+</table>
+</div></div></div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">uni</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s2">&quot;Category&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Numero de categorias:&quot;</span><span class="p">,</span> <span class="n">uni</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Numero de categorias: 24
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># --- DISTRIBUCIÓN DE CLASES ---</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">countplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">order</span><span class="o">=</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de Clases&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Categoría&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Número de Observaciones&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># --- DISTRIBUCIÓN DE LONGITUDES DE TEXTO ---</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Word_count&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;skyblue&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribución de número de palabras&#39;</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Length&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;orange&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribución de longitud de texto (caracteres)&#39;</span><span class="p">)</span>
+
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;mean_sent_length&#39;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;green&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribución de longitud media de oraciones&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># --- LIMPIEZA DE TEXTO PARA FRECUENCIAS ---</span>
+<span class="n">stop_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">stopwords</span><span class="o">.</span><span class="n">words</span><span class="p">(</span><span class="s1">&#39;english&#39;</span><span class="p">))</span>
+<span class="n">lemmatizer</span> <span class="o">=</span> <span class="n">WordNetLemmatizer</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">clean_text</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">lower</span><span class="p">()</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;[</span><span class="si">%s</span><span class="s1">]&#39;</span> <span class="o">%</span> <span class="n">re</span><span class="o">.</span><span class="n">escape</span><span class="p">(</span><span class="n">string</span><span class="o">.</span><span class="n">punctuation</span><span class="p">),</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">sub</span><span class="p">(</span><span class="sa">r</span><span class="s1">&#39;\d+&#39;</span><span class="p">,</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="p">[</span><span class="n">lemmatizer</span><span class="o">.</span><span class="n">lemmatize</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">words</span> <span class="k">if</span> <span class="n">w</span> <span class="ow">not</span> <span class="ow">in</span> <span class="n">stop_words</span> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="n">w</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">2</span><span class="p">]</span>
+    <span class="k">return</span> <span class="s2">&quot; &quot;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Resume_str&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">clean_text</span><span class="p">)</span>
+
+<span class="c1"># --- PALABRAS MÁS FRECUENTES (UNIGRAMAS) ---</span>
+<span class="n">all_words</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">freq_dist</span> <span class="o">=</span> <span class="n">FreqDist</span><span class="p">(</span><span class="n">all_words</span><span class="p">)</span>
+<span class="n">common_words</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">freq_dist</span><span class="o">.</span><span class="n">most_common</span><span class="p">(</span><span class="mi">20</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="s1">&#39;word&#39;</span><span class="p">,</span> <span class="s1">&#39;count&#39;</span><span class="p">])</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">common_words</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;count&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;word&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;magma&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;20 Palabras más frecuentes (unigramas)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Palabra&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># --- N-GRAMAS (BIGRAMAS y TRIGRAMAS) ---</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">get_top_ngrams</span><span class="p">(</span><span class="n">corpus</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="n">n</span><span class="o">=</span><span class="kc">None</span><span class="p">):</span>
+    <span class="n">vec</span> <span class="o">=</span> <span class="n">CountVectorizer</span><span class="p">(</span><span class="n">stop_words</span><span class="o">=</span><span class="s1">&#39;english&#39;</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="n">ngram_range</span><span class="p">)</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span>
+    <span class="n">bag</span> <span class="o">=</span> <span class="n">vec</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">corpus</span><span class="p">)</span>
+    <span class="n">sum_words</span> <span class="o">=</span> <span class="n">bag</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">words_freq</span> <span class="o">=</span> <span class="p">[(</span><span class="n">word</span><span class="p">,</span> <span class="n">sum_words</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="n">idx</span><span class="p">])</span> <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">idx</span> <span class="ow">in</span> <span class="n">vec</span><span class="o">.</span><span class="n">vocabulary_</span><span class="o">.</span><span class="n">items</span><span class="p">()]</span>
+    <span class="n">words_freq</span> <span class="o">=</span> <span class="nb">sorted</span><span class="p">(</span><span class="n">words_freq</span><span class="p">,</span> <span class="n">key</span><span class="o">=</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">words_freq</span><span class="p">[:</span><span class="n">n</span><span class="p">]</span>
+
+<span class="n">bigrams</span> <span class="o">=</span> <span class="n">get_top_ngrams</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">),</span> <span class="mi">20</span><span class="p">)</span>
+<span class="n">trigrams</span> <span class="o">=</span> <span class="n">get_top_ngrams</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">],</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">),</span> <span class="mi">20</span><span class="p">)</span>
+
+<span class="c1"># BIGRAMAS</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bigrams</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">bigrams</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Top 20 Bigramas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Bigramas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># TRIGRAMAS</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">trigrams</span><span class="p">],</span> <span class="n">y</span><span class="o">=</span><span class="p">[</span><span class="n">x</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">trigrams</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;cool&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Top 20 Trigramas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Frecuencia&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s2">&quot;Trigramas&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># --- WORDCLOUD GLOBAL ---</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">wordcloud</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordCloud</span>
+
+<span class="n">text_all</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span>
+<span class="n">wc</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">600</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;viridis&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text_all</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wc</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Word Cloud Global&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># --- WORDCLOUD POR CLASE ---</span>
+<span class="n">categories</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+<span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">categories</span><span class="p">:</span>
+    <span class="n">subset</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">cat</span><span class="p">]</span>
+    <span class="n">text_cat</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">subset</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span>
+    <span class="n">wc_cat</span> <span class="o">=</span> <span class="n">WordCloud</span><span class="p">(</span><span class="n">width</span><span class="o">=</span><span class="mi">900</span><span class="p">,</span> <span class="n">height</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">background_color</span><span class="o">=</span><span class="s1">&#39;black&#39;</span><span class="p">,</span> <span class="n">colormap</span><span class="o">=</span><span class="s1">&#39;plasma&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">generate</span><span class="p">(</span><span class="n">text_cat</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">imshow</span><span class="p">(</span><span class="n">wc_cat</span><span class="p">,</span> <span class="n">interpolation</span><span class="o">=</span><span class="s1">&#39;bilinear&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">axis</span><span class="p">(</span><span class="s1">&#39;off&#39;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Word Cloud - </span><span class="si">{</span><span class="n">cat</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/3e1b4c801416a661df7ce1dc9a6769dc9301b9a8c7ca20c0b8c07f800b3663cd.png" src="_images/3e1b4c801416a661df7ce1dc9a6769dc9301b9a8c7ca20c0b8c07f800b3663cd.png" />
+<img alt="_images/92e4bfa1e9484a8bf05a96a8f67979e573e0cb030de49415ef7c237ab35e1240.png" src="_images/92e4bfa1e9484a8bf05a96a8f67979e573e0cb030de49415ef7c237ab35e1240.png" />
+<img alt="_images/f90d2c7088fbdae815fd01175f25656f8ab5e1fe98e95ecdc5f4a78f3c368824.png" src="_images/f90d2c7088fbdae815fd01175f25656f8ab5e1fe98e95ecdc5f4a78f3c368824.png" />
+<img alt="_images/b4e60c062ca58d8e6c336fe62b0b8db5244ab56c09b11145484ceb83a43daf3a.png" src="_images/b4e60c062ca58d8e6c336fe62b0b8db5244ab56c09b11145484ceb83a43daf3a.png" />
+<img alt="_images/e0fc50d03361237a85d7cc6541c637b28325d573e15e76ddc2ba53a0a1f1ce66.png" src="_images/e0fc50d03361237a85d7cc6541c637b28325d573e15e76ddc2ba53a0a1f1ce66.png" />
+<img alt="_images/b4b079df4738aa02e4c7f04e0c8681a9f7b7da9609de7bef38f7cbd1a68f6ce3.png" src="_images/b4b079df4738aa02e4c7f04e0c8681a9f7b7da9609de7bef38f7cbd1a68f6ce3.png" />
+<img alt="_images/24a4e4942ec098ca86bdddb1cf24de9aec5998d141b9586a050608b9a3859422.png" src="_images/24a4e4942ec098ca86bdddb1cf24de9aec5998d141b9586a050608b9a3859422.png" />
+<img alt="_images/a35b63aa8dac3ca55cef51507f34540c83407569a7536ece1a22f22206d1e349.png" src="_images/a35b63aa8dac3ca55cef51507f34540c83407569a7536ece1a22f22206d1e349.png" />
+<img alt="_images/72b91573662b9d4180e8e1122178d4c53683dbeda6c0864e913966587f97c2c7.png" src="_images/72b91573662b9d4180e8e1122178d4c53683dbeda6c0864e913966587f97c2c7.png" />
+<img alt="_images/02f75b7b306b30771c0d1b968f2232a877bc6a1bebcf828931f69164893ac20a.png" src="_images/02f75b7b306b30771c0d1b968f2232a877bc6a1bebcf828931f69164893ac20a.png" />
+<img alt="_images/1709bc386393d387dd80e4ca13dff044af8235746ea96f7bfba62b66a2b3cefb.png" src="_images/1709bc386393d387dd80e4ca13dff044af8235746ea96f7bfba62b66a2b3cefb.png" />
+<img alt="_images/1657d3cd0b5a7f96480b71de82231033f0573bc8df0452290d6d61a130bc5350.png" src="_images/1657d3cd0b5a7f96480b71de82231033f0573bc8df0452290d6d61a130bc5350.png" />
+<img alt="_images/10930a03a2377389dfdad6be2b6b580c9eea6c56615e03568a725fdb3b32ad5e.png" src="_images/10930a03a2377389dfdad6be2b6b580c9eea6c56615e03568a725fdb3b32ad5e.png" />
+<img alt="_images/671a01e193a1af4cf43c1e3fcf824b7a531cfaf484537eb23b325c69abaedb13.png" src="_images/671a01e193a1af4cf43c1e3fcf824b7a531cfaf484537eb23b325c69abaedb13.png" />
+<img alt="_images/f5633888324e1ccdfa1efff543b7f111d4a122dae5e859ab8d4eaaef385e7a11.png" src="_images/f5633888324e1ccdfa1efff543b7f111d4a122dae5e859ab8d4eaaef385e7a11.png" />
+<img alt="_images/139b5f193e48bb43c7d183d80f649cb505e3f48072b41475dfe847d5db541abc.png" src="_images/139b5f193e48bb43c7d183d80f649cb505e3f48072b41475dfe847d5db541abc.png" />
+<img alt="_images/38079fdc872f31ac14be277b98aac603935eb80622b9e1bb05b26a3e959907ca.png" src="_images/38079fdc872f31ac14be277b98aac603935eb80622b9e1bb05b26a3e959907ca.png" />
+<img alt="_images/c52a933aa7ac257aedaed11009b4dc358e8288586b70b8daf40a4247fff335f6.png" src="_images/c52a933aa7ac257aedaed11009b4dc358e8288586b70b8daf40a4247fff335f6.png" />
+<img alt="_images/74c6cafe2c734f82e94cc181153c511e0d0509a3aa2367ca9370481087e77d54.png" src="_images/74c6cafe2c734f82e94cc181153c511e0d0509a3aa2367ca9370481087e77d54.png" />
+<img alt="_images/6e2a0b819f169487d893d91d2a6164c2640112076aebd388139f0fec21aeae71.png" src="_images/6e2a0b819f169487d893d91d2a6164c2640112076aebd388139f0fec21aeae71.png" />
+<img alt="_images/73cd11c3db4651d9c161e8a4469b3a5ba74cf96f061495f6c18664df4802cd61.png" src="_images/73cd11c3db4651d9c161e8a4469b3a5ba74cf96f061495f6c18664df4802cd61.png" />
+<img alt="_images/533b18038db229aeb1091f3473e18936913d871db61d23baab1c5e26653ee79f.png" src="_images/533b18038db229aeb1091f3473e18936913d871db61d23baab1c5e26653ee79f.png" />
+<img alt="_images/e84503f824d27dc21eef9b43f42f8a72ae2c17d1978ac5f18598e7939a0aded3.png" src="_images/e84503f824d27dc21eef9b43f42f8a72ae2c17d1978ac5f18598e7939a0aded3.png" />
+<img alt="_images/d12e70f809a4bd665ef7f158b3d68ddfaba4dd2bacbfdd7101c7c0a3cf5a3e42.png" src="_images/d12e70f809a4bd665ef7f158b3d68ddfaba4dd2bacbfdd7101c7c0a3cf5a3e42.png" />
+<img alt="_images/cd5211091116a276ab8b2c93f2b33759c93077d39abf64778792276b8839bb57.png" src="_images/cd5211091116a276ab8b2c93f2b33759c93077d39abf64778792276b8839bb57.png" />
+<img alt="_images/748eab4422d3f8023b9f75ddbcc93cacaffbf753dee1895e7abdb27b88de5638.png" src="_images/748eab4422d3f8023b9f75ddbcc93cacaffbf753dee1895e7abdb27b88de5638.png" />
+<img alt="_images/a036b999e10fcce245c82004b5a33ff79276699ac2b174530548b012d37df4bb.png" src="_images/a036b999e10fcce245c82004b5a33ff79276699ac2b174530548b012d37df4bb.png" />
+<img alt="_images/de9ac1320b5a904734b87c5eefe3a77f305545f7c5d86af16377e6e305d3f70d.png" src="_images/de9ac1320b5a904734b87c5eefe3a77f305545f7c5d86af16377e6e305d3f70d.png" />
+<img alt="_images/1854de5a5e3f83604b699f104b0976c150a6c8e624be1fae1683cc242b85632a.png" src="_images/1854de5a5e3f83604b699f104b0976c150a6c8e624be1fae1683cc242b85632a.png" />
+<img alt="_images/b0251c7218bcbe625e4bfa15efa5c7ceb1dd3fe686d3b1923b78132f7539f7cc.png" src="_images/b0251c7218bcbe625e4bfa15efa5c7ceb1dd3fe686d3b1923b78132f7539f7cc.png" />
+</div>
+</div>
+<p>de estos graficso lo principal que podemos saber es que el las palabras “city” “state” y “company”, los bigramas “company city” y city state” y los el trigrama :company city state” se repiten significativamente mas que el resto, especialmente el anteriormente mencionado trigrama, esto nos dice que debe evaluarse su eliminacion para la reduccion de ruido en los tetos ya que es posible que no otorguen informacion de valor para la clasificacion.</p>
+<p>otro aspecto a notar es que hay un alto desbalance de clases, por lo cual se debe asignar un sistema de pesos en los modelos para lidiar con esto.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Ratio de desbalance</span>
+<span class="n">class_counts</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span>
+<span class="n">imbalance_ratio</span> <span class="o">=</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span> <span class="o">/</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">min</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot; Ratio de desbalance: </span><span class="si">{</span><span class="n">imbalance_ratio</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">x&quot;</span><span class="p">)</span>
+
+<span class="c1"># Tabla detallada</span>
+<span class="n">balance_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Category&#39;</span><span class="p">:</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+    <span class="s1">&#39;Count&#39;</span><span class="p">:</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">values</span><span class="p">,</span>
+    <span class="s1">&#39;Percentage&#39;</span><span class="p">:</span> <span class="p">(</span><span class="n">class_counts</span><span class="o">.</span><span class="n">values</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">*</span> <span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">),</span>
+    <span class="s1">&#39;Weight_Suggested&#39;</span><span class="p">:</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">data</span><span class="p">)</span> <span class="o">/</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">class_counts</span><span class="p">)</span> <span class="o">*</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">values</span><span class="p">))</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="p">})</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">balance_df</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> Ratio de desbalance: 5.45x
+                  Category  Count  Percentage  Weight_Suggested
+0   INFORMATION-TECHNOLOGY    120        4.83             0.862
+1     BUSINESS-DEVELOPMENT    120        4.83             0.862
+2                  FINANCE    118        4.75             0.877
+3                 ADVOCATE    118        4.75             0.877
+4               ACCOUNTANT    118        4.75             0.877
+5              ENGINEERING    118        4.75             0.877
+6                     CHEF    118        4.75             0.877
+7                 AVIATION    117        4.71             0.885
+8                  FITNESS    117        4.71             0.885
+9                    SALES    116        4.67             0.892
+10                 BANKING    115        4.63             0.900
+11              HEALTHCARE    115        4.63             0.900
+12              CONSULTANT    115        4.63             0.900
+13            CONSTRUCTION    112        4.51             0.924
+14        PUBLIC-RELATIONS    111        4.47             0.932
+15                      HR    110        4.43             0.941
+16                DESIGNER    107        4.31             0.967
+17                    ARTS    103        4.15             1.005
+18                 TEACHER    102        4.11             1.015
+19                 APPAREL     97        3.90             1.067
+20           DIGITAL-MEDIA     96        3.86             1.078
+21             AGRICULTURE     63        2.54             1.643
+22              AUTOMOBILE     36        1.45             2.875
+23                     BPO     22        0.89             4.705
+</pre></div>
+</div>
+</div>
+</div>
+<p>al evaluar numericamente el desbalance vemos que la clase mayoritaria es 5.45 veces mayor que la minoritaria la cual cuenta con 22 observaciones, por lo cual incluso con los pesos va a ser dificil para los modelos el aprender sobre esta clase, por lo cual se debe evaluar el uso de Data augmentation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+
+<span class="c1"># Representación TF-IDF por clase</span>
+<span class="n">class_texts</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Category&#39;</span><span class="p">)[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">x</span><span class="p">))</span>
+<span class="n">tfidf</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">max_features</span><span class="o">=</span><span class="mi">1000</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+<span class="n">class_vectors</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">class_texts</span><span class="p">)</span>
+
+<span class="c1"># Matriz de similaridad</span>
+<span class="n">similarity_matrix</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">class_vectors</span><span class="p">)</span>
+
+<span class="c1"># Heatmap</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">14</span><span class="p">,</span><span class="mi">12</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">,</span> 
+            <span class="n">xticklabels</span><span class="o">=</span><span class="n">class_texts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> 
+            <span class="n">yticklabels</span><span class="o">=</span><span class="n">class_texts</span><span class="o">.</span><span class="n">index</span><span class="p">,</span>
+            <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.2f&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;RdYlGn_r&#39;</span><span class="p">,</span> <span class="n">center</span><span class="o">=</span><span class="mf">0.5</span><span class="p">,</span><span class="n">annot_kws</span><span class="o">=</span><span class="p">{</span><span class="s2">&quot;size&quot;</span><span class="p">:</span> <span class="mi">10</span><span class="p">})</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Similaridad Semántica entre Clases (TF-IDF)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">45</span><span class="p">,</span> <span class="n">ha</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_rows&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_columns&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.width&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+<span class="n">pd</span><span class="o">.</span><span class="n">set_option</span><span class="p">(</span><span class="s1">&#39;display.max_colwidth&#39;</span><span class="p">,</span> <span class="kc">None</span><span class="p">)</span>
+
+<span class="c1"># Top clases confundibles</span>
+<span class="n">confusion_pairs</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">)):</span>
+    <span class="k">for</span> <span class="n">j</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">similarity_matrix</span><span class="p">)):</span>
+        <span class="k">if</span> <span class="n">similarity_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mf">0.80</span><span class="p">:</span>  <span class="c1"># threshold</span>
+            <span class="n">confusion_pairs</span><span class="o">.</span><span class="n">append</span><span class="p">({</span>
+                <span class="s1">&#39;Class_1&#39;</span><span class="p">:</span> <span class="n">class_texts</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">i</span><span class="p">],</span>
+                <span class="s1">&#39;Class_2&#39;</span><span class="p">:</span> <span class="n">class_texts</span><span class="o">.</span><span class="n">index</span><span class="p">[</span><span class="n">j</span><span class="p">],</span>
+                <span class="s1">&#39;Similarity&#39;</span><span class="p">:</span> <span class="n">similarity_matrix</span><span class="p">[</span><span class="n">i</span><span class="p">,</span><span class="n">j</span><span class="p">]</span>
+            <span class="p">})</span>
+<span class="n">df_confusion</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">confusion_pairs</span><span class="p">)</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Similarity&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">df_confusion</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/49674f040edebe8cf6026ee54f6fc15b9baed6a14cb7d585786c760165c60839.png" src="_images/49674f040edebe8cf6026ee54f6fc15b9baed6a14cb7d585786c760165c60839.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>                 Class_1                 Class_2  Similarity
+10              ADVOCATE              HEALTHCARE    0.934635
+4               ADVOCATE              AUTOMOBILE    0.934255
+35               APPAREL                   SALES    0.925204
+52               BANKING              CONSULTANT    0.916273
+0             ACCOUNTANT                 FINANCE    0.911153
+39                  ARTS                 TEACHER    0.907188
+59                   BPO              CONSULTANT    0.903334
+13           AGRICULTURE                    ARTS    0.902010
+26               APPAREL              AUTOMOBILE    0.898300
+50               BANKING                     BPO    0.894255
+44            AUTOMOBILE              CONSULTANT    0.892772
+18           AGRICULTURE              CONSULTANT    0.891546
+2               ADVOCATE                 APPAREL    0.889981
+1               ADVOCATE             AGRICULTURE    0.889290
+14           AGRICULTURE              AUTOMOBILE    0.886494
+9               ADVOCATE                 FITNESS    0.883693
+41            AUTOMOBILE                 BANKING    0.883190
+51               BANKING    BUSINESS-DEVELOPMENT    0.881742
+46            AUTOMOBILE              HEALTHCARE    0.880362
+68            CONSULTANT              HEALTHCARE    0.879735
+23           AGRICULTURE              HEALTHCARE    0.878900
+70         DIGITAL-MEDIA        PUBLIC-RELATIONS    0.873990
+69            CONSULTANT  INFORMATION-TECHNOLOGY    0.871761
+6               ADVOCATE                 BANKING    0.868497
+11              ADVOCATE                   SALES    0.868437
+29               APPAREL    BUSINESS-DEVELOPMENT    0.866401
+27               APPAREL                 BANKING    0.865627
+47            AUTOMOBILE                   SALES    0.863535
+54               BANKING                 FINANCE    0.862398
+3               ADVOCATE                    ARTS    0.860493
+8               ADVOCATE              CONSULTANT    0.860409
+64            CONSULTANT           DIGITAL-MEDIA    0.859777
+42            AUTOMOBILE                     BPO    0.857135
+30               APPAREL              CONSULTANT    0.856487
+33               APPAREL                 FITNESS    0.856056
+61  BUSINESS-DEVELOPMENT              CONSULTANT    0.852539
+12           AGRICULTURE                 APPAREL    0.851129
+56               BANKING              HEALTHCARE    0.850695
+16           AGRICULTURE                 BANKING    0.850683
+45            AUTOMOBILE                 FITNESS    0.847982
+71               FITNESS              HEALTHCARE    0.846160
+63  BUSINESS-DEVELOPMENT                   SALES    0.844316
+22           AGRICULTURE                 FITNESS    0.843561
+65            CONSULTANT             ENGINEERING    0.842046
+34               APPAREL              HEALTHCARE    0.841020
+15           AGRICULTURE                AVIATION    0.834983
+40            AUTOMOBILE                AVIATION    0.834331
+31               APPAREL                DESIGNER    0.834256
+32               APPAREL           DIGITAL-MEDIA    0.834215
+60                   BPO              HEALTHCARE    0.833512
+7               ADVOCATE                     BPO    0.831742
+62  BUSINESS-DEVELOPMENT           DIGITAL-MEDIA    0.830557
+36                  ARTS              AUTOMOBILE    0.827675
+37                  ARTS                 FITNESS    0.827148
+25               APPAREL                    ARTS    0.824905
+72               FITNESS                   SALES    0.824552
+66            CONSULTANT                 FINANCE    0.823789
+48              AVIATION              CONSULTANT    0.821766
+38                  ARTS              HEALTHCARE    0.821005
+49              AVIATION             ENGINEERING    0.819915
+55               BANKING                 FITNESS    0.815084
+57               BANKING                   SALES    0.813224
+53               BANKING           DIGITAL-MEDIA    0.811693
+19           AGRICULTURE                DESIGNER    0.810300
+17           AGRICULTURE                     BPO    0.809952
+28               APPAREL                     BPO    0.808906
+21           AGRICULTURE             ENGINEERING    0.807113
+24           AGRICULTURE                 TEACHER    0.806396
+5               ADVOCATE                AVIATION    0.804924
+67            CONSULTANT                 FITNESS    0.803534
+43            AUTOMOBILE    BUSINESS-DEVELOPMENT    0.802721
+58                   BPO    BUSINESS-DEVELOPMENT    0.802406
+20           AGRICULTURE           DIGITAL-MEDIA    0.801928
+</pre></div>
+</div>
+</div>
+</div>
+<p>esta tabla nos muestra la similitud semantica calculada de la siguiente manera:  y nos devuelve una lista de las que tienen una similiutd mayor a .80, esto puede ser util para ver los puntos en los cuales es mas probable la confusion de un modelo.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_top_keywords_per_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_keywords</span><span class="o">=</span><span class="mi">10</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Extrae keywords más discriminativas por clase usando TF-IDF&quot;&quot;&quot;</span>
+    <span class="n">results</span> <span class="o">=</span> <span class="p">{}</span>
+    
+    <span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+        <span class="c1"># Textos de esta clase vs resto</span>
+        <span class="n">class_texts</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span> <span class="o">==</span> <span class="n">category</span><span class="p">][</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span>
+        <span class="n">other_texts</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span> <span class="o">!=</span> <span class="n">category</span><span class="p">][</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span>
+        
+        <span class="c1"># TF-IDF</span>
+        <span class="n">tfidf</span> <span class="o">=</span> <span class="n">TfidfVectorizer</span><span class="p">(</span><span class="n">max_features</span><span class="o">=</span><span class="mi">500</span><span class="p">,</span> <span class="n">ngram_range</span><span class="o">=</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+        <span class="n">tfidf</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">concat</span><span class="p">([</span><span class="n">class_texts</span><span class="p">,</span> <span class="n">other_texts</span><span class="p">]))</span>
+        
+        <span class="c1"># Vectores de esta clase</span>
+        <span class="n">class_vector</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">class_texts</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span><span class="o">.</span><span class="n">A1</span>
+        
+        <span class="c1"># Top features</span>
+        <span class="n">top_indices</span> <span class="o">=</span> <span class="n">class_vector</span><span class="o">.</span><span class="n">argsort</span><span class="p">()[</span><span class="o">-</span><span class="n">n_keywords</span><span class="p">:][::</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+        <span class="n">top_keywords</span> <span class="o">=</span> <span class="p">[(</span><span class="n">tfidf</span><span class="o">.</span><span class="n">get_feature_names_out</span><span class="p">()[</span><span class="n">i</span><span class="p">],</span> <span class="n">class_vector</span><span class="p">[</span><span class="n">i</span><span class="p">])</span> 
+                        <span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="n">top_indices</span><span class="p">]</span>
+        
+        <span class="n">results</span><span class="p">[</span><span class="n">category</span><span class="p">]</span> <span class="o">=</span> <span class="n">top_keywords</span>
+    
+    <span class="k">return</span> <span class="n">results</span>
+
+<span class="n">keywords_per_class</span> <span class="o">=</span> <span class="n">get_top_keywords_per_class</span><span class="p">(</span><span class="n">data</span><span class="p">,</span> <span class="n">n_keywords</span><span class="o">=</span><span class="mi">15</span><span class="p">)</span>
+
+<span class="c1"># Visualizar para algunas clases</span>
+<span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="p">[</span><span class="s1">&#39;INFORMATION-TECHNOLOGY&#39;</span><span class="p">,</span> <span class="s1">&#39;HEALTHCARE&#39;</span><span class="p">,</span> <span class="s1">&#39;BPO&#39;</span><span class="p">,</span> <span class="s1">&#39;AUTOMOBILE&#39;</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔑 Keywords distintivas para </span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">:&quot;</span><span class="p">)</span>
+    <span class="k">for</span> <span class="n">word</span><span class="p">,</span> <span class="n">score</span> <span class="ow">in</span> <span class="n">keywords_per_class</span><span class="p">[</span><span class="n">category</span><span class="p">][:</span><span class="mi">10</span><span class="p">]:</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   </span><span class="si">{</span><span class="n">word</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="n">score</span><span class="si">:</span><span class="s2">.4f</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔑 Keywords distintivas para INFORMATION-TECHNOLOGY:
+   network: 0.1749
+   technology: 0.1641
+   system: 0.1641
+   information technology: 0.1507
+   server: 0.1421
+   information: 0.1170
+   support: 0.0959
+   management: 0.0923
+   security: 0.0917
+   software: 0.0899
+
+🔑 Keywords distintivas para HEALTHCARE:
+   patient: 0.1913
+   healthcare: 0.1513
+   care: 0.1249
+   medical: 0.1178
+   health: 0.0912
+   state: 0.0897
+   customer: 0.0889
+   management: 0.0793
+   city: 0.0781
+   service: 0.0778
+
+🔑 Keywords distintivas para BPO:
+   management: 0.1111
+   client: 0.1037
+   network: 0.0870
+   process: 0.0778
+   team: 0.0764
+   customer: 0.0760
+   business: 0.0697
+   company: 0.0676
+   call: 0.0673
+   sale: 0.0661
+
+🔑 Keywords distintivas para AUTOMOBILE:
+   customer: 0.1469
+   claim: 0.1256
+   service: 0.1137
+   state: 0.1044
+   city: 0.0930
+   company: 0.0914
+   city state: 0.0900
+   customer service: 0.0750
+   name: 0.0749
+   company name: 0.0729
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">collections</span><span class="w"> </span><span class="kn">import</span> <span class="n">Counter</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+
+<span class="c1"># Vocabulario</span>
+<span class="n">all_words</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+<span class="n">word_freq</span> <span class="o">=</span> <span class="n">Counter</span><span class="p">(</span><span class="n">all_words</span><span class="p">)</span>
+<span class="n">freq_values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">word_freq</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span> <span class="n">reverse</span><span class="o">=</span><span class="kc">True</span><span class="p">))</span>
+
+<span class="c1"># Rango (1, 2, 3...)</span>
+<span class="n">ranks</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">freq_values</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="c1"># Línea teórica de Zipf: C / r</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">freq_values</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span>
+<span class="n">zipf_line</span> <span class="o">=</span> <span class="n">C</span> <span class="o">/</span> <span class="n">ranks</span>
+
+<span class="c1"># --- Gráfico ---</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:</span><span class="mi">1000</span><span class="p">],</span> <span class="n">freq_values</span><span class="p">[:</span><span class="mi">1000</span><span class="p">],</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Frecuencia observada&#39;</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">loglog</span><span class="p">(</span><span class="n">ranks</span><span class="p">[:</span><span class="mi">1000</span><span class="p">],</span> <span class="n">zipf_line</span><span class="p">[:</span><span class="mi">1000</span><span class="p">],</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;--&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;Zipf teórico (1/r)&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Rank (log)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;Frecuencia (log)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Comparación con la Ley de Zipf&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">legend</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="kc">True</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.3</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="c1"># Palabras únicas por clase</span>
+<span class="n">vocab_per_class</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">cat</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">():</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">cat</span><span class="p">][</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="n">vocab_per_class</span><span class="p">[</span><span class="n">cat</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">words</span><span class="p">))</span>
+
+<span class="n">vocab_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">({</span>
+    <span class="s1">&#39;Category&#39;</span><span class="p">:</span> <span class="n">vocab_per_class</span><span class="o">.</span><span class="n">keys</span><span class="p">(),</span>
+    <span class="s1">&#39;Unique_Words&#39;</span><span class="p">:</span> <span class="n">vocab_per_class</span><span class="o">.</span><span class="n">values</span><span class="p">(),</span>
+    <span class="s1">&#39;Samples&#39;</span><span class="p">:</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">value_counts</span><span class="p">()</span><span class="o">.</span><span class="n">values</span>
+<span class="p">})</span>
+<span class="n">vocab_df</span><span class="p">[</span><span class="s1">&#39;Words_per_Sample&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">vocab_df</span><span class="p">[</span><span class="s1">&#39;Unique_Words&#39;</span><span class="p">]</span> <span class="o">/</span> <span class="n">vocab_df</span><span class="p">[</span><span class="s1">&#39;Samples&#39;</span><span class="p">]</span>
+<span class="n">vocab_df</span> <span class="o">=</span> <span class="n">vocab_df</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;Unique_Words&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">barplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">vocab_df</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Words_per_Sample&#39;</span><span class="p">,</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;coolwarm&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="n">rotation</span><span class="o">=</span><span class="mi">90</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Riqueza Léxica por Clase (Palabras únicas / muestra)&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/f1fc3a13870835bfedf27917f72aeb623d7f7fd760e94576c9f286d5c5dcafd0.png" src="_images/f1fc3a13870835bfedf27917f72aeb623d7f7fd760e94576c9f286d5c5dcafd0.png" />
+<img alt="_images/5652ac88644408023e04d263e9e8752b0d7cba6f5d21721f65b2aa121b64e66f.png" src="_images/5652ac88644408023e04d263e9e8752b0d7cba6f5d21721f65b2aa121b64e66f.png" />
+</div>
+</div>
+<p>La distribución empírica de frecuencias se aleja de la Ley de Zipf, mostrando una caída más lenta y una frecuencia excesiva de terminos recurrentes. Aunque en corpus de lenguaje natural libre esto sería una anomalia, en nuestro caso es un comportamiento esperado, dado que el dataset está compuesto por curriculums.
+ya que son textos altamente estructurados y repetitivos, reduce la diversidad lexica</p>
+<p>tambien observamos en el segundo grafico que las clases ART, AVIATION y en menor medida BANKING, tienen una redundancia lexica menor, lo cual indica un lenguaje probablemente mas especializado.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Boxplot de longitudes por clase</span>
+<span class="n">fig</span><span class="p">,</span> <span class="n">axes</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">,</span> <span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+
+<span class="c1"># Word count por clase</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Word_count&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;Set2&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribución de Word Count por Clase&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Número de Palabras&#39;</span><span class="p">)</span>
+
+<span class="c1"># Length por clase</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;Length&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;Set3&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Distribución de Longitud por Clase&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Caracteres&#39;</span><span class="p">)</span>
+
+<span class="c1"># Mean word length</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">boxplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">data</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="s1">&#39;Category&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="s1">&#39;mean_word_length&#39;</span><span class="p">,</span> <span class="n">ax</span><span class="o">=</span><span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">palette</span><span class="o">=</span><span class="s1">&#39;Pastel1&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;Longitud Media de Palabras por Clase&#39;</span><span class="p">)</span>
+<span class="n">axes</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span><span class="o">.</span><span class="n">set_xlabel</span><span class="p">(</span><span class="s1">&#39;Promedio de Caracteres/Palabra&#39;</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="c1"># Estadísticas por clase</span>
+<span class="n">length_stats</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Category&#39;</span><span class="p">)</span><span class="o">.</span><span class="n">agg</span><span class="p">({</span>
+    <span class="s1">&#39;Word_count&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">,</span> <span class="s1">&#39;min&#39;</span><span class="p">,</span> <span class="s1">&#39;max&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;Length&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">],</span>
+    <span class="s1">&#39;mean_word_length&#39;</span><span class="p">:</span> <span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">]</span>
+<span class="p">})</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📏 Estadísticas de Longitud por Clase:&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">length_stats</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/8704dac09dbbad6a03138f467128309d6f9ce8f916a449335ab6253b70ce6805.png" src="_images/8704dac09dbbad6a03138f467128309d6f9ce8f916a449335ab6253b70ce6805.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📏 Estadísticas de Longitud por Clase:
+                       Word_count                      Length           \
+                             mean     std  min   max     mean      std   
+Category                                                                 
+ACCOUNTANT                 800.01  352.68  143  3459  6293.51  2561.74   
+ADVOCATE                   848.50  372.08  266  2888  6575.16  2745.25   
+AGRICULTURE                856.29  325.57  192  1970  6605.29  2425.22   
+APPAREL                    780.65  290.43  250  1735  6030.12  2178.67   
+ARTS                       774.94  293.26  172  1507  6000.37  2253.85   
+AUTOMOBILE                 808.19  454.00  213  2889  6321.25  3465.50   
+AVIATION                   791.20  308.14  195  1829  6189.21  2342.80   
+BANKING                    803.50  294.23  223  2101  6191.19  2151.36   
+BPO                        974.23  395.39  420  2310  7317.68  2700.62   
+BUSINESS-DEVELOPMENT       775.02  266.35    0  1605  6043.98  2000.40   
+CHEF                       797.01  508.74  149  5080  5995.54  3848.49   
+CONSTRUCTION               852.71  511.32  113  3994  6618.46  3806.70   
+CONSULTANT                 879.70  344.24  194  2018  6844.35  2594.58   
+DESIGNER                   734.97  382.63  131  2284  5647.23  2827.52   
+DIGITAL-MEDIA              792.24  424.78  237  3301  6094.73  3117.52   
+ENGINEERING                837.55  363.64  156  2579  6476.03  2754.62   
+FINANCE                    811.76  291.08  256  2667  6316.16  2217.50   
+FITNESS                    723.03  285.39  199  1797  5586.80  2150.21   
+HEALTHCARE                 881.77  331.66  242  2749  6996.18  2578.03   
+HR                         853.73  352.00  254  3119  6760.76  2741.48   
+INFORMATION-TECHNOLOGY     926.58  383.40  237  2670  7227.55  2813.58   
+PUBLIC-RELATIONS           889.32  519.77  253  5190  6913.43  3662.63   
+SALES                      689.77  339.68  122  2486  5270.03  2524.17   
+TEACHER                    715.28  337.47  183  2694  5562.80  2430.94   
+
+                       mean_word_length        
+                                   mean   std  
+Category                                       
+ACCOUNTANT                         6.43  0.26  
+ADVOCATE                           6.31  0.33  
+AGRICULTURE                        6.28  0.28  
+APPAREL                            6.21  0.27  
+ARTS                               6.20  0.40  
+AUTOMOBILE                         6.35  0.30  
+AVIATION                           6.39  0.41  
+BANKING                            6.31  0.35  
+BPO                                6.16  0.33  
+BUSINESS-DEVELOPMENT               6.36  0.28  
+CHEF                               6.01  0.44  
+CONSTRUCTION                       6.30  0.39  
+CONSULTANT                         6.38  0.33  
+DESIGNER                           6.16  0.45  
+DIGITAL-MEDIA                      6.26  0.31  
+ENGINEERING                        6.33  0.34  
+FINANCE                            6.33  0.36  
+FITNESS                            6.23  0.39  
+HEALTHCARE                         6.48  0.34  
+HR                                 6.49  0.26  
+INFORMATION-TECHNOLOGY             6.45  0.38  
+PUBLIC-RELATIONS                   6.40  0.33  
+SALES                              6.11  0.39  
+TEACHER                            6.28  0.36  
+</pre></div>
+</div>
+</div>
+</div>
+<p>Conteo de Palabras (Word Count)</p>
+<p>La mayoría de las categorías presentan distribuciones altamente sesgadas a la derecha con medianas bajas (entre 500 y 1000 palabras), lo que implica que la mayoría de los documentos son relativamente cortos, pero existen numerosos valores atípicos extremos (hasta ≈5000 palabras) que deben manejarse en el preprocesamiento para evitar sobrecargar modelos. HR y DESIGNER tienen medianas ligeramente más altas, indicando que sus documentos promedio tienden a ser los más extensos, mientras que ARTS y AVIATION tienen las medianas más bajas.</p>
+<p>Longitud por Clase (Caracteres)</p>
+<p>Esta distribución es altamente correlacionada con el conteo de palabras, manteniendo el sesgo a la derecha y los valores atípicos (hasta ≈25000 caracteres). Las categorías con documentos más largos en palabras, como INFORMATION-TECHNOLOGY y HR, confirman ser las más extensas en caracteres, lo que refuerza la necesidad de técnicas como la truncación o el padding para estandarizar la entrada de datos en modelos secuenciales de PLN.</p>
+<p>Longitud Media de Palabras (Promedio de Caracteres/Palabra)</p>
+<p>Las distribuciones aquí son las más compactas, indicando consistencia en la longitud de las palabras dentro de cada clase. Las categorías como AVIATION, BANKING y ENGINEERING tienen las medianas más altas (cerca o por encima de 6.5 caracteres), lo que sugiere un lenguaje técnico con palabras más largas o compuestas; en contraste, clases como HR y CHEF tienen palabras promedio más cortas, sugiriendo un lenguaje menos formal o especializado</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_ttr</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;Type-Token Ratio: unique words / total words&quot;&quot;&quot;</span>
+    <span class="n">words</span> <span class="o">=</span> <span class="n">text</span><span class="o">.</span><span class="n">split</span><span class="p">()</span>
+    <span class="k">if</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="k">return</span> <span class="mi">0</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="nb">set</span><span class="p">(</span><span class="n">words</span><span class="p">))</span> <span class="o">/</span> <span class="nb">len</span><span class="p">(</span><span class="n">words</span><span class="p">)</span>
+
+<span class="n">data</span><span class="p">[</span><span class="s1">&#39;ttr&#39;</span><span class="p">]</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">calculate_ttr</span><span class="p">)</span>
+
+<span class="c1"># TTR por clase</span>
+<span class="n">ttr_by_class</span> <span class="o">=</span> <span class="n">data</span><span class="o">.</span><span class="n">groupby</span><span class="p">(</span><span class="s1">&#39;Category&#39;</span><span class="p">)[</span><span class="s1">&#39;ttr&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">agg</span><span class="p">([</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="s1">&#39;std&#39;</span><span class="p">])</span><span class="o">.</span><span class="n">sort_values</span><span class="p">(</span><span class="s1">&#39;mean&#39;</span><span class="p">,</span> <span class="n">ascending</span><span class="o">=</span><span class="kc">False</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">ttr_by_class</span><span class="p">[</span><span class="s1">&#39;mean&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">kind</span><span class="o">=</span><span class="s1">&#39;barh&#39;</span><span class="p">,</span> <span class="n">xerr</span><span class="o">=</span><span class="n">ttr_by_class</span><span class="p">[</span><span class="s1">&#39;std&#39;</span><span class="p">],</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;teal&#39;</span><span class="p">,</span> <span class="n">alpha</span><span class="o">=</span><span class="mf">0.7</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s1">&#39;Type-Token Ratio (promedio)&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Diversidad Léxica por Clase&#39;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">tight_layout</span><span class="p">()</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">📚 Clases con mayor diversidad léxica (vocabulario más rico):&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">ttr_by_class</span><span class="o">.</span><span class="n">head</span><span class="p">(</span><span class="mi">5</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="_images/676c63b3e48a72ac62e9686f4affa7a2279d20f5f1e90cc866d0d416bfa38cac.png" src="_images/676c63b3e48a72ac62e9686f4affa7a2279d20f5f1e90cc866d0d416bfa38cac.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>📚 Clases con mayor diversidad léxica (vocabulario más rico):
+              mean       std
+Category                    
+SALES     0.583166  0.100178
+FITNESS   0.581124  0.087771
+AVIATION  0.561496  0.087516
+CHEF      0.560125  0.107681
+ARTS      0.559398  0.092854
+</pre></div>
+</div>
+</div>
+</div>
+<p>La gráfica de barras horizontal presenta la Diversidad Léxica por Clase, medida por el Type-Token Ratio (TTR) promedio, que es la proporción de palabras únicas (types) sobre el total de palabras (tokens) en el corpus de cada categoría. Las categorías se agrupan en un rango relativamente estrecho (aproximadamente 0.5 a 0.65), indicando que la diversidad general de vocabulario no varía drásticamente entre las clases. Observamos que dominios como INFORMATION-TECHNOLOGY y CONSULTANT presentan el TTR más alto, lo que sugiere un lenguaje con la menor redundancia y mayor variedad de vocabulario. En contraste, categorías como FITNESS y SALES tienen el TTR más bajo, indicando que sus textos utilizan un conjunto de vocabulario más limitado y repetitivo (mayor redundancia léxica)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># Palabras que aparecen en solo 1 clase</span>
+<span class="n">word_class_presence</span> <span class="o">=</span> <span class="p">{}</span>
+<span class="k">for</span> <span class="n">word</span> <span class="ow">in</span> <span class="nb">set</span><span class="p">(</span><span class="n">all_words</span><span class="p">):</span>
+    <span class="n">classes_with_word</span> <span class="o">=</span> <span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;clean_text&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">contains</span><span class="p">(</span><span class="n">word</span><span class="p">,</span> <span class="n">regex</span><span class="o">=</span><span class="kc">False</span><span class="p">)][</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()</span>
+    <span class="n">word_class_presence</span><span class="p">[</span><span class="n">word</span><span class="p">]</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">classes_with_word</span><span class="p">)</span>
+
+<span class="n">unique_words_per_class</span> <span class="o">=</span> <span class="p">{</span><span class="n">w</span><span class="p">:</span> <span class="n">c</span> <span class="k">for</span> <span class="n">w</span><span class="p">,</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">word_class_presence</span><span class="o">.</span><span class="n">items</span><span class="p">()</span> <span class="k">if</span> <span class="n">c</span> <span class="o">==</span> <span class="mi">1</span><span class="p">}</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">🔬 Palabras únicas a una sola clase: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_words_per_class</span><span class="p">)</span><span class="si">:</span><span class="s2">,</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Porcentaje del vocabulario: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_words_per_class</span><span class="p">)</span><span class="o">/</span><span class="n">vocab_size</span><span class="o">*</span><span class="mi">100</span><span class="si">:</span><span class="s2">.2f</span><span class="si">}</span><span class="s2">%&quot;</span><span class="p">)</span>
+
+<span class="c1"># Ejemplos de palabras únicas por clase</span>
+<span class="k">for</span> <span class="n">category</span> <span class="ow">in</span> <span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">24</span><span class="p">]:</span>
+    <span class="n">cat_texts</span> <span class="o">=</span> <span class="s1">&#39; &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="n">data</span><span class="p">[</span><span class="s1">&#39;Category&#39;</span><span class="p">]</span><span class="o">==</span><span class="n">category</span><span class="p">][</span><span class="s1">&#39;clean_text&#39;</span><span class="p">])</span>
+    <span class="n">cat_words</span> <span class="o">=</span> <span class="nb">set</span><span class="p">(</span><span class="n">cat_texts</span><span class="o">.</span><span class="n">split</span><span class="p">())</span>
+    
+    <span class="c1"># Palabras que solo aparecen en esta clase</span>
+    <span class="n">unique_to_class</span> <span class="o">=</span> <span class="p">[</span><span class="n">w</span> <span class="k">for</span> <span class="n">w</span> <span class="ow">in</span> <span class="n">cat_words</span> <span class="k">if</span> <span class="n">word_class_presence</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="n">w</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span> <span class="o">==</span> <span class="mi">1</span><span class="p">]</span>
+    
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="se">\n</span><span class="si">{</span><span class="n">category</span><span class="si">}</span><span class="s2">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">unique_to_class</span><span class="p">)</span><span class="si">}</span><span class="s2"> palabras únicas&quot;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;   Ejemplos: </span><span class="si">{</span><span class="s1">&#39;, &#39;</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="nb">sorted</span><span class="p">(</span><span class="n">unique_to_class</span><span class="p">)[:</span><span class="mi">10</span><span class="p">])</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>🔬 Palabras únicas a una sola clase: 24,634
+   Porcentaje del vocabulario: 54.28%
+
+HR: 889 palabras únicas
+   Ejemplos: abraattained, accidentsincidents, accountingpayment, accountsbadging, accross, accruepartners, accused, achievementrecognition, actionscreated, actions​
+
+DESIGNER: 1155 palabras únicas
+   Ejemplos: aafet, abbandoned, abbvie, abercrombie, abode, abrasive, accutrac, acquisitor, adhesion, adler
+
+INFORMATION-TECHNOLOGY: 1393 palabras únicas
+   Ejemplos: aand, abitility, aboutcom, abuja, academicsbusiness, accesspassword, accessspam, accessusage, accorded, accountmate
+
+TEACHER: 860 palabras únicas
+   Ejemplos: aasece, abierto, abilityagility, acclimated, accountabilityearned, activitiescarefully, activitiescompleted, activitiescreated, activitiesencouraged, activitiesincorporated
+
+ADVOCATE: 1047 palabras únicas
+   Ejemplos: aacn, abhivyakti, ablls, abns, absorbing, académicos, accidentillness, accountscustomer, achieveexceed, aclaims
+
+BUSINESS-DEVELOPMENT: 1056 palabras únicas
+   Ejemplos: aarpfannie, abpros, accountsidentified, accountsthe, accountterritory, accredidation, accuweathercom, achievementdriven, activepassive, activityresults
+
+HEALTHCARE: 1132 palabras únicas
+   Ejemplos: aacsb, abda, ablewiring, abuseaddiction, accn, accountingcpa, accountingeconomics, accountingprofit, accreditaion, acheivement
+
+FITNESS: 897 palabras únicas
+   Ejemplos: aaahc, abdelmalek, abdominalscore, abim, abssports, academywest, accountantresource, accountmanagement, accucheck, acromegaly
+
+AGRICULTURE: 1035 palabras únicas
+   Ejemplos: abeokuta, abiola, accountantsenior, acetylcholinesterase, acidulated, acreage, actinopyaga, actinopyge, actiondriven, activitiesevents
+
+BPO: 266 palabras únicas
+   Ejemplos: abhana, accounttl, adaptors​, adchnp, additionstransfers, adminclient, aestheticallypleasing, agentgroup, agentssales, ahcss
+
+SALES: 758 palabras únicas
+   Ejemplos: abigail, abington, ablation, accociate, accommplishments, accordinglyrepaired, accuratelycommitted, acrobatreader, activates, adeptness
+
+CONSULTANT: 1293 palabras únicas
+   Ejemplos: aade, aaham, aatcc, abap, abcopa, aborted, abstinence, abusing, acbs, accelio
+
+DIGITAL-MEDIA: 1165 palabras únicas
+   Ejemplos: aaslf, abccom, abcnewscom, abekas, ableton, accelerates, accucom, aclus, acton, adcenter
+
+AUTOMOBILE: 386 palabras únicas
+   Ejemplos: aaacom, accountsexamined, accountsrecorded, accurateanswered, activitiesplans, adaboost, addremoving, adjustersettle, adress, adservice
+
+CHEF: 1042 palabras únicas
+   Ejemplos: aapc, acadiana, accelerant, accountabilityinventory, accountingupdated, accountsevaluated, accuratelyadaptable, achievementsorganizations, achievement”, additionalinfo
+
+FINANCE: 934 palabras únicas
+   Ejemplos: aagi, abauntil, aboveaverage, abovementioned, accountabilitycoordinated, accountantamerican, accountingauditing, accountingcomputer, accountinghrpayroll, accrualpayment
+
+APPAREL: 930 palabras únicas
+   Ejemplos: abiezer, acclimation, accountingadministrative, accountspayable, accounts’, accuglide, accuracypriced, actualcompleted, administrativereceptionist, administratorhr
+
+ENGINEERING: 1598 palabras únicas
+   Ejemplos: aalto, aardwolf, abaqus, abduction, abnormalitiesoperated, abradable, abrams, absorbs, accelerometer, accommodationsrental
+
+ACCOUNTANT: 756 palabras únicas
+   Ejemplos: abby, abklm, aboulela, abraxas, abstracting, accountacy, accountancyal, accountantanalyst, accountantfinancial, accountantgeneral
+
+CONSTRUCTION: 1493 palabras únicas
+   Ejemplos: aadt, aashto, aashtos, aashtosteel, aattraction, abajo, abutment, accomplishmemts, accountantassistant, acerca
+
+PUBLIC-RELATIONS: 1419 palabras únicas
+   Ejemplos: aakash, abusedrug, accentuated, accordsqa, accountbased, accountscontacts, accurev, accurevs, activitiesevaluated, actorcomedian
+
+BANKING: 956 palabras únicas
+   Ejemplos: aaditya, abendaid, abends, abry, accessmicrosoft, accountingjackson, accountsdelivered, accretiondilution, accuity, activityfunction
+
+ARTS: 1031 palabras únicas
+   Ejemplos: abbreviation, abgnac, aboriginal, abydos, academicallyintellectually, accidentally, accompanist, accountsclosure, accra, accrualsmanaged
+
+AVIATION: 1143 palabras únicas
+   Ejemplos: aaae, aasf, aasfs, abundance, accidentfree, acetal, acetate, activevoice, adminaz, administrativemanagement
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">pandas</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">pd</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">re</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">string</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.corpus</span><span class="w"> </span><span class="kn">import</span> <span class="n">stopwords</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk.stem</span><span class="w"> </span><span class="kn">import</span> <span class="n">WordNetLemmatizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">nltk</span><span class="w"> </span><span class="kn">import</span> <span class="n">tokenize</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.feature_extraction.text</span><span class="w"> </span><span class="kn">import</span> <span class="n">TfidfVectorizer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.decomposition</span><span class="w"> </span><span class="kn">import</span> <span class="n">PCA</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">umap</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">sentence_transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">SentenceTransformer</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">sklearn.metrics.pairwise</span><span class="w"> </span><span class="kn">import</span> <span class="n">cosine_similarity</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">transformers</span><span class="w"> </span><span class="kn">import</span> <span class="n">AutoTokenizer</span>
+<span class="c1"># 2.1 duplicados exactos</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;duplicated_exact&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Resume_str&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">duplicated</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Duplicados exactos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;duplicated_exact&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="c1"># 2.3 textos vacíos o casi vacíos</span>
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;char_len&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Resume_str&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">str</span><span class="o">.</span><span class="n">len</span><span class="p">()</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Textos con &lt; 30 caracteres:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;char_len&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+
+
+
+<span class="k">for</span> <span class="n">c</span> <span class="ow">in</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Category&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">unique</span><span class="p">()[:</span><span class="mi">5</span><span class="p">]:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Keywords para clase:&quot;</span><span class="p">,</span> <span class="n">c</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">get_top_keywords</span><span class="p">(</span><span class="n">df</span><span class="p">,</span> <span class="n">c</span><span class="p">))</span>
+
+<span class="n">X</span> <span class="o">=</span> <span class="n">tfidf</span><span class="o">.</span><span class="n">transform</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;clean_text&quot;</span><span class="p">])</span>
+
+<span class="n">pca</span> <span class="o">=</span> <span class="n">PCA</span><span class="p">(</span><span class="n">n_components</span><span class="o">=</span><span class="mi">2</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">toarray</span><span class="p">()[:</span><span class="mi">3000</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">pca</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">pca</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Category&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">3000</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;PCA TF-IDF&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">um</span> <span class="o">=</span> <span class="n">umap</span><span class="o">.</span><span class="n">UMAP</span><span class="p">(</span><span class="n">n_neighbors</span><span class="o">=</span><span class="mi">20</span><span class="p">,</span> <span class="n">min_dist</span><span class="o">=</span><span class="mf">0.1</span><span class="p">)</span><span class="o">.</span><span class="n">fit_transform</span><span class="p">(</span><span class="n">X</span><span class="p">[:</span><span class="mi">3000</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">um</span><span class="p">[:,</span><span class="mi">0</span><span class="p">],</span> <span class="n">um</span><span class="p">[:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">c</span><span class="o">=</span><span class="n">pd</span><span class="o">.</span><span class="n">factorize</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Category&quot;</span><span class="p">])[</span><span class="mi">0</span><span class="p">][:</span><span class="mi">3000</span><span class="p">],</span> <span class="n">s</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;UMAP TF-IDF&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="n">model</span> <span class="o">=</span> <span class="n">SentenceTransformer</span><span class="p">(</span><span class="s2">&quot;all-MiniLM-L6-v2&quot;</span><span class="p">)</span>
+<span class="n">emb</span> <span class="o">=</span> <span class="n">model</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;Resume_str&quot;</span><span class="p">],</span> <span class="n">show_progress_bar</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+
+<span class="n">sim2</span> <span class="o">=</span> <span class="n">cosine_similarity</span><span class="p">(</span><span class="n">emb</span><span class="p">)</span>
+<span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">sim2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;semantic_duplicate&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">(</span><span class="n">sim2</span><span class="o">.</span><span class="n">max</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mf">0.9</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">int</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Duplicados semánticos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="o">.</span><span class="n">semantic_duplicate</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+
+<span class="n">tokenizer</span> <span class="o">=</span> <span class="n">AutoTokenizer</span><span class="o">.</span><span class="n">from_pretrained</span><span class="p">(</span><span class="s2">&quot;distilbert-base-uncased&quot;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">count_tokens</span><span class="p">(</span><span class="n">text</span><span class="p">):</span>
+    <span class="k">return</span> <span class="nb">len</span><span class="p">(</span><span class="n">tokenizer</span><span class="o">.</span><span class="n">encode</span><span class="p">(</span><span class="n">text</span><span class="p">,</span> <span class="n">truncation</span><span class="o">=</span><span class="kc">False</span><span class="p">))</span>
+
+<span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Resume_str&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">apply</span><span class="p">(</span><span class="n">count_tokens</span><span class="p">)</span>
+
+<span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">12</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
+<span class="n">sns</span><span class="o">.</span><span class="n">histplot</span><span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">],</span> <span class="n">bins</span><span class="o">=</span><span class="mi">50</span><span class="p">,</span> <span class="n">kde</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s2">&quot;Distribución de tokens con DistilBERT&quot;</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">% textos &gt; 512 tokens:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;% textos &gt; 256 tokens:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">256</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;% textos &gt; 128 tokens:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">128</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">========= Resumen General =========&quot;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Duplicados exactos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;duplicated_exact&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Duplicados casi idénticos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;near_duplicates&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Duplicados semánticos:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;semantic_duplicate&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;</span><span class="se">\n</span><span class="s2">Textos muy cortos (&lt;30 chars):&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;char_len&quot;</span><span class="p">]</span> <span class="o">&lt;</span> <span class="mi">30</span><span class="p">)</span><span class="o">.</span><span class="n">sum</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Textos &gt;512 tokens:&quot;</span><span class="p">,</span> <span class="p">(</span><span class="n">df</span><span class="p">[</span><span class="s2">&quot;token_count&quot;</span><span class="p">]</span> <span class="o">&gt;</span> <span class="mi">512</span><span class="p">)</span><span class="o">.</span><span class="n">mean</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Clases:&quot;</span><span class="p">,</span> <span class="n">df</span><span class="p">[</span><span class="s2">&quot;Category&quot;</span><span class="p">]</span><span class="o">.</span><span class="n">nunique</span><span class="p">())</span>
+<span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Desbalance:&quot;</span><span class="p">,</span> <span class="n">class_counts</span><span class="o">.</span><span class="n">max</span><span class="p">()</span><span class="o">/</span><span class="n">class_counts</span><span class="o">.</span><span class="n">min</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Duplicados exactos: 2
+
+Textos con &lt; 30 caracteres: 1
+
+Keywords para clase: HR
+[(&#39;employee&#39;, 0.17462938325854402), (&#39;human resource&#39;, 0.12462859028278338), (&#39;human&#39;, 0.1160429070655204), (&#39;benefit&#39;, 0.09659472920797381), (&#39;resource&#39;, 0.09519897032882864), (&#39;management&#39;, 0.08378896713234767), (&#39;recruitment&#39;, 0.07334207917862769), (&#39;payroll&#39;, 0.07111674522666968), (&#39;company&#39;, 0.061270821438157666), (&#39;state&#39;, 0.05768664357518407)]
+
+Keywords para clase: DESIGNER
+[(&#39;design&#39;, 0.17287760214675257), (&#39;designer&#39;, 0.16702892940062616), (&#39;graphic&#39;, 0.0884310253904727), (&#39;state&#39;, 0.06504774313781014), (&#39;city&#39;, 0.06386388220834788), (&#39;city state&#39;, 0.05989628731560472), (&#39;interior&#39;, 0.059031296585078524), (&#39;company&#39;, 0.05487345331264046), (&#39;graphic designer&#39;, 0.05387294344963408), (&#39;project&#39;, 0.05012547187367286)]
+
+Keywords para clase: INFORMATION-TECHNOLOGY
+[(&#39;network&#39;, 0.12315273820304892), (&#39;system&#39;, 0.11645322066386463), (&#39;technology&#39;, 0.11611403302192778), (&#39;information technology&#39;, 0.10674212089747818), (&#39;server&#39;, 0.10207041788680105), (&#39;information&#39;, 0.0818736400489378), (&#39;support&#39;, 0.06850945380496769), (&#39;hardware&#39;, 0.0671873863739721), (&#39;software&#39;, 0.06695983570026048), (&#39;management&#39;, 0.06551348579094368)]
+
+Keywords para clase: TEACHER
+[(&#39;student&#39;, 0.21308849432366028), (&#39;teacher&#39;, 0.21011272349570181), (&#39;child&#39;, 0.11633581846940368), (&#39;classroom&#39;, 0.0949479562980947), (&#39;lesson&#39;, 0.08623875136419004), (&#39;learning&#39;, 0.07695246059801054), (&#39;state&#39;, 0.0740595487756603), (&#39;parent&#39;, 0.07235996294920122), (&#39;teaching&#39;, 0.06609195467907297), (&#39;city&#39;, 0.06482585547310611)]
+
+Keywords para clase: ADVOCATE
+[(&#39;customer&#39;, 0.09860565158625234), (&#39;patient&#39;, 0.08536926874323669), (&#39;advocate&#39;, 0.07684826293524423), (&#39;service&#39;, 0.07328019379488775), (&#39;state&#39;, 0.07265972095536856), (&#39;city&#39;, 0.06378693883983488), (&#39;city state&#39;, 0.06267091552112458), (&#39;child&#39;, 0.057651722675043024), (&#39;client&#39;, 0.05506291029585484), (&#39;company&#39;, 0.054947919114874386)]
+</pre></div>
+</div>
+<img alt="_images/c1f441420b79bd070f33c88c7145f13e28b04bbfe7a1017cca56f0a56cf0bde5.png" src="_images/c1f441420b79bd070f33c88c7145f13e28b04bbfe7a1017cca56f0a56cf0bde5.png" />
+<img alt="_images/7ba9af730ed3faad1d2aa43a977305c92429bb16f61a3b9edb2692b1ce541b80.png" src="_images/7ba9af730ed3faad1d2aa43a977305c92429bb16f61a3b9edb2692b1ce541b80.png" />
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Batches: 100%|██████████| 78/78 [01:18&lt;00:00,  1.01s/it]
+</pre></div>
+</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Duplicados semánticos: 33
+</pre></div>
+</div>
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Token indices sequence length is longer than the specified maximum sequence length for this model (835 &gt; 512). Running this sequence through the model will result in indexing errors
+</pre></div>
+</div>
+<img alt="_images/fb4f8a2ef1c294c03f869aba946bf0d94038d3715b3db62f67fe699f58067c66.png" src="_images/fb4f8a2ef1c294c03f869aba946bf0d94038d3715b3db62f67fe699f58067c66.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>% textos &gt; 512 tokens: 0.8989533011272142
+% textos &gt; 256 tokens: 0.9895330112721417
+% textos &gt; 128 tokens: 0.999597423510467
+
+========= Resumen General =========
+Duplicados exactos: 2
+Duplicados casi idénticos: 29
+Duplicados semánticos: 33
+
+Textos muy cortos (&lt;30 chars): 1
+Textos &gt;512 tokens: 0.8989533011272142
+Clases: 24
+Desbalance: 5.454545454545454
+</pre></div>
+</div>
+</div>
+</div>
+<p><strong>Análisis de Reduccion de Dimensionalidad</strong>
+Las visualizaciones de PCA y UMAP, aplicadas a la representación TF-IDF de los documentos, evalúan la capacidad de los features léxicos para separar las categorías. La gráfica PCA TF-IDF muestra los documentos fuertemente mezclados en una gran nube sin clusters evidentes. Esto indica que las diferencias en la importancia de las palabras (TF-IDF) entre clases no son suficientes para una separación lineal. Aunque UMAP (una técnica no lineal) logra identificar algunas agrupaciones locales más densas en los extremos, la mayor parte de las categorías permanecen intercaladas en la nube central. En conjunto, estos gráficos sugieren que la información léxica de superficie (TF-IDF) es insuficiente para distinguir claramente las clases, y un modelo de clasificación tendrá dificultades basándose únicamente en esta representación.</p>
+<p><strong>Informacion general de calidad de los textos</strong>
+El corpus de 24 clases contiene 2 duplicados exactos y 1 texto extremadamente corto (menos de 30 caracteres), lo cual indica la presencia de ruido y una necesidad inmediata de limpieza para prevenir el sesgo del modelo. Además, se observa una alta redundancia de contenido, manifestada en 29 duplicados casi idénticos y 33 duplicados semánticos, lo que requiere una gestión de la superposición de contenido. Un aspecto favorable es que solo el 0.89% de los documentos excede el límite de 512 tokens, lo que implica que la gran mayoría del corpus se ajusta a los límites de longitud de los modelos Transformer, esto nos dice ademas que se debe implementar un sistema de chunking de los textos para evitar la perdida de informacion, tanto en en el data augmentation como en la aplicacion de los modelos.</p>
+</section>
+<section class="tex2jax_ignore mathjax_ignore" id="resumen-general">
+<h1>Resumen general<a class="headerlink" href="#resumen-general" title="Link to this heading">#</a></h1>
+<p>El análisis exploratorio revela:</p>
+<p>Presencia de términos altamente frecuentes y posiblemente no informativos (e.g., ‘company city state’).</p>
+<p>Desbalance significativo entre clases, con una proporción máxima de 5.45:1.</p>
+<p>Alta similitud semántica entre ciertos pares de categorías, lo que anticipa posibles confusiones en la clasificación.</p>
+<p>Distribución de longitudes de texto heterogénea, con outliers que requieren manejo (truncamiento/padding).</p>
+<p>Baja separabilidad en representaciones léxicas (TF-IDF), sugiriendo la necesidad de embeddings contextuales.</p>
+</section>
+
+    <script type="text/x-thebe-config">
+    {
+        requestKernel: true,
+        binderOptions: {
+            repo: "binder-examples/jupyter-stacks-datascience",
+            ref: "master",
+        },
+        codeMirrorConfig: {
+            theme: "abcdef",
+            mode: "python"
+        },
+        kernelOptions: {
+            name: "python3",
+            path: "./."
+        },
+        predefinedOutput: true
+    }
+    </script>
+    <script>kernelName = 'python3'</script>
+
+                </article>
+              
+
+              
+              
+              
+              
+                <footer class="prev-next-footer d-print-none">
+                  
+<div class="prev-next-area">
+    <a class="left-prev"
+       href="distilbert_analysis.html"
+       title="previous page">
+      <i class="fa-solid fa-angle-left"></i>
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">previous</p>
+        <p class="prev-next-title">Análisis del Modelo DistilBERT para Clasificación de Currículums</p>
+      </div>
+    </a>
+    <a class="right-next"
+       href="Miniproyecto2.html"
+       title="next page">
+      <div class="prev-next-info">
+        <p class="prev-next-subtitle">next</p>
+        <p class="prev-next-title">Ejecicion de Modelos</p>
+      </div>
+      <i class="fa-solid fa-angle-right"></i>
+    </a>
+</div>
+                </footer>
+              
+            </div>
+            
+            
+              
+                <div class="bd-sidebar-secondary bd-toc"><div class="sidebar-secondary-items sidebar-secondary__inner">
+
+
+  <div class="sidebar-secondary-item">
+  <div class="page-toc tocsection onthispage">
+    <i class="fa-solid fa-list"></i> Contents
+  </div>
+  <nav class="bd-toc-nav page-toc">
+    <ul class="visible nav section-nav flex-column">
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#">EDA</a></li>
+<li class="toc-h1 nav-item toc-entry"><a class="reference internal nav-link" href="#resumen-general">Resumen general</a></li>
+</ul>
+
+  </nav></div>
+
+</div></div>
+              
+            
+          </div>
+          <footer class="bd-footer-content">
+            
+<div class="bd-footer-content__inner container">
+  
+  <div class="footer-item">
+    
+<p class="component-author">
+By Adriam Aristizabal
+</p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+
+  <p class="copyright">
+    
+      © Copyright 2023.
+      <br/>
+    
+  </p>
+
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+  <div class="footer-item">
+    
+  </div>
+  
+</div>
+          </footer>
+        
+
+      </main>
+    </div>
+  </div>
+  
+  <!-- Scripts loaded after <body> so the DOM is not blocked -->
+  <script src="_static/scripts/bootstrap.js?digest=dfe6caa3a7d634c4db9b"></script>
+<script src="_static/scripts/pydata-sphinx-theme.js?digest=dfe6caa3a7d634c4db9b"></script>
+
+  <footer class="bd-footer">
+  </footer>
+  </body>
+</html>

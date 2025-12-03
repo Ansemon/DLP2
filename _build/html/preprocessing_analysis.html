@@ -32,7 +32,7 @@
     <link rel="stylesheet" type="text/css" href="_static/styles/sphinx-book-theme.css?v=eba8b062" />
     <link rel="stylesheet" type="text/css" href="_static/togglebutton.css?v=13237357" />
     <link rel="stylesheet" type="text/css" href="_static/copybutton.css?v=76b2166b" />
-    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css" />
+    <link rel="stylesheet" type="text/css" href="_static/mystnb.8ecb98da25f57f5357bf6f572d296f466b2cfe2517ffebfabe82451661e28f02.css?v=6644e6bb" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-thebe.css?v=4fa983c6" />
     <link rel="stylesheet" type="text/css" href="_static/sphinx-design.min.css?v=95c83b7e" />
   
@@ -180,6 +180,9 @@
 <li class="toctree-l1"><a class="reference internal" href="fasttext_analysis.html">Análisis del Modelo FastText Supervisado</a></li>
 <li class="toctree-l1"><a class="reference internal" href="xgboost_analysis.html">Análisis del Modelo XGBoost con TF-IDF</a></li>
 <li class="toctree-l1"><a class="reference internal" href="distilbert_analysis.html">Análisis del Modelo DistilBERT para Clasificación de Currículums</a></li>
+<li class="toctree-l1"><a class="reference internal" href="Jarvis_eda.html">EDA</a></li>
+
+<li class="toctree-l1"><a class="reference internal" href="Miniproyecto2.html">Ejecicion de Modelos</a></li>
 </ul>
 
     </div>
@@ -490,6 +493,7 @@ document.write(`
 <li><p><strong>Normalización de espacios</strong>: Colapso de múltiples espacios a uno solo</p></li>
 </ol>
 <p><strong>Justificación</strong>: Esta capa preserva el texto en su forma más cercana a la original, permitiendo que modelos basados en subword tokenization (DistilBERT) o character n-grams (FastText) aprovechen patrones morfológicos completos.</p>
+<p><strong>Limitación detectada en EDA</strong>: Esta limpieza no elimina metadatos estructurales como “company city state” que contaminan el corpus. El análisis de n-gramas revela que estos trigramas aparecen con frecuencia 5-10x mayor que términos técnicos discriminativos, introduciendo ruido sistemático.</p>
 <p><strong>Ejemplo</strong>:</p>
 <div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">Original</span><span class="p">:</span> <span class="s2">&quot;Managed team  of 5 engineers&amp;#44; developing web&amp;#45;based solutions.&quot;</span>
 <span class="n">text_basic</span><span class="p">:</span> <span class="s2">&quot;Managed team of 5 engineers, developing web-based solutions.&quot;</span>
@@ -909,6 +913,9 @@ Las palabras OOV tienden a ser:</p>
 <li><p><strong>Cobertura de embeddings</strong>: Word2Vec local cubre solo 54.5% del vocabulario, limitando modelos basados en word embeddings</p></li>
 <li><p><strong>Pérdida de información en text_advanced</strong>: Lematización y remoción de stopwords pueden eliminar matices semánticos relevantes</p></li>
 <li><p><strong>Sesgo del idioma intermedio</strong>: Back-translation vía español introduce sesgos lingüísticos específicos (e.g., morfología verbal española influye en el resultado)</p></li>
+<li><p><strong>Ruido estructural persistente</strong>: Los tres niveles de limpieza no eliminan patrones como “company city state” que el EDA identificó como contaminantes. Una estrategia de limpieza adicional (regex específicos para metadatos) habría mejorado la calidad del corpus.</p></li>
+<li><p><strong>Duplicados no gestionados</strong>: Los 2 duplicados exactos y 29 casi-idénticos no fueron removidos durante el preprocesamiento, lo que podría generar data leakage si uno cae en train y otro en test (aunque el stratified group split mitiga parcialmente esto).</p></li>
+<li><p><strong>Alta redundancia semántica post-augmentation</strong>: El análisis con SentenceTransformers reveló 33 duplicados semánticos (&gt;0.90 similarity), sugiriendo que el back-translation, aunque preserva significado, no introduce suficiente variabilidad para expandir efectivamente el espacio de representaciones.</p></li>
 </ol>
 </section>
 <section id="impacto-medible-en-modelos">
